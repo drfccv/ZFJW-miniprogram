@@ -1,0 +1,110 @@
+<!--成绩查询页面-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">成绩查询</text>
+    <text class="update-time" wx:if="{{lastUpdateTime}}">{{lastUpdateTime}}</text>
+  </view>
+
+  <!-- 学期选择器 -->
+  <view class="term-selector"><!-- 学年选择器 -->
+    <picker
+      class="hidden-picker" 
+      mode="selector"
+      range="{{yearRange}}"
+      value="{{yearIndex}}"
+      bindchange="onYearChange"
+    >
+      <view class="selector-item">
+        <text class="selector-label">学年:</text>
+        <text class="selector-value">{{yearRange[yearIndex]}}</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+    </picker><!-- 学期选择器 -->
+    <picker
+      class="hidden-picker"
+      mode="selector"
+      range="{{['第一学期', '第二学期']}}"
+      value="{{termIndex}}"
+      bindchange="onTermChange"
+    >
+      <view class="selector-item">
+        <text class="selector-label">学期:</text>
+        <text class="selector-value">{{termIndex === 0 ? '第一学期' : '第二学期'}}</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+    </picker>
+
+    <view class="refresh-btn" bindtap="refreshGrades">
+      <text class="refresh-icon">🔄</text>
+    </view>
+  </view>  <!-- 成绩统计 -->
+  <view class="grade-stats" wx:if="{{gradeList.length > 0}}">
+    <!-- 第一行统计 -->
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-value">{{gradeStats.totalCourses}}</text>
+        <text class="stat-label">总科目</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{gradeStats.passedCourses}}</text>
+        <text class="stat-label">通过</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{gradeStats.failedCourses}}</text>
+        <text class="stat-label">不通过</text>
+      </view>
+    </view>
+    
+    <!-- 第二行统计 -->
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-value">{{gradeStats.avgGrade}}</text>
+        <text class="stat-label">算术平均分</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value primary">{{gradeStats.weightedAvgGrade}}</text>
+        <text class="stat-label">加权平均分</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value primary">{{gradeStats.gpa}}</text>
+        <text class="stat-label">平均学分绩点</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 成绩列表 -->
+  <view class="grade-list" wx:if="{{gradeList.length > 0}}">
+    <view 
+      class="grade-item"
+      wx:for="{{gradeList}}" 
+      wx:key="index"
+      bindtap="showGradeDetail"
+      data-index="{{index}}"
+    >
+      <view class="course-info">
+        <text class="course-name">{{item.courseName}}</text>
+        <text class="course-details">
+          <text class="course-credit">{{item.credit}}学分</text>
+          <text class="course-type" wx:if="{{item.courseType}}">{{item.courseType}}</text>
+        </text>
+        <text class="course-teacher" wx:if="{{item.teacher}}">任课教师：{{item.teacher}}</text>
+      </view>      <view class="grade-info">
+        <text class="grade-score {{item.gradeClass}}">{{item.totalScore || '未出分'}}</text>
+        <text class="grade-gpa" wx:if="{{item.gpa}}">绩点：{{item.gpa}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{gradeList.length === 0 && !loading}}">
+    <text class="empty-icon">📊</text>
+    <text class="empty-text">暂无成绩数据</text>
+    <button class="reload-btn" bindtap="loadGrades">重新加载</button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+</view>

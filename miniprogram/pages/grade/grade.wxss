@@ -1,0 +1,640 @@
+/* 成绩查询页面样式 - 简约白色扁平化风格 */
+
+/* 页面标题 */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 24rpx 32rpx;
+  border-bottom: 1rpx solid #f1f3f4;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.page-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.update-time {
+  font-size: 22rpx;
+  color: #999999;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* 隐藏picker的样式 */
+.hidden-picker {
+  width: auto;
+  background: transparent;
+}
+
+/* 页面容器 */
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* 学期选择器 */
+.term-selector {
+  background: #ffffff;
+  padding: 24rpx 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1rpx solid #f1f3f4;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.selector-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1rpx solid #dee2e6;
+  min-width: 140rpx;
+  justify-content: center;
+}
+
+.selector-item:active {
+  background: #007AFF;
+  border-color: #007AFF;
+  color: #ffffff;
+  transform: scale(0.98);
+}
+
+.selector-label {
+  color: #666666;
+  margin-right: 8rpx;
+  font-weight: 500;
+}
+
+.selector-value {
+  color: #333333;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.selector-arrow {
+  color: #adb5bd;
+  font-size: 20rpx;
+}
+
+.refresh-btn {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #007AFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.2);
+}
+
+.refresh-btn:active {
+  transform: scale(0.95);
+  background: #0056CC;
+}
+
+.refresh-icon {
+  color: #ffffff;
+  font-size: 24rpx;
+}
+
+/* 统计卡片 */
+.stats-section {
+  padding: 24rpx;
+}
+
+.stats-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 24rpx;
+}
+
+.stats-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 24rpx;
+  text-align: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24rpx;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 24rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  transition: transform 0.3s ease;
+}
+
+.stat-item:active {
+  transform: scale(0.98);
+}
+
+.stat-number {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.stat-number.excellent {
+  color: #4caf50;
+}
+
+.stat-number.good {
+  color: #007AFF;
+}
+
+.stat-number.average {
+  color: #ff9800;
+}
+
+.stat-number.fail {
+  color: #f44336;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #adb5bd;
+}
+
+.gpa-display {
+  text-align: center;
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background: linear-gradient(to bottom right, #5AC8FA, #007AFF);
+  border-radius: 12rpx;
+  color: #ffffff;
+}
+
+.gpa-value {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.gpa-label {
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+/* 成绩列表 */
+.grades-section {
+  padding: 0 24rpx;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+  padding: 0 8rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.filter-btn {
+  background: #ffffff;
+  border: 1rpx solid #dee2e6;
+  border-radius: 12rpx;
+  padding: 8rpx 16rpx;
+  font-size: 24rpx;
+  color: #666666;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:active {
+  background: #007AFF;
+  color: #ffffff;
+  border-color: #007AFF;
+}
+
+/* 成绩卡片 */
+.grade-card {
+  background: #ffffff;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.grade-card:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.grade-header {
+  padding: 16rpx;
+  background: #f8f9fa;
+  border-bottom: 1rpx solid #e0e0e0;
+  position: relative;
+}
+
+.grade-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4rpx;
+  background: #007AFF;
+}
+
+.course-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 8rpx;
+  line-height: 1.4;
+}
+
+.course-code {
+  font-size: 22rpx;
+  color: #999999;
+  font-family: 'Courier New', monospace;
+}
+
+.grade-body {
+  padding: 16rpx;
+}
+
+.grade-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.info-value {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #333333;
+}
+
+.grade-score {
+  text-align: center;
+  padding: 16rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  margin-top: 12rpx;
+}
+
+.score-value {
+  font-size: 48rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.score-value.excellent {
+  color: #4caf50;
+}
+
+.score-value.good {
+  color: #007AFF;
+}
+
+.score-value.average {
+  color: #ff9800;
+}
+
+.score-value.fail {
+  color: #f44336;
+}
+
+.score-rank {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* 空状态 */
+.empty-state {
+  padding: 32rpx;
+  text-align: center;
+  background: #ffffff;
+  margin: 16rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+  font-size: 64rpx;
+  color: #999999;
+  margin-bottom: 16rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 24rpx;
+}
+
+.reload-btn {
+  background: #007AFF;
+  color: #ffffff;
+  padding: 12rpx 24rpx;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  border: none;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.reload-btn:active {
+  background: #0056CC;
+}
+
+/* 加载状态 */
+.loading-state {
+  padding: 32rpx;
+  text-align: center;
+  background: #ffffff;
+  margin: 16rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666666;
+  animation: loading-pulse 2s ease-in-out infinite;
+}
+
+@keyframes loading-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* 浮动操作按钮 */
+.fab-container {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 40rpx);
+  right: 24rpx;
+  z-index: 100;
+}
+
+.fab {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: linear-gradient(to bottom right, #007AFF, #5AC8FA);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.fab-icon {
+  font-size: 32rpx;
+  color: #ffffff;
+}
+
+/* 安全区域 */
+.safe-area {
+  height: calc(env(safe-area-inset-bottom) + 20rpx);
+}
+
+.refresh-btn:active {
+  transform: scale(0.9);
+}
+
+.refresh-icon {
+  color: white;
+  font-size: 28rpx;
+}
+
+/* 成绩统计 */
+.grade-stats {
+  background: white;
+  margin: 20rpx;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25rpx;
+  gap: 15rpx;
+}
+
+.stats-row:last-child {
+  margin-bottom: 0;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+  background: rgba(0, 122, 255, 0.05);
+  border-radius: 12rpx;
+  padding: 15rpx 8rpx;
+  min-width: 0;
+}
+
+.stat-value {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #007AFF;
+  margin-bottom: 8rpx;
+}
+
+.stat-value.primary {
+  color: #FF6B35;
+  font-size: 36rpx;
+}
+
+.stat-label {
+  display: block;
+  font-size: 20rpx;
+  color: #666;
+  line-height: 1.2;
+}
+
+/* 成绩列表 */
+.grade-list {
+  margin: 20rpx;
+}
+
+.grade-item {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 15rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.grade-item:active {
+  transform: scale(0.98);
+  background: #f8f9fa;
+}
+
+.course-info {
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.course-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.course-details {
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.course-credit {
+  font-size: 22rpx;
+  color: #007AFF;
+  background: #e3f2fd;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  margin-right: 10rpx;
+}
+
+.course-type {
+  font-size: 22rpx;
+  color: #666;
+  background: #f5f5f5;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.course-teacher {
+  display: block;
+  font-size: 20rpx;
+  color: #999;
+}
+
+.grade-info {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 成绩分数样式 - 使用更高优先级 */
+.grade-item .grade-info .grade-score {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 5rpx;
+  color: #333; /* 默认颜色 */
+}
+
+.grade-item .grade-info .grade-score.excellent {
+  color: #4caf50 !important; /* 绿色：80-100分 */
+}
+
+.grade-item .grade-info .grade-score.good {
+  color: #4caf50 !important; /* 绿色：80-100分 */
+}
+
+.grade-item .grade-info .grade-score.average {
+  color: #ff9800 !important; /* 黄色：60-80分 */
+}
+
+.grade-item .grade-info .grade-score.poor {
+  color: #f44336 !important; /* 红色：60分以下 */
+}
+
+.grade-item .grade-info .grade-score.unknown {
+  color: #999 !important; /* 灰色：未出分 */
+}
+
+.grade-gpa {
+  display: block;
+  font-size: 20rpx;
+  color: #666;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+.reload-btn {
+  background: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 20rpx 40rpx;
+  font-size: 26rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}

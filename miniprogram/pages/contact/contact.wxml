@@ -1,0 +1,17 @@
+<!--联系方式页面-->
+<view class="container">
+  <view class="contact-card">
+    <view class="card-header">
+      <text class="card-title">小程序多端框架交流群</text>
+      <text class="card-subtitle">长按识别二维码</text>
+    </view>
+    <view class="qrcode-container">
+      <image 
+        src="/images/qrcode.png" 
+        show-menu-by-longpress="{{true}}" 
+        mode="aspectFit" 
+        class="qrcode-image"
+      />
+    </view>
+  </view>
+</view>

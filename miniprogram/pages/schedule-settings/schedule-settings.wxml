@@ -1,0 +1,73 @@
+<!--课表设置页面-->
+<view class="container">
+  <!-- 学年学期设置 -->
+  <view class="setting-section">
+    <view class="section-title">学年学期设置</view>
+    
+    <!-- 学年选择 -->
+    <view class="setting-item" bindtap="showYearPicker">
+      <view class="setting-label">学年</view>
+      <view class="setting-value">
+        <text>{{yearRange[yearIndex]}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+    
+    <!-- 学期选择 -->
+    <view class="setting-item" bindtap="showTermPicker">
+      <view class="setting-label">学期</view>
+      <view class="setting-value">
+        <text>{{currentTerm === 1 ? '第一学期' : '第二学期'}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+  </view>
+  <!-- 课表显示设置 -->
+  <view class="setting-section">
+    <view class="section-title">课表显示设置</view>    <!-- 总周次 -->
+    <view class="setting-item" bindtap="showWeekPicker">
+      <view class="setting-label">总周次</view>
+      <view class="setting-value">
+        <text>{{totalWeeks}}周</text>
+        <text class="arrow">></text>
+      </view>
+    </view>    
+    <!-- 每周起始日 -->
+    <view class="setting-item" bindtap="showWeekStartPicker">
+      <view class="setting-label">每周起始日</view>
+      <view class="setting-value">
+        <text>{{weekStartOptions[weekStartIndex]}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+    
+    <!-- 第一周日期设置 -->
+    <view class="setting-item" bindtap="showFirstWeekDatePicker">
+      <view class="setting-label">第一周开始日期</view>
+      <view class="setting-value">
+        <text>{{firstWeekDate}}</text>
+        <text class="arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="button-section">
+    <button class="refresh-button" bindtap="refreshSchedule" loading="{{refreshing}}">
+      {{refreshing ? '刷新中...' : '刷新课表数据'}}
+    </button>
+    
+    <button class="save-button" bindtap="saveSettings">
+      保存设置
+    </button>
+  </view>
+  <!-- 说明信息 -->
+  <view class="info-section">
+    <view class="info-title">设置说明</view>
+    <view class="info-text">• 学年学期：选择要查看的课表学期</view>
+    <view class="info-text">• 总周次：设置学期总共的周数（1-20周）</view>
+    <view class="info-text">• 每周起始日：课表中一周的开始日期</view>
+    <view class="info-text">• 第一周日期：学期第一周的开始日期，用于自动计算当前周次</view>
+    <view class="info-text">• 设置修改后需要点击"保存设置"才会生效</view>
+  </view>
+</view>

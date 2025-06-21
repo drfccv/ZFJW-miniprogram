@@ -1,0 +1,130 @@
+/* 日志页面样式 */
+.container {
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.logs-header {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.logs-count {
+  font-size: 24rpx;
+  color: #7f8c8d;
+  background-color: #ecf0f1;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.logs-list {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.log-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #ecf0f1;
+  transition: all 0.3s ease;
+}
+
+.log-item:last-child {
+  border-bottom: none;
+}
+
+.log-item:hover {
+  background-color: #f8f9fa;
+}
+
+.log-index {
+  width: 60rpx;
+  height: 60rpx;
+  background: linear-gradient(to bottom right, #3498db, #2980b9);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  font-weight: 600;
+  margin-right: 20rpx;
+  flex-shrink: 0;
+}
+
+.log-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.log-date {
+  font-size: 28rpx;
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.log-time {
+  font-size: 24rpx;
+  color: #7f8c8d;
+}
+
+.empty-state {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 80rpx 40rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 20rpx;
+  display: block;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #7f8c8d;
+  display: block;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 400px) {
+  .logs-header {
+    flex-direction: column;
+    gap: 16rpx;
+    align-items: flex-start;
+  }
+  
+  .log-index {
+    width: 50rpx;
+    height: 50rpx;
+    font-size: 22rpx;
+  }
+  
+  .log-date {
+    font-size: 26rpx;
+  }
+  
+  .log-time {
+    font-size: 22rpx;
+  }
+}

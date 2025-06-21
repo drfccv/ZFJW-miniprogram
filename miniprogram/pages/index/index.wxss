@@ -1,0 +1,641 @@
+/* 首页样式 - 简约白色扁平化风格 */
+
+/* 页面容器 */
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+/* 用户信息卡片 */
+.user-card {
+  background: linear-gradient(to bottom right, #007AFF, #5AC8FA);
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  box-shadow: 0 4rpx 20rpx rgba(0, 122, 255, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200rpx;
+  height: 200rpx;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 30rpx;
+  backdrop-filter: blur(10rpx);
+  border: 2rpx solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.avatar-text {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-info {
+  flex: 1;
+  z-index: 1;
+}
+
+.user-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+  color: #ffffff;
+}
+
+.user-id {
+  display: block;
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8rpx;
+}
+
+.user-college {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 快捷功能区域 */
+.quick-actions {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 20rpx;
+  padding-left: 8rpx;
+}
+
+/* 功能网格 */
+.function-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.function-item {
+  background-color: #ffffff;
+  border-radius: 16rpx; /* 统一为中等圆角 */
+  padding: 30rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.function-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4rpx;
+  background: linear-gradient(to right, #007AFF, #5AC8FA);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.function-item:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
+}
+
+.function-item:active::before {
+  transform: translateX(0);
+}
+
+.function-icon {
+  font-size: 48rpx;
+  margin-bottom: 16rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom right, #5AC8FA, #007AFF);
+  color: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.2);
+}
+
+.function-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333333;
+  text-align: center;
+  margin-bottom: 8rpx;
+}
+
+.function-desc {
+  font-size: 22rpx;
+  color: #999999;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* 通知区域 - 删除旧的黄色背景样式 */
+.notification-section {
+  margin-bottom: 30rpx;
+}
+
+.notification-card {
+  background-color: #ffffff;
+  border-radius: 20rpx; /* 统一为大圆角 */
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.notification-icon {
+  font-size: 32rpx;
+}
+
+.notification-content {
+  padding: 24rpx;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f1f3f4;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-dot {
+  width: 12rpx;
+  height: 12rpx;
+  background-color: #ff9800;
+  border-radius: 50%;
+  margin-top: 8rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.notification-text {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* 统计卡片 */
+.stats-section {
+  margin-bottom: 30rpx;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+}
+
+.stat-item {
+  background-color: #ffffff;
+  border-radius: 16rpx; /* 统一为中等圆角 */
+  padding: 24rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.stat-item:active {
+  transform: scale(0.98);
+}
+
+.stat-number {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #007AFF;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* 快速操作按钮 */
+.quick-buttons {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 24rpx;
+}
+
+.quick-btn {
+  flex: 1;
+  background-color: #ffffff;
+  border: 2rpx solid #e9ecef;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  font-size: 26rpx;
+  color: #333333;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.quick-btn:active {
+  background-color: #007AFF;
+  color: #ffffff;
+  border-color: #007AFF;
+}
+
+/* 底部安全区域 */
+.safe-area {
+  height: calc(env(safe-area-inset-bottom) + 40rpx);
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx;
+  color: #999999;
+}
+
+.loading-icon {
+  font-size: 48rpx;
+  margin-bottom: 24rpx;
+  animation: loading-spin 1s linear infinite;
+}
+
+@keyframes loading-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.weather-info {
+  text-align: right;
+}
+
+.weather {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+/* 快捷功能 */
+.quick-actions {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 30rpx;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.action-item {
+  background: #f8f9fa;
+  border-radius: 16rpx; /* 统一为中等圆角 */
+  padding: 30rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.action-item:active {
+  transform: scale(0.95);
+  background: #e9ecef;
+}
+
+.action-icon {
+  font-size: 60rpx;
+  margin-bottom: 20rpx;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grade-icon {
+  background: linear-gradient(to bottom right, #FF6B6B, #FF8E8E);
+}
+
+.exam-icon {
+  background: linear-gradient(to bottom right, #4ECDC4, #44A08D);
+}
+
+.course-icon {
+  background: linear-gradient(to bottom right, #45B7D1, #96CEB4);
+}
+
+.notification-icon {
+  background: linear-gradient(to bottom right, #FFA07A, #FFB347);
+}
+
+.action-text {
+  font-size: 24rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+/* 最近通知 */
+.recent-notifications {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.update-time {
+  font-size: 22rpx;
+  color: #999999;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.notification-list {
+  margin-top: 20rpx;
+}
+
+.notification-item {
+  display: flex;
+  align-items: stretch; /* 改为stretch确保高度一致 */
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  min-height: 120rpx; /* 设置最小高度确保一致性 */
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 改为space-between，确保元素均匀分布 */
+  min-height: 78rpx; /* 调整为精确高度: 28 + 4 + 24 + 4 + 22 = 82rpx，留点余量 */
+  max-height: 78rpx; /* 添加最大高度限制 */
+  padding-right: 16rpx; /* 与箭头保持间距 */
+  overflow: hidden; /* 防止内容溢出 */
+}
+
+.notification-title {
+  display: block;
+  font-size: 28rpx;
+  color: #333333;
+  margin-bottom: 0; /* 移除margin，使用flex布局控制间距 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  line-height: 28rpx; /* 与字体大小一致 */
+  height: 28rpx; /* 精确高度 */
+  flex-shrink: 0;
+}
+
+.notification-summary {
+  display: block;
+  font-size: 24rpx;
+  color: #666666;
+  margin: 4rpx 0; /* 上下留小间距 */
+  line-height: 24rpx; /* 与字体大小一致 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 24rpx; /* 精确高度 */
+  flex-shrink: 0;
+}
+
+.notification-time {
+  display: block;
+  font-size: 22rpx;
+  color: #999999;
+  line-height: 22rpx; /* 与字体大小一致 */
+  height: 22rpx; /* 精确高度 */
+  flex-shrink: 0;
+}
+
+.notification-arrow {
+  color: #cccccc;
+  font-size: 24rpx;
+  display: flex;
+  align-items: flex-end; /* 改为靠底部对齐 */
+  justify-content: center;
+  width: 32rpx; /* 固定宽度 */
+  height: 78rpx; /* 与内容区域高度一致 */
+  flex-shrink: 0; /* 防止压缩 */
+  padding-bottom: 8rpx; /* 添加底部内边距，使箭头稍微上移一点，达到"靠下居中"效果 */
+}
+
+/* 今日课程 */
+.today-schedule {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.schedule-list {
+  margin-top: 20rpx;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.schedule-item:last-child {
+  border-bottom: none;
+}
+
+.schedule-time {
+  width: 120rpx;
+  margin-right: 20rpx;
+}
+
+.time-text {
+  font-size: 24rpx;
+  color: #007AFF;
+  font-weight: 600;
+}
+
+.schedule-content {
+  flex: 1;
+}
+
+.course-name {
+  display: block;
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.course-location {
+  display: block;
+  font-size: 22rpx;
+  color: #666666;
+  margin-bottom: 4rpx;
+}
+
+.course-teacher {
+  display: block;
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* 登录提示 */
+.login-prompt {
+  background: #ffffff;
+  border-radius: 20rpx; /* 与其他卡片保持一致的大圆角 */
+  padding: 50rpx 30rpx 40rpx 30rpx; /* 与其他卡片保持一致的内边距 */
+  margin-bottom: 30rpx; /* 与其他组件保持一致的下边距 */
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08); /* 与其他卡片保持一致的阴影 */
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 添加顶部装饰条，与其他卡片保持一致 */
+.login-prompt::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4rpx;
+  background: linear-gradient(to right, #007AFF, #5AC8FA);
+}
+
+.prompt-title {
+  display: block;
+  font-size: 36rpx; /* 与section-title保持一致 */
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 20rpx; /* 与其他组件标题间距一致 */
+}
+
+.prompt-text {
+  display: block;
+  font-size: 28rpx; /* 与正文字体大小一致 */
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 40rpx; /* 适当的间距 */
+}
+
+.login-button {
+  background: linear-gradient(to bottom right, #007AFF, #5AC8FA);
+  color: #ffffff;
+  border: none;
+  border-radius: 12rpx;
+  padding: 20rpx 60rpx; /* 标准按钮尺寸 */
+  font-size: 28rpx; /* 标准按钮字体 */
+  font-weight: 600;
+  min-width: 180rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 122, 255, 0.3); /* 添加按钮阴影 */
+  transition: all 0.3s ease;
+}
+
+.login-button:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.2);
+}
+
+/* 响应式优化 - 小屏幕设备 */
+@media (max-width: 400px) {
+  .notification-item {
+    min-height: 100rpx; /* 小屏幕减小高度 */
+  }
+  
+  .notification-content {
+    min-height: 68rpx; /* 对应调整内容高度 */
+    max-height: 68rpx;
+    padding-right: 12rpx; /* 减小间距 */
+  }
+  
+  .notification-title {
+    font-size: 26rpx; /* 稍微减小字体 */
+    height: 26rpx;
+    line-height: 26rpx;
+  }
+  
+  .notification-summary {
+    font-size: 22rpx;
+    height: 22rpx;
+    line-height: 22rpx;
+    margin: 3rpx 0;
+  }
+  
+  .notification-time {
+    font-size: 20rpx;
+    height: 20rpx;
+    line-height: 20rpx;
+  }
+  
+  .notification-arrow {
+    height: 68rpx;
+    width: 28rpx;
+    font-size: 22rpx;
+    padding-bottom: 6rpx; /* 对应调整小屏幕的底部内边距 */
+  }
+}

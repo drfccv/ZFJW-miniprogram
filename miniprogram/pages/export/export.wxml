@@ -1,0 +1,109 @@
+<!--export.wxml-->
+<view class="container">
+  <!-- 导出类型选择 -->
+  <view class="export-types">
+    <view class="section-title">导出类型</view>
+    <view class="type-list">
+      <view class="type-item {{currentType === 'grade' ? 'active' : ''}}" 
+            bindtap="selectType" data-type="grade">
+        <view class="type-icon">📊</view>
+        <view class="type-name">成绩单</view>
+        <view class="type-desc">导出完整成绩单PDF</view>
+      </view>
+      <view class="type-item {{currentType === 'schedule' ? 'active' : ''}}" 
+            bindtap="selectType" data-type="schedule">
+        <view class="type-icon">📅</view>
+        <view class="type-name">课表</view>
+        <view class="type-desc">导出课表PDF</view>
+      </view>
+      <view class="type-item {{currentType === 'exam' ? 'active' : ''}}" 
+            bindtap="selectType" data-type="exam">
+        <view class="type-icon">✏️</view>
+        <view class="type-name">考试安排</view>
+        <view class="type-desc">导出考试安排PDF</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 学期选择 -->
+  <view class="semester-selector">
+    <view class="section-title">选择学期</view>
+    <view class="selector-row">
+      <view class="selector-item" bindtap="showYearPicker">
+        <text class="selector-label">学年：</text>
+        <text class="selector-value">{{yearRange[yearIndex]}}</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+      <view class="selector-item" bindtap="showTermPicker">
+        <text class="selector-label">学期：</text>
+        <text class="selector-value">第{{currentTerm}}学期</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 导出选项 -->
+  <view class="export-options">
+    <view class="section-title">导出选项</view>
+    <view class="option-list">
+      <view class="option-item">
+        <view class="option-label">包含个人信息</view>
+        <switch checked="{{includePersonalInfo}}" bindchange="onPersonalInfoChange"/>
+      </view>
+      <view class="option-item">
+        <view class="option-label">包含统计信息</view>
+        <switch checked="{{includeStatistics}}" bindchange="onStatisticsChange"/>
+      </view>
+      <view class="option-item">
+        <view class="option-label">高质量输出</view>
+        <switch checked="{{highQuality}}" bindchange="onQualityChange"/>
+      </view>
+    </view>
+  </view>
+
+  <!-- 导出按钮 -->
+  <view class="export-action">
+    <button class="export-btn" bindtap="exportPDF" disabled="{{loading}}">
+      <text wx:if="{{loading}}">导出中...</text>
+      <text wx:else>导出PDF</text>
+    </button>
+  </view>
+
+  <!-- 历史记录 -->
+  <view class="export-history" wx:if="{{exportHistory.length > 0}}">
+    <view class="section-title">导出历史</view>
+    <view class="history-list">
+      <view class="history-item" wx:for="{{exportHistory}}" wx:key="id">
+        <view class="history-info">
+          <view class="history-name">{{item.name}}</view>
+          <view class="history-time">{{item.time}}</view>
+        </view>
+        <view class="history-action">
+          <button class="history-btn" size="mini" bindtap="downloadFile" data-url="{{item.url}}">
+            下载
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 学年选择器 -->
+<picker-view class="picker-overlay {{showYearSelector ? 'show' : ''}}" 
+             bindchange="onYearChange" value="{{yearIndex}}">
+  <picker-view-column>
+    <view wx:for="{{yearRange}}" wx:key="*this" class="picker-item">{{item}}</view>
+  </picker-view-column>
+</picker-view>
+
+<!-- 学期选择器 -->
+<picker-view class="picker-overlay {{showTermSelector ? 'show' : ''}}" 
+             bindchange="onTermChange" value="{{termIndex}}">
+  <picker-view-column>
+    <view wx:for="{{['第1学期', '第2学期']}}" wx:key="*this" class="picker-item">{{item}}</view>
+  </picker-view-column>
+</picker-view>
+
+<!-- 遮罩层 -->
+<view class="picker-mask {{showYearSelector || showTermSelector ? 'show' : ''}}" 
+      bindtap="hidePicker"></view>

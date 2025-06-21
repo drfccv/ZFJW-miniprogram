@@ -1,0 +1,371 @@
+/* 我的页面样式 - 简约白色扁平化风格 */
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+/* 用户信息卡片 */
+.user-card {
+  background: linear-gradient(to bottom right, #007AFF 0%, #5AC8FA 100%);
+  border-radius: 20rpx;
+  padding: 40rpx;
+  margin-bottom: 30rpx;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  box-shadow: 0 4rpx 20rpx rgba(0, 122, 255, 0.25);
+}
+
+.user-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%; /* 头像保持圆形 */
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 30rpx;
+  flex-shrink: 0;
+}
+
+.avatar-text {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+}
+
+.user-details {
+  display: block;
+  font-size: 24rpx;
+  opacity: 0.8;
+  margin-bottom: 5rpx;
+}
+
+/* 节标题 */
+.section-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 20rpx;
+  padding-left: 20rpx;
+}
+
+/* 设置部分 */
+.settings-section {
+  margin-bottom: 30rpx;
+}
+
+.setting-item {
+  background: #ffffff;
+  padding: 30rpx;
+  margin-bottom: 2rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.3s;
+}
+
+.setting-item:active {
+  background: #f8f9fa;
+}
+
+.setting-item:first-child {
+  border-radius: 20rpx 20rpx 0 0;
+}
+
+.setting-item:last-child {
+  border-radius: 0 0 20rpx 20rpx;
+  margin-bottom: 0;
+}
+
+.setting-content {
+  flex: 1;
+}
+
+.setting-title {
+  display: block;  font-size: 28rpx;
+  color: #333333;
+  margin-bottom: 5rpx;
+}
+
+.setting-desc {
+  display: block;
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.setting-arrow {
+  color: #cccccc;
+  font-size: 24rpx;
+}
+
+.logout-text {
+  color: #ff4757 !important;
+  font-weight: 600;
+}
+
+/* 功能菜单 */
+.menu-section {
+  margin-bottom: 30rpx;
+}
+
+.menu-grid {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx;
+  border-radius: 16rpx;
+  background: #f8f9fa;
+  transition: all 0.3s;
+}
+
+.menu-item:active {
+  transform: scale(0.95);
+  background: #e9ecef;
+}
+
+/* 禁用状态的菜单项 */
+.menu-item-disabled {
+  opacity: 0.5;
+  position: relative;
+}
+
+.menu-item-disabled:active {
+  transform: none;
+  background: #f8f9fa;
+}
+
+.menu-item-disabled .menu-icon {
+  opacity: 0.7;
+}
+
+.menu-item-disabled .menu-text {
+  color: #999999;
+}
+
+.menu-status {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  font-size: 18rpx;
+  color: #FF6B6B;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 4rpx 8rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
+}
+
+.menu-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60rpx;
+  margin-bottom: 15rpx;
+}
+
+.grade-icon {
+  background: linear-gradient(to bottom right, #FF6B6B, #FF8E8E);
+}
+
+.exam-icon {
+  background: linear-gradient(to bottom right, #4ECDC4, #44A08D);
+}
+
+.course-icon {
+  background: linear-gradient(to bottom right, #45B7D1, #96CEB4);
+}
+
+.notification-icon {
+  background: linear-gradient(to bottom right, #FFA07A, #FFB347);
+}
+
+.export-icon {
+  background: linear-gradient(to bottom right, #A8E6CF, #88D8A3);
+}
+
+.classroom-icon {
+  background: linear-gradient(to bottom right, #FFD93D, #FF9A3D);
+}
+
+.menu-text {
+  font-size: 24rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+/* 其他部分 */
+.other-section {
+  margin-bottom: 30rpx;
+}
+
+/* 模态框 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #ffffff;
+  border-radius: 20rpx;
+  width: 600rpx;
+  max-width: 90vw;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #e5e5e5;
+  text-align: center;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+.url-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e5e5e5;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  margin-bottom: 20rpx;
+}
+
+.url-input:focus {
+  border-color: #007AFF;
+}
+
+.url-tip {
+  font-size: 22rpx;
+  color: #999999;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  border-top: 1rpx solid #e5e5e5;
+}
+
+.modal-btn {
+  flex: 1;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  border: none;
+  background: transparent;
+}
+
+.modal-btn.cancel {
+  color: #666666;
+  border-right: 1rpx solid #e5e5e5;
+}
+
+.modal-btn.confirm {
+  color: #007AFF;
+  font-weight: 600;
+}
+
+/* 默认页面选择样式 */
+.page-option-list {
+  max-height: 400rpx;
+  overflow-y: auto;
+}
+
+.page-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+  transition: background 0.2s;
+}
+
+.page-option:last-child {
+  border-bottom: none;
+}
+
+.page-option:active {
+  background: #f8f9fa;
+}
+
+.page-option.selected {
+  background: rgba(0, 122, 255, 0.05);
+}
+
+.page-option-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.page-option-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  width: 50rpx;
+  text-align: center;
+}
+
+.page-option-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333333;
+  margin-right: 12rpx;
+}
+
+.page-option-desc {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.page-option-check {
+  color: #007AFF;
+  font-size: 32rpx;
+  font-weight: 600;
+  width: 40rpx;
+  text-align: center;
+}

@@ -1,0 +1,22 @@
+<!--日志页面-->
+<view class="container">
+  <view class="logs-header">
+    <text class="page-title">访问日志</text>
+    <text class="logs-count">共 {{logs.length}} 条记录</text>
+  </view>
+  
+  <view class="logs-list" wx:if="{{logs.length > 0}}">
+    <view class="log-item" wx:for="{{logs}}" wx:key="timeStamp" wx:for-item="log">
+      <view class="log-index">{{index + 1}}</view>
+      <view class="log-content">
+        <text class="log-date">{{log.date}}</text>
+        <text class="log-time">{{log.time}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="empty-state" wx:if="{{logs.length === 0}}">
+    <text class="empty-icon">📝</text>
+    <text class="empty-text">暂无访问记录</text>
+  </view>
+</view>

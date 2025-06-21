@@ -1,0 +1,91 @@
+<!--首页-->
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card" wx:if="{{userInfo}}">
+    <view class="user-avatar">
+      <text class="avatar-text">{{userInfo.name ? userInfo.name.charAt(0) : '学'}}</text>
+    </view>
+    <view class="user-info">
+      <text class="user-name">{{userInfo.name || '未获取到姓名'}}</text>
+      <text class="user-id">学号：{{userInfo.sid || '未获取到学号'}}</text>
+    </view>
+    <view class="weather-info" wx:if="{{weather}}">
+      <text class="weather">{{weather}}</text>
+    </view>
+  </view>
+
+  <!-- 快捷功能 -->
+  <view class="quick-actions">
+    <text class="section-title">快捷功能</text>
+    <view class="actions-grid">
+      <view class="action-item" bindtap="navigateTo" data-url="/pages/grade/grade">
+        <view class="action-icon grade-icon">📊</view>
+        <text class="action-text">成绩查询</text>
+      </view>
+      <view class="action-item" bindtap="navigateTo" data-url="/pages/exam/exam">
+        <view class="action-icon exam-icon">📝</view>
+        <text class="action-text">考试安排</text>
+      </view>
+      <view class="action-item" bindtap="navigateTo" data-url="/pages/course/course">
+        <view class="action-icon course-icon">📚</view>
+        <text class="action-text">选课管理</text>
+      </view>
+      <view class="action-item" bindtap="navigateTo" data-url="/pages/notification/notification">
+        <view class="action-icon notification-icon">📢</view>
+        <text class="action-text">通知公告</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最近通知 -->
+  <view class="recent-notifications" wx:if="{{notifications.length > 0}}">
+    <view class="notification-header">
+      <text class="section-title">最新通知</text>
+      <text class="update-time" wx:if="{{notificationUpdateTime}}">（{{notificationUpdateTime}}）</text>
+    </view>
+    <view class="notification-list">
+      <view 
+        class="notification-item" 
+        wx:for="{{notifications}}" 
+        wx:key="index"
+        bindtap="viewNotification"
+        data-index="{{index}}"
+      >
+        <view class="notification-content">
+          <text class="notification-title">{{item.title}}</text>
+          <text class="notification-summary">{{item.content}}</text>
+          <text class="notification-time">{{item.time}}</text>
+        </view>
+        <view class="notification-arrow">〉</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日课程 -->
+  <view class="today-schedule" wx:if="{{todayClasses.length > 0}}">
+    <text class="section-title">今日课程</text>
+    <view class="schedule-list">
+      <view 
+        class="schedule-item" 
+        wx:for="{{todayClasses}}" 
+        wx:key="index"
+      >
+        <view class="schedule-time">
+          <text class="time-text">{{item.time}}</text>
+        </view>
+        <view class="schedule-content">
+          <text class="course-name">{{item.courseName}}</text>
+          <text class="course-location">{{item.location}}</text>
+          <text class="course-teacher">{{item.teacher}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 登录提示 -->
+  <view class="login-prompt" wx:if="{{!isLoggedIn}}">
+    <text class="prompt-title">请先登录</text>
+    <text class="prompt-text">登录后可查看课表、成绩等信息</text>
+    <button class="login-button" bindtap="goToLogin">去登录</button>
+  </view>
+</view>

@@ -1,0 +1,88 @@
+<!--classroom.wxml-->
+<view class="container">
+  <!-- 查询条件 -->
+  <view class="query-section">
+    <view class="section-title">查询条件</view>
+    
+    <!-- 日期选择 -->
+    <view class="condition-item">
+      <view class="condition-label">查询日期</view>
+      <picker mode="date" value="{{currentDate}}" bindchange="onDateChange">
+        <view class="picker-input">
+          <text>{{currentDate}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+    
+    <!-- 时间段选择 -->
+    <view class="condition-item">
+      <view class="condition-label">时间段</view>
+      <view class="time-slots">
+        <view class="time-slot {{currentSlot === index ? 'active' : ''}}" 
+              wx:for="{{timeSlots}}" wx:key="index"
+              bindtap="selectTimeSlot" data-index="{{index}}">
+          {{item}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 查询按钮 -->
+    <button class="query-btn" bindtap="queryClassrooms" disabled="{{loading}}">
+      <text wx:if="{{loading}}">查询中...</text>
+      <text wx:else>查询空教室</text>
+    </button>
+  </view>
+  
+  <!-- 查询结果 -->
+  <view class="result-section" wx:if="{{classrooms.length > 0}}">
+    <view class="section-title">
+      空教室列表 ({{classrooms.length}}间)
+    </view>
+    
+    <view class="classroom-list">
+      <view class="building-group" wx:for="{{groupedClassrooms}}" wx:key="building">
+        <view class="building-header">
+          <view class="building-name">{{item.building}}</view>
+          <view class="building-count">{{item.rooms.length}}间</view>
+        </view>
+        
+        <view class="room-grid">
+          <view class="room-item" wx:for="{{item.rooms}}" wx:key="room" wx:for-item="room">
+            <view class="room-number">{{room.roomNumber}}</view>
+            <view class="room-info">
+              <text class="room-capacity">{{room.capacity}}人</text>
+              <text class="room-type">{{room.type}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && classrooms.length === 0 && hasQueried}}">
+    <view class="empty-icon">🏢</view>
+    <view class="empty-text">该时间段暂无空教室</view>
+    <view class="empty-desc">请尝试选择其他时间段</view>
+  </view>
+  
+  <!-- 使用说明 -->
+  <view class="help-section" wx:if="{{!hasQueried}}">
+    <view class="section-title">使用说明</view>
+    <view class="help-content">
+      <view class="help-item">
+        <view class="help-icon">📅</view>
+        <view class="help-text">选择要查询的日期</view>
+      </view>
+      <view class="help-item">
+        <view class="help-icon">⏰</view>
+        <view class="help-text">选择时间段</view>
+      </view>
+      <view class="help-item">
+        <view class="help-icon">🔍</view>
+        <view class="help-text">点击查询按钮获取结果</view>
+      </view>
+    </view>
+  </view>
+</view>

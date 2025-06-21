@@ -1,0 +1,145 @@
+/* 图标样式优化 - 简约扁平化图标系统 */
+
+/* 基础图标容器 */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  line-height: 1;
+  text-align: center;
+  text-transform: none;
+  vertical-align: -0.125em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 图标尺寸 */
+.icon-xs { font-size: 20rpx; }
+.icon-sm { font-size: 24rpx; }
+.icon-md { font-size: 28rpx; }
+.icon-lg { font-size: 32rpx; }
+.icon-xl { font-size: 36rpx; }
+.icon-xxl { font-size: 48rpx; }
+
+/* 功能图标 */
+.icon-home::before { content: "🏠"; }
+.icon-schedule::before { content: "📅"; }
+.icon-grade::before { content: "📊"; }
+.icon-exam::before { content: "📝"; }
+.icon-course::before { content: "📚"; }
+.icon-notification::before { content: "🔔"; }
+.icon-profile::before { content: "👤"; }
+.icon-export::before { content: "📤"; }
+.icon-classroom::before { content: "🏫"; }
+.icon-settings::before { content: "⚙️"; }
+
+/* 操作图标 */
+.icon-refresh::before { content: "↻"; }
+.icon-search::before { content: "🔍"; }
+.icon-filter::before { content: "📋"; }
+.icon-arrow-right::before { content: "→"; }
+.icon-arrow-left::before { content: "←"; }
+.icon-arrow-up::before { content: "↑"; }
+.icon-arrow-down::before { content: "↓"; }
+.icon-chevron-right::before { content: "›"; }
+.icon-chevron-left::before { content: "‹"; }
+.icon-chevron-up::before { content: "ᐞ"; }
+.icon-chevron-down::before { content: "ᐯ"; }
+
+/* 状态图标 */
+.icon-success::before { content: "✓"; }
+.icon-error::before { content: "✗"; }
+.icon-warning::before { content: "⚠"; }
+.icon-info::before { content: "ℹ"; }
+.icon-loading::before { content: "⟳"; }
+
+/* 图标颜色主题 */
+.icon-primary { color: #007AFF; }
+.icon-secondary { color: #666666; }
+.icon-success { color: #4caf50; }
+.icon-warning { color: #ff9800; }
+.icon-error { color: #f44336; }
+.icon-muted { color: #adb5bd; }
+.icon-white { color: #ffffff; }
+
+/* 圆形图标背景 */
+.icon-circle {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8rpx;
+}
+
+.icon-circle.primary { background-color: #007AFF; color: #ffffff; }
+.icon-circle.secondary { background-color: #f8f9fa; color: #666666; }
+.icon-circle.success { background-color: #4caf50; color: #ffffff; }
+.icon-circle.warning { background-color: #ff9800; color: #ffffff; }
+.icon-circle.error { background-color: #f44336; color: #ffffff; }
+
+/* 渐变图标背景 */
+.icon-gradient {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  margin-right: 8rpx;
+}
+
+.icon-gradient.blue { background: linear-gradient(to bottom right, #007AFF, #5AC8FA); }
+.icon-gradient.green { background: linear-gradient(to bottom right, #4caf50, #8bc34a); }
+.icon-gradient.orange { background: linear-gradient(to bottom right, #ff9800, #ffb74d); }
+.icon-gradient.red { background: linear-gradient(to bottom right, #f44336, #ef5350); }
+.icon-gradient.purple { background: linear-gradient(to bottom right, #9c27b0, #ba68c8); }
+
+/* 动画效果 */
+.icon-spin {
+  animation: icon-spin 1s linear infinite;
+}
+
+.icon-pulse {
+  animation: icon-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes icon-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+/* 图标组合 */
+.icon-with-text {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.icon-badge {
+  position: relative;
+}
+
+.icon-badge::after {
+  content: attr(data-badge);
+  position: absolute;
+  top: -8rpx;
+  right: -8rpx;
+  background: #f44336;
+  color: #ffffff;
+  font-size: 18rpx;
+  line-height: 1;
+  padding: 4rpx 6rpx;
+  border-radius: 20rpx;
+  min-width: 16rpx;
+  text-align: center;
+}

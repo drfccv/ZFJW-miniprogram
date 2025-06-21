@@ -1,0 +1,253 @@
+/**app.wxss - 全局样式 - 简约白色扁平化风格**/
+
+/* ===== 设计规范 ===== */
+/* 圆角统一规范：
+ * --radius-xl: 20rpx (大卡片/主要容器)
+ * --radius-lg: 16rpx (中等组件/次要容器)  
+ * --radius-md: 12rpx (按钮/输入框)
+ * --radius-sm: 8rpx  (小元素/标签)
+ */
+
+/* ===== 引入样式库 ===== */
+@import './styles/icons.wxss';
+@import './styles/components.wxss';
+
+/* ===== 全局基础样式 ===== */
+page {
+  background-color: #f8f9fa;
+  color: #333333;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+/* 通用容器 */
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 页面容器 */
+.page-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #ffffff;
+  border-radius: 20rpx; /* 统一为大圆角 */
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  margin-bottom: 24rpx;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f1f3f4;
+}
+
+.card-body {
+  padding: 24rpx;
+}
+
+.card-footer {
+  padding: 24rpx;
+  border-top: 1rpx solid #f1f3f4;
+  background-color: #f8f9fa;
+}
+
+/* 按钮样式 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx; /* 统一为中等圆角 */
+  font-size: 28rpx;
+  font-weight: 500;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.btn-primary {
+  background-color: #007AFF;
+  color: #ffffff;
+}
+
+.btn-primary:active {
+  background-color: #0056CC;
+  transform: translateY(2rpx);
+}
+
+.btn-secondary {
+  background-color: #e9ecef;
+  color: #333333;
+}
+
+.btn-secondary:active {
+  background-color: #d6d8db;
+}
+
+.btn-success {
+  background-color: #4caf50;
+  color: #ffffff;
+}
+
+.btn-warning {
+  background-color: #ff9800;
+  color: #ffffff;
+}
+
+.btn-sm {
+  padding: 8rpx 16rpx;
+  font-size: 24rpx;
+}
+
+.btn-lg {
+  padding: 24rpx 30rpx;
+  font-size: 32rpx;
+}
+
+/* 输入框样式 */
+.input {
+  width: 100%;
+  padding: 16rpx;
+  border: 2rpx solid #dee2e6;
+  border-radius: 12rpx; /* 统一为中等圆角 */
+  font-size: 28rpx;
+  background-color: #ffffff;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: #007AFF;
+  outline: none;
+}
+
+.input-group {
+  margin-bottom: 24rpx;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 8rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #666666;
+}
+
+/* 文本样式 */
+.text-primary { color: #333333; }
+.text-secondary { color: #666666; }
+.text-muted { color: #adb5bd; }
+.text-white { color: #ffffff; }
+.text-success { color: #4caf50; }
+.text-warning { color: #ff9800; }
+.text-error { color: #f44336; }
+
+.text-xs { font-size: 20rpx; }
+.text-sm { font-size: 24rpx; }
+.text-md { font-size: 28rpx; }
+.text-lg { font-size: 32rpx; }
+.text-xl { font-size: 36rpx; }
+.text-xxl { font-size: 42rpx; }
+
+.font-weight-normal { font-weight: 400; }
+.font-weight-medium { font-weight: 500; }
+.font-weight-bold { font-weight: 600; }
+
+/* 布局样式 */
+.flex { display: flex; }
+.flex-column { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.flex-center { align-items: center; justify-content: center; }
+.flex-between { justify-content: space-between; }
+.flex-around { justify-content: space-around; }
+.flex-start { justify-content: flex-start; }
+.flex-end { justify-content: flex-end; }
+.align-center { align-items: center; }
+.align-start { align-items: flex-start; }
+.align-end { align-items: flex-end; }
+
+/* 间距样式 */
+.m-0 { margin: 0; }
+.m-xs { margin: 8rpx; }
+.m-sm { margin: 16rpx; }
+.m-md { margin: 24rpx; }
+.m-lg { margin: 32rpx; }
+.m-xl { margin: 48rpx; }
+
+.mt-xs { margin-top: 8rpx; }
+.mt-sm { margin-top: 16rpx; }
+.mt-md { margin-top: 24rpx; }
+.mt-lg { margin-top: 32rpx; }
+
+.mb-xs { margin-bottom: 8rpx; }
+.mb-sm { margin-bottom: 16rpx; }
+.mb-md { margin-bottom: 24rpx; }
+.mb-lg { margin-bottom: 32rpx; }
+
+.p-0 { padding: 0; }
+.p-xs { padding: 8rpx; }
+.p-sm { padding: 16rpx; }
+.p-md { padding: 24rpx; }
+.p-lg { padding: 32rpx; }
+
+/* 工具类 */
+.w-100 { width: 100%; }
+.h-100 { height: 100%; }
+.border-radius { border-radius: 12rpx; }
+.border-radius-large { border-radius: 20rpx; }
+.shadow-light { box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08); }
+.shadow-medium { box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.12); }
+.shadow-heavy { box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15); }
+
+/* 响应式工具 */
+.hidden { display: none; }
+.visible { display: block; }
+
+/* 动画 */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 微信小程序组件样式重置 ===== */
+/* 重置微信小程序原生button组件，确保圆角统一 */
+button {
+  border-radius: 12rpx !important; /* 统一按钮圆角，防止椭圆形 */
+  font-size: 28rpx;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+/* 重置button的伪元素边框 */
+button::after {
+  border-radius: 12rpx !important;
+}
+
+/* 确保button内容不会溢出圆角 */
+button[type="primary"] {
+  border-radius: 12rpx !important;
+}
+
+button[type="default"] {
+  border-radius: 12rpx !important;
+}
+
+button[type="warn"] {
+  border-radius: 12rpx !important;
+}

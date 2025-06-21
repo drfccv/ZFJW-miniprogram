@@ -1,0 +1,169 @@
+<!--我的页面-->
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card" wx:if="{{userInfo}}">
+    <view class="user-avatar">
+      <text class="avatar-text">{{userInfo.name ? userInfo.name.charAt(0) : '学'}}</text>
+    </view>    <view class="user-info">
+      <text class="user-name">{{userInfo.name || '未获取到姓名'}}</text>
+      <text class="user-details">学号：{{userInfo.sid || '未获取到学号'}}</text>
+      <text class="user-details" wx:if="{{userInfo.className}}">班级：{{userInfo.className}}</text>
+      <text class="user-details" wx:if="{{userInfo.major}}">专业：{{userInfo.major}}</text>
+    </view>
+  </view>
+  
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <text class="section-title">功能菜单</text>
+    <view class="menu-grid">
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/grade/grade">
+        <view class="menu-icon grade-icon">📊</view>
+        <text class="menu-text">成绩查询</text>
+      </view>
+      
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/exam/exam">
+        <view class="menu-icon exam-icon">📝</view>
+        <text class="menu-text">考试安排</text>
+      </view>
+      
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/course/course">
+        <view class="menu-icon course-icon">📚</view>
+        <text class="menu-text">选课管理</text>
+      </view>
+        <view class="menu-item" bindtap="navigateTo" data-url="/pages/notification/notification">
+        <view class="menu-icon notification-icon">📢</view>
+        <text class="menu-text">通知公告</text>
+      </view>
+      
+      <view class="menu-item menu-item-disabled" bindtap="showComingSoon" data-feature="PDF导出">
+        <view class="menu-icon export-icon">📄</view>
+        <text class="menu-text">PDF导出</text>
+        <text class="menu-status">开发中</text>
+      </view>
+      
+      <view class="menu-item menu-item-disabled" bindtap="showComingSoon" data-feature="空教室查询">
+        <view class="menu-icon classroom-icon">🏢</view>
+        <text class="menu-text">空教室</text>
+        <text class="menu-status">开发中</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 系统设置 -->
+  <view class="settings-section">
+    <text class="section-title">系统设置</text>
+      <!-- 课表设置 -->
+    <view class="setting-item" bindtap="navigateToScheduleSettings">
+      <view class="setting-content">
+        <text class="setting-title">课表设置</text>
+        <text class="setting-desc">学年学期及显示设置</text>
+      </view>
+      <text class="setting-arrow">〉</text>
+    </view>
+
+    <!-- 默认启动页面 -->
+    <view class="setting-item" bindtap="showDefaultPageDialog">
+      <view class="setting-content">
+        <text class="setting-title">默认启动页面</text>
+        <text class="setting-desc">{{defaultPageName}}</text>
+      </view>
+      <text class="setting-arrow">〉</text>
+    </view>
+
+    <!-- 后端API地址设置 -->
+    <view class="setting-item" bindtap="showApiUrlDialog">
+      <view class="setting-content">
+        <text class="setting-title">后端API地址</text>
+        <text class="setting-desc">{{apiBaseUrl || '未设置'}}</text>
+      </view>
+      <text class="setting-arrow">〉</text>
+    </view>
+
+    <!-- 刷新数据 -->
+    <view class="setting-item" bindtap="refreshData">
+      <view class="setting-content">
+        <text class="setting-title">刷新数据</text>
+        <text class="setting-desc">重新获取最新数据</text>
+      </view>
+      <text class="setting-arrow">🔄</text>
+    </view>
+
+    <!-- 清除缓存 -->
+    <view class="setting-item" bindtap="clearCache">
+      <view class="setting-content">
+        <text class="setting-title">清除缓存</text>
+        <text class="setting-desc">清除所有本地缓存数据</text>
+      </view>
+      <text class="setting-arrow">🗑️</text>
+    </view>
+  </view>
+
+  <!-- 其他功能 -->
+  <view class="other-section">
+    <text class="section-title">其他</text>
+      <view class="setting-item" bindtap="showAbout">
+      <view class="setting-content">
+        <text class="setting-title">关于应用</text>
+        <text class="setting-desc">版本信息、开源说明、隐私声明</text>
+      </view>
+      <text class="setting-arrow">〉</text>
+    </view><view class="setting-item" bindtap="logout">
+      <view class="setting-content">
+        <text class="setting-title logout-text">退出登录</text>
+      </view>
+    </view>  </view>
+</view>
+
+<!-- API地址设置对话框 -->
+<view class="modal-overlay" wx:if="{{showApiUrlDialog}}" bindtap="hideApiUrlDialog">
+  <view class="modal-content" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">设置后端API地址</text>
+    </view>
+    <view class="modal-body">
+      <input 
+        class="url-input" 
+        placeholder="请输入后端API地址" 
+        value="{{inputApiUrl}}"
+        bindinput="onApiUrlInput"
+        focus="{{showApiUrlDialog}}"
+      />
+      <text class="url-tip">示例：http://localhost:5000</text>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="hideApiUrlDialog">取消</button>
+      <button class="modal-btn confirm" bindtap="saveApiUrl">确定</button>
+    </view>
+  </view>
+</view>
+
+<!-- 默认启动页面选择对话框 -->
+<view class="modal-overlay" wx:if="{{showDefaultPageDialog}}" bindtap="hideDefaultPageDialog">
+  <view class="modal-content" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">选择默认启动页面</text>
+    </view>
+    <view class="modal-body">
+      <view class="page-option-list">
+        <view 
+          class="page-option {{item.key === selectedDefaultPage ? 'selected' : ''}}"
+          wx:for="{{defaultPageOptions}}"
+          wx:key="key"
+          bindtap="selectDefaultPage"
+          data-page="{{item.key}}"
+        >
+          <view class="page-option-content">
+            <text class="page-option-icon">{{item.icon}}</text>
+            <text class="page-option-name">{{item.name}}</text>
+            <text class="page-option-desc">{{item.desc}}</text>
+          </view>
+          <view class="page-option-check" wx:if="{{item.key === selectedDefaultPage}}">✓</view>
+        </view>
+      </view>
+    </view>
+    <view class="modal-actions">
+      <button class="modal-btn cancel" bindtap="hideDefaultPageDialog">取消</button>
+      <button class="modal-btn confirm" bindtap="saveDefaultPage">确定</button>
+    </view>
+  </view>
+</view>

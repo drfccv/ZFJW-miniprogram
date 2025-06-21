@@ -1,0 +1,86 @@
+<!--考试安排页面-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">考试安排</text>
+    <text class="update-time" wx:if="{{lastUpdateTime}}">{{lastUpdateTime}}</text>
+  </view>
+
+  <!-- 学期选择器 -->
+  <view class="term-selector">
+    <view class="selector-item" bindtap="showYearPicker">
+      <text class="selector-label">学年:</text>
+      <text class="selector-value">{{currentYear}}</text>
+      <text class="selector-arrow">▼</text>
+    </view>
+    <view class="selector-item" bindtap="showTermPicker">
+      <text class="selector-label">学期:</text>
+      <text class="selector-value">{{currentTerm === 1 ? '第一学期' : '第二学期'}}</text>
+      <text class="selector-arrow">▼</text>
+    </view>
+    <view class="refresh-btn" bindtap="refreshExams">
+      <text class="refresh-icon">🔄</text>
+    </view>
+  </view>
+
+  <!-- 考试列表 -->
+  <view class="exam-list" wx:if="{{examList.length > 0}}">
+    <view 
+      class="exam-item"
+      wx:for="{{examList}}" 
+      wx:key="index"
+      bindtap="showExamDetail"
+      data-index="{{index}}"
+    >
+      <view class="exam-time">
+        <text class="exam-date">{{item.examDate}}</text>
+        <text class="exam-time-range">{{item.examTime}}</text>
+      </view>
+      <view class="exam-info">
+        <text class="course-name">{{item.courseName}}</text>
+        <text class="exam-location">考试地点：{{item.location || '待定'}}</text>
+        <text class="exam-type" wx:if="{{item.examType}}">考试类型：{{item.examType}}</text>
+        <text class="seat-number" wx:if="{{item.seatNumber}}">座位号：{{item.seatNumber}}</text>
+      </view>
+      <view class="exam-status">
+        <text class="status-badge {{getStatusClass(item.status)}}">{{getStatusText(item.status)}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{examList.length === 0 && !loading}}">
+    <text class="empty-icon">📝</text>
+    <text class="empty-text">暂无考试安排</text>
+    <button class="reload-btn" bindtap="loadExams">重新加载</button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 学年选择器 -->
+  <picker 
+    wx:if="{{showYearSelector}}"
+    mode="selector"
+    range="{{yearRange}}"
+    value="{{yearIndex}}"
+    bindchange="onYearChange"
+    bindcancel="hideYearPicker"
+  >
+    <view></view>
+  </picker>
+
+  <!-- 学期选择器 -->
+  <picker 
+    wx:if="{{showTermSelector}}"
+    mode="selector"
+    range="{{['第一学期', '第二学期']}}"
+    value="{{termIndex}}"
+    bindchange="onTermChange"
+    bindcancel="hideTermPicker"
+  >
+    <view></view>
+  </picker>
+</view>

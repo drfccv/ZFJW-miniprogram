@@ -1,0 +1,149 @@
+/* 通知公告页面样式 */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 20rpx;
+}
+
+/* 页面标题 */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  padding: 0 10rpx;
+}
+
+.page-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.update-time {
+  font-size: 22rpx;
+  color: #999999;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+/* 通知列表 */
+.notification-list {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.3s;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:active {
+  background: #f8f9fa;
+}
+
+.notification-content {
+  flex: 1;
+  margin-right: 20rpx;
+}
+
+.notification-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notification-summary {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4;
+}
+
+.notification-meta {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.notification-date {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.notification-author {
+  font-size: 20rpx;
+  color: #007AFF;
+  background: #e3f2fd;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+}
+
+.notification-arrow {
+  color: #ccc;
+  font-size: 24rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+.reload-btn {
+  background: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 20rpx 40rpx;
+  font-size: 26rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}

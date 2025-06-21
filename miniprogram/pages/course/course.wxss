@@ -1,0 +1,603 @@
+/* 选课管理页面样式 - 简约白色扁平化风格 */
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+/* 选项卡 */
+.tab-bar {
+  background: #ffffff;
+  display: flex;
+  border-bottom: 1rpx solid #f1f3f4;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 30rpx 20rpx;
+  font-size: 28rpx;
+  color: #666666;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.tab-item.active {
+  color: #007AFF;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background: #007AFF;
+  border-radius: 8rpx;
+}
+
+/* 学期选择器 */
+.term-selector {
+  background: #ffffff;
+  padding: 24rpx 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1rpx solid #f1f3f4;
+}
+
+.selector-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  transition: all 0.3s ease;
+}
+
+.selector-item:active {
+  background: #007AFF;
+  color: #ffffff;
+}
+
+.selector-label {
+  color: #666666;
+  margin-right: 10rpx;
+}
+
+.selector-value {
+  color: #333333;
+  font-weight: 500;
+  margin-right: 10rpx;
+}
+
+.selector-arrow {
+  color: #999999;
+  font-size: 20rpx;
+}
+
+.refresh-btn {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #007AFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.2);
+}
+
+.refresh-btn:active {
+  transform: scale(0.9);
+}
+
+.refresh-icon {
+  color: #ffffff;
+  font-size: 28rpx;
+}
+
+/* 板块选择器 */
+.block-selector {
+  background: #ffffff;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f1f3f4;
+}
+
+.block-scroll {
+  white-space: nowrap;
+}
+
+.block-list {
+  display: inline-flex;
+  padding: 0 30rpx;
+}
+
+.block-item {
+  padding: 16rpx 24rpx;
+  margin-right: 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  background: #f8f9fa;
+  color: #666;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.block-item.active {
+  background: #007AFF;
+  color: white;
+}
+
+/* 课程列表 */
+.course-list {
+  padding: 20rpx;
+}
+
+.course-item {
+  background: white;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* 课程主要信息区域 */
+.course-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+  min-height: 80rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.course-info {
+  flex: 1;
+  margin-right: 20rpx;
+  max-width: calc(100% - 140rpx);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.course-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.course-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: calc(100% - 40rpx);
+  min-width: 0;
+}
+
+.expand-icon {
+  font-size: 18rpx;
+  color: #007AFF;
+  margin-left: 12rpx;
+  flex-shrink: 0;  transition: transform 0.3s ease;
+}
+
+.course-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  max-width: 100%;
+  overflow: hidden;
+  justify-content: flex-start;
+  min-height: 32rpx; /* 确保最小高度与标签一致 */
+}
+
+/* 统一的课程信息标签样式 */
+.course-info-tag {
+  font-size: 20rpx;
+  padding: 0 12rpx;
+  margin: 0;
+  border-radius: 12rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  height: 32rpx;
+  font-weight: 500;
+  white-space: nowrap;
+  text-align: center;
+  box-sizing: border-box;
+  max-width: 120rpx;
+  min-width: 60rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+  word-break: keep-all;
+  vertical-align: baseline; /* 改为baseline对齐 */
+  position: relative;
+}
+
+/* 确保内部文字完全居中 */
+.course-info-tag::before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.course-credit {
+  color: #007AFF;
+  background: #e3f2fd;
+  border: 1rpx solid #bbdefb;
+  max-width: 80rpx;
+}
+
+.course-available {
+  color: #ff9800;
+  background: #fff3e0;
+  border: 1rpx solid #ffcc02;
+  max-width: 100rpx;
+}
+
+.course-teacher {
+  color: #666;
+  background: #f5f5f5;
+  border: 1rpx solid #e0e0e0;
+  max-width: 120rpx;
+}
+
+.course-class-count {
+  color: #4caf50;
+  background: #e8f5e8;
+  border: 1rpx solid #81c784;
+  max-width: 100rpx;
+}
+
+/* 已满状态的特殊样式 */
+.course-available.full {
+  color: #f44336;
+  background: #ffebee;
+  border: 1rpx solid #ef5350;
+}
+
+.course-actions {
+  flex-shrink: 0;
+  width: 100rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn {
+  font-size: 22rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 16rpx;
+  border: none;
+  font-weight: 500;
+  width: 100%;
+  max-width: 100rpx;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.select-btn {
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: white;
+  box-shadow: 0 2rpx 8rpx rgba(76, 175, 80, 0.3);
+}
+
+.select-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 1rpx 4rpx rgba(76, 175, 80, 0.3);
+}
+
+/* 教学班列表容器 */
+.class-list-container {
+  background: #f8f9fa;
+  border-top: 1rpx solid #e9ecef;
+}
+
+.class-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 24rpx;
+  background: #f1f3f4;
+  border-bottom: 1rpx solid #e0e0e0;
+}
+
+.class-list-title {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #666;
+}
+
+.class-count {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 教学班列表样式 */
+.class-list {
+  padding: 16rpx;
+}.class-item {
+  background: white;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-left: 3rpx solid #007AFF;
+  box-shadow: 0 1rpx 6rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.class-item:hover {
+  transform: translateY(-1rpx);
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.08);
+}
+
+.class-info {
+  flex: 1;
+  margin-right: 15rpx;
+  max-width: calc(100% - 100rpx);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.class-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.class-name {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60%;
+}
+
+.class-status {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  max-width: 100%;
+  overflow: hidden;
+  height: 32rpx; /* 与标签高度一致 */
+}
+
+.class-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.class-teacher, .class-time, .class-location {
+  font-size: 18rpx;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.class-teacher {
+  color: #007AFF;
+}
+
+.class-time {
+  color: #ff9800;
+}
+
+.class-location {
+  color: #4caf50;
+}
+
+.class-actions {
+  flex-shrink: 0;
+  width: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.class-select-btn {
+  font-size: 18rpx;
+  padding: 8rpx 12rpx;
+  border-radius: 12rpx;
+  border: none;
+  font-weight: 500;
+  width: 100%;
+  max-width: 80rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  color: white;
+  box-shadow: 0 1rpx 4rpx rgba(76, 175, 80, 0.3);
+  transition: all 0.3s ease;
+}
+
+.class-select-btn:active {
+  transform: scale(0.95);
+}
+
+.class-select-btn.disabled {
+  background: #e0e0e0;
+  color: #999;
+  box-shadow: none;
+}
+
+/* 空状态 */
+.class-empty {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+}
+
+.class-empty .empty-text {
+  font-size: 22rpx;
+}
+
+.course-details {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.course-teacher {
+  color: #666;
+  background: #f5f5f5;
+  border: 1rpx solid #e0e0e0;
+}
+
+.course-time, .course-location, .course-capacity {
+  font-size: 20rpx;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.course-capacity {
+  color: #ff9800;
+}
+
+.drop-btn {
+  background: linear-gradient(135deg, #f44336, #ef5350);
+  color: white;
+  box-shadow: 0 2rpx 8rpx rgba(244, 67, 54, 0.3);
+}
+
+.drop-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 1rpx 4rpx rgba(244, 67, 54, 0.3);
+}
+
+/* 已选课程特殊样式 */
+.selected-course {
+  border-left: 4rpx solid #4caf50;
+}
+
+.selected-course .course-main {
+  border-bottom: none;
+}
+
+/* 可选课程特殊样式 */
+.available-course {
+  border-left: 4rpx solid #2196f3;
+}
+
+/* 课程额外信息 */
+.course-extra-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  margin-top: 8rpx;
+}
+
+.course-extra-info .course-time,
+.course-extra-info .course-location {
+  font-size: 18rpx;
+  color: #666;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+.reload-btn {
+  background: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 20rpx 40rpx;
+  font-size: 26rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 小屏幕适配 */
+@media screen and (max-width: 600rpx) {
+  .course-info-tag {
+    font-size: 18rpx;
+    padding: 0 8rpx;
+    max-width: 100rpx;
+    line-height: 1;
+    height: 28rpx;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: baseline; /* 改为baseline对齐 */
+  }
+  
+  .course-credit {
+    max-width: 70rpx;
+  }
+  
+  .course-available {
+    max-width: 90rpx;
+  }
+  
+  .course-teacher {
+    max-width: 100rpx;
+  }
+  
+  .course-class-count {
+    max-width: 90rpx;
+  }
+
+  .class-status {
+    height: 28rpx;
+  }
+
+  .course-details {
+    min-height: 28rpx;
+  }
+}

@@ -1,0 +1,101 @@
+<!--登录页面-->
+<view class="login-container">
+  <view class="header">
+    <text class="title">正方教务系统</text>
+    <text class="subtitle">学生端登录</text>
+  </view>  <!-- 重要说明 -->
+  <view class="notice-section">
+    <view class="notice-title">📘 使用说明</view>
+    <view class="notice-content">
+      <text class="notice-text">请选择您的学校，系统将自动配置教务系统</text>
+      <text class="notice-text">✅ 支持学校：从列表中选择</text>
+      <text class="notice-text">💡 系统会自动处理教务系统连接</text>
+    </view>
+  </view>
+
+  <form class="login-form" bindsubmit="handleLogin">    <!-- 学校选择器 -->
+    <view class="form-group">
+      <picker 
+        class="school-picker"
+        mode="selector" 
+        range="{{schoolNames}}" 
+        value="{{schoolIndex}}"
+        bindchange="onSchoolChange"
+        disabled="{{loadingSchools}}"
+      >
+        <view class="picker-display">
+          <view class="picker-text">
+            {{loadingSchools ? '加载中...' : (schoolNames[schoolIndex] || '请选择学校')}}
+          </view>
+        </view>
+        <view class="picker-arrow" wx:if="{{!loadingSchools}}">▼</view>
+        <view class="loading-icon" wx:if="{{loadingSchools}}">⏳</view>
+      </picker>
+    </view>
+    
+    <view class="form-group">
+      <input 
+        class="input" 
+        name="sid" 
+        placeholder="请输入学号" 
+        value="{{formData.sid}}"
+        bindinput="handleInput"
+        data-field="sid"
+      />
+    </view>    <view class="form-group">
+      <view class="password-container">
+        <input 
+          class="input" 
+          name="password" 
+          placeholder="请输入密码" 
+          password="{{!showPassword}}"
+          value="{{formData.password}}"
+          bindinput="handleInput"
+          data-field="password"
+        />
+        <view class="password-toggle" bindtap="togglePassword">
+          <text class="icon">{{showPassword ? '👁️' : '👁️‍🗨️'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 记住密码选项 -->
+    <view class="form-group checkbox-group">
+      <view class="checkbox-item" bindtap="toggleRememberPassword">
+        <view class="checkbox {{rememberPassword ? 'checked' : ''}}">
+          <text class="checkbox-icon">{{rememberPassword ? '✓' : ''}}</text>
+        </view>
+        <text class="checkbox-label">记住密码</text>
+      </view>
+    </view>
+
+    <!-- 验证码输入框，需要时显示 -->
+    <view class="form-group" wx:if="{{showCaptcha}}">
+      <view class="captcha-container">
+        <input 
+          class="input captcha-input" 
+          name="kaptcha" 
+          placeholder="请输入验证码" 
+          value="{{formData.kaptcha}}"
+          bindinput="handleInput"
+          data-field="kaptcha"
+        />        <image 
+          class="captcha-image" 
+          src="{{captchaImage}}"
+          mode="aspectFit"
+          show-menu-by-longpress="{{false}}"
+          bindtap="refreshCaptcha"
+          bindload="onCaptchaLoad"
+          binderror="onCaptchaError"
+        />
+      </view>
+    </view>
+
+    <button 
+      class="login-btn {{loading ? 'loading' : ''}}" 
+      form-type="submit"
+      disabled="{{loading}}"
+    >
+      {{loading ? '登录中...' : '登录'}}    </button>
+  </form>
+</view>

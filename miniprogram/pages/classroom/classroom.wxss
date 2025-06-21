@@ -1,0 +1,265 @@
+/* 空教室查询页面样式 */
+.container {
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 24rpx;
+}
+
+/* 查询条件 */
+.query-section {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.condition-item {
+  margin-bottom: 32rpx;
+}
+
+.condition-item:last-child {
+  margin-bottom: 0;
+}
+
+.condition-label {
+  font-size: 28rpx;
+  color: #2c3e50;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.picker-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 16rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+  color: #2c3e50;
+}
+
+.picker-input:active {
+  border-color: #3498db;
+  background-color: #ecf0f1;
+}
+
+.picker-arrow {
+  color: #95a5a6;
+  font-size: 24rpx;
+}
+
+/* 时间段选择 */
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.time-slot {
+  padding: 20rpx 32rpx;
+  background-color: #f8f9fa;
+  border-radius: 50%;
+  font-size: 26rpx;
+  color: #2c3e50;
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+  flex: 1;
+  text-align: center;
+  min-width: 120rpx;
+}
+
+.time-slot.active {
+  background-color: #3498db;
+  color: #ffffff;
+  border-color: #2980b9;
+}
+
+.time-slot:not(.active):hover {
+  background-color: #ecf0f1;
+  border-color: #bdc3c7;
+}
+
+/* 查询按钮 */
+.query-btn {
+  width: 100%;
+  padding: 28rpx;
+  background: linear-gradient(to bottom right, #3498db, #2980b9);
+  color: #ffffff;
+  border: none;
+  border-radius: 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-top: 32rpx;
+  box-shadow: 0 6rpx 20rpx rgba(52, 152, 219, 0.3);
+  transition: all 0.3s ease;
+}
+
+.query-btn:disabled {
+  background: #bdc3c7;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.query-btn:not(:disabled):active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 15rpx rgba(52, 152, 219, 0.4);
+}
+
+/* 查询结果 */
+.result-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.classroom-list {
+  margin-top: 20rpx;
+}
+
+.building-group {
+  margin-bottom: 30rpx;
+}
+
+.building-group:last-child {
+  margin-bottom: 0;
+}
+
+.building-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+  border-bottom: 2rpx solid #eee;
+  margin-bottom: 20rpx;
+}
+
+.building-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.building-count {
+  font-size: 24rpx;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 8rpx 16rpx;
+  border-radius: 12rpx;
+}
+
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200rpx, 1fr));
+  gap: 15rpx;
+}
+
+.room-item {
+  background-color: #f8f9fa;
+  border: 2rpx solid #e9ecef;  border-radius: 12rpx;
+  padding: 20rpx;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.room-item:active {
+  background-color: #e9ecef;
+  transform: scale(0.95);
+}
+
+.room-number {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.room-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.room-capacity {
+  font-size: 22rpx;
+  color: #666;
+}
+
+.room-type {
+  font-size: 20rpx;
+  color: #999;
+  background-color: #e9ecef;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;  background: white;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 使用说明 */
+.help-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+}
+
+.help-content {
+  margin-top: 20rpx;
+}
+
+.help-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.help-item:last-child {
+  border-bottom: none;
+}
+
+.help-icon {
+  font-size: 36rpx;
+  margin-right: 20rpx;
+  width: 50rpx;
+  text-align: center;
+}
+
+.help-text {
+  font-size: 28rpx;
+  color: #666;
+}

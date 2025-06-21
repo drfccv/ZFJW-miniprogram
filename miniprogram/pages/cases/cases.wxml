@@ -1,0 +1,32 @@
+<!--案例展示页面-->
+<view class="container">
+  <view class="case-section">
+    <view class="section-title">iOS应用案例</view>
+    <view class="case-list">
+      <view class="case-item" wx:for="{{iosCaseData}}" wx:key="name" data-url="{{item.url}}">
+        <image class="case-icon" src="{{item.icon}}" mode="aspectFill"/>
+        <view class="case-info">
+          <view class="case-name">{{item.name}}</view>
+          <view class="case-details">{{item.cost}} {{item.dev}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="case-section">
+    <view class="section-title">Android应用案例</view>
+    <view class="case-list">
+      <view class="case-item" wx:for="{{androidCaseData}}" wx:key="name" data-url="{{item.url}}">
+        <image class="case-icon" src="{{item.icon}}" mode="aspectFill"/>
+        <view class="case-info">
+          <view class="case-name">{{item.name}}</view>
+          <view class="case-details">{{item.cost}} {{item.dev}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="join-section">
+    <button class="join-btn" bindtap="toJoinGroup">加群了解更多</button>
+  </view>
+</view>

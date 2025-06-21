@@ -1,0 +1,124 @@
+<!--课表页面-->
+<view class="container">
+  <!-- 当前周次显示 -->
+  <view class="current-week-display">
+    <text class="current-week-text">第{{currentWeek}}周课表</text>
+    <text class="swipe-hint">左右滑动切换周次</text>
+  </view>
+
+  <!-- 课表表格 -->
+  <view class="schedule-wrapper" 
+        bindtouchstart="onTouchStart" 
+        bindtouchend="onTouchEnd">
+    <scroll-view class="schedule-container" scroll-y wx:if="{{scheduleData.length > 0}}">    <!-- 表头 -->
+    <view class="schedule-header">
+      <!-- 时间列头 -->
+      <view class="time-column-header">
+        <text class="time-header-text">节次</text>
+      </view>
+      <!-- 日期列头 -->
+      <view class="day-header" wx:for="{{dayHeaders}}" wx:key="index">
+        <text class="day-name">{{item.name}}</text>
+        <text class="day-date">{{item.date}}</text>
+      </view>
+    </view><!-- 课表内容 -->
+    <view class="schedule-body">      <view 
+        class="schedule-row" 
+        style="height: max(calc((100vh - 300rpx) / {{maxPeriods}}), 80rpx);"
+        wx:for="{{mergedScheduleGrid}}" 
+        wx:key="index" 
+        wx:for-item="timeSlot" 
+        wx:for-index="periodIndex"
+      ><!-- 时间列 -->
+        <view class="time-column">
+          <text class="time-period">{{periodIndex + 1}}</text>
+        </view>
+        
+        <!-- 课程单元格 -->
+        <view class="day-column" wx:for="{{dayHeaders}}" wx:key="dayIndex" wx:for-item="day" wx:for-index="dayIndex"><!-- 有课程且是第一节时显示完整课程信息 -->          <view 
+            wx:if="{{timeSlot[dayIndex] && timeSlot[dayIndex].isFirst}}"
+            class="course-cell has-course {{timeSlot[dayIndex].isMerged ? 'merged-course' : ''}}"
+            style="{{timeSlot[dayIndex].isMerged ? 'height: calc(' + timeSlot[dayIndex].periods + ' * max(((100vh - 300rpx) / ' + maxPeriods + '), 80rpx));' : ''}}"
+            bindtap="showCourseDetail"
+            data-course="{{timeSlot[dayIndex]}}"
+          >
+            <view class="course-content">
+              <text class="course-name">{{timeSlot[dayIndex].title}}</text>
+              <text class="course-location">{{timeSlot[dayIndex].place}}</text>
+              <text class="course-teacher">{{timeSlot[dayIndex].teacher}}</text>
+            </view>
+          </view>
+          
+          <!-- 占位格子：用于连堂课的后续节次，保持结构但透明 -->
+          <view 
+            wx:elif="{{timeSlot[dayIndex] && timeSlot[dayIndex].isPlaceholder}}"
+            class="course-cell placeholder-cell"
+          >
+          </view>
+          
+          <!-- 空格子 -->
+          <view 
+            wx:else
+            class="course-cell empty-cell"
+          >
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{scheduleData.length === 0 && !loading}}">
+    <text class="empty-icon">📅</text>    <text class="empty-text">暂无课表数据</text>
+    <button class="reload-btn" bindtap="loadSchedule">重新加载</button>
+  </view>
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  </view> <!-- 结束 schedule-wrapper -->
+</view>
+
+<!-- 课程详情弹窗 -->
+<view class="course-detail-modal" wx:if="{{showCourseDetailModal && courseDetail}}" bindtap="hideCourseDetail">
+  <view class="course-detail-content" catchtap="">
+    <view class="course-detail-header">
+      <text class="course-detail-title">课程详情</text>
+      <text class="course-detail-close" bindtap="hideCourseDetail">✕</text>
+    </view>
+    <view class="course-detail-body">
+      <view class="course-detail-item">
+        <text class="detail-label">课程名称：</text>
+        <text class="detail-value">{{courseDetail.title}}</text>
+      </view>
+      <view class="course-detail-item">
+        <text class="detail-label">授课教师：</text>
+        <text class="detail-value">{{courseDetail.teacher}}</text>
+      </view>
+      <view class="course-detail-item">
+        <text class="detail-label">上课地点：</text>
+        <text class="detail-value">{{courseDetail.place}}</text>
+      </view>
+      <view class="course-detail-item">
+        <text class="detail-label">上课时间：</text>
+        <text class="detail-value">{{courseDetail.time}}</text>
+      </view>
+      <view class="course-detail-item">
+        <text class="detail-label">上课周次：</text>
+        <text class="detail-value">{{courseDetail.weeks}}</text>
+      </view>
+      <view class="course-detail-item">
+        <text class="detail-label">学分：</text>
+        <text class="detail-value">{{courseDetail.credit}}</text>
+      </view>
+      <view class="course-detail-item">
+        <text class="detail-label">总学时：</text>
+        <text class="detail-value">{{courseDetail.total_hours}}</text>
+      </view>
+    </view>
+    <view class="course-detail-footer">
+      <button class="detail-confirm-btn" bindtap="hideCourseDetail">确定</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,239 @@
+/* export.wxss */
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 导出类型 */
+.export-types {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.type-list {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.type-item {
+  display: flex;
+  align-items: center;
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #eee;
+  transition: all 0.3s;
+}
+
+.type-item:last-child {
+  border-bottom: none;
+}
+
+.type-item.active {
+  background-color: #e8f4ff;
+  border-left: 6rpx solid #007AFF;
+}
+
+.type-icon {
+  font-size: 40rpx;
+  width: 60rpx;
+  text-align: center;
+  margin-right: 20rpx;
+}
+
+.type-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.type-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 学期选择 */
+.semester-selector {
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.selector-row {
+  display: flex;
+  gap: 20rpx;
+}
+
+.selector-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 20rpx;  background-color: #f8f8f8;
+  border-radius: 12rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.selector-item:active {
+  border-color: #007AFF;
+}
+
+.selector-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.selector-value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  margin-left: 10rpx;
+}
+
+.selector-arrow {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 导出选项 */
+.export-options {
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.option-list {
+  background: white;
+}
+
+.option-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+.option-item:last-child {
+  border-bottom: none;
+}
+
+.option-label {
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 导出按钮 */
+.export-action {
+  margin-bottom: 30rpx;
+}
+
+.export-btn {
+  width: 100%;
+  height: 80rpx;
+  background: linear-gradient(to bottom right, #007AFF, #5AC8FA);
+  color: white;  border: none;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.export-btn[disabled] {
+  background: #ccc;
+}
+
+/* 历史记录 */
+.export-history {
+  background: white;
+  border-radius: 20rpx;
+  padding: 20rpx;
+}
+
+.history-list {
+  background: white;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-info {
+  flex: 1;
+}
+
+.history-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.history-time {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.history-btn {
+  background-color: #007AFF;
+  color: white;
+  border: none;
+}
+
+/* 选择器样式 */
+.picker-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 500rpx;
+  background: white;
+  z-index: 1000;
+  transform: translateY(100%);
+  transition: transform 0.3s;
+}
+
+.picker-overlay.show {
+  transform: translateY(0);
+}
+
+.picker-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80rpx;
+  font-size: 32rpx;
+}
+
+.picker-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+
+.picker-mask.show {
+  opacity: 1;
+  visibility: visible;
+}

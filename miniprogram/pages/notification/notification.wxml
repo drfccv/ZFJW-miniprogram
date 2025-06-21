@@ -1,0 +1,39 @@
+<!--通知公告页面-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">最新通知</text>
+    <text class="update-time" wx:if="{{lastUpdateTime}}">{{lastUpdateTime}}</text>
+  </view>
+
+  <!-- 通知列表 -->
+  <view class="notification-list" wx:if="{{notificationList.length > 0}}">
+    <view 
+      class="notification-item"
+      wx:for="{{notificationList}}" 
+      wx:key="index"
+      bindtap="showNotificationDetail"
+      data-index="{{index}}"
+    >
+      <view class="notification-content">
+        <text class="notification-title">{{item.title}}</text>
+        <text class="notification-summary" wx:if="{{item.summary}}">{{item.summary}}</text>
+        <view class="notification-meta">
+          <text class="notification-date">{{item.publishDate}}</text>
+          <text class="notification-author" wx:if="{{item.author}}">{{item.author}}</text>
+        </view>
+      </view>
+      <view class="notification-arrow">〉</view>
+    </view>
+  </view><!-- 空状态 -->
+  <view class="empty-state" wx:if="{{notificationList.length === 0 && !loading}}">
+    <text class="empty-icon">📢</text>
+    <text class="empty-text">暂无通知公告</text>
+    <button class="reload-btn" bindtap="loadNotifications">重新加载</button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+</view>

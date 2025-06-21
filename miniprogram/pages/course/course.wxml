@@ -1,0 +1,201 @@
+<!--选课管理页面-->
+<view class="container">
+  <!-- 选项卡 -->
+  <view class="tab-bar">
+    <view 
+      class="tab-item {{currentTab === 0 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="0"
+    >
+      已选课程
+    </view>
+    <view 
+      class="tab-item {{currentTab === 1 ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="1"
+    >
+      可选课程
+    </view>
+  </view>  <!-- 学期选择器 -->
+  <view class="term-selector">
+    <picker 
+      mode="selector"
+      range="{{yearRange}}"
+      value="{{yearIndex}}"
+      bindchange="onYearChange"
+    >
+      <view class="selector-item">
+        <text class="selector-label">学年:</text>
+        <text class="selector-value">{{yearRange[yearIndex] || currentYear + '-' + (currentYear + 1)}}</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+    </picker>
+    
+    <picker 
+      mode="selector"
+      range="{{['第一学期', '第二学期']}}"
+      value="{{termIndex}}"
+      bindchange="onTermChange"
+    >
+      <view class="selector-item">
+        <text class="selector-label">学期:</text>
+        <text class="selector-value">{{currentTerm === 1 ? '第一学期' : '第二学期'}}</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+    </picker>
+    
+    <view class="refresh-btn" bindtap="refreshCourses">
+      <text class="refresh-icon">🔄</text>
+    </view>
+  </view>
+  <!-- 已选课程列表 -->
+  <view class="course-list" wx:if="{{currentTab === 0}}">
+    <view 
+      class="course-item selected-course"
+      wx:for="{{selectedCourses}}" 
+      wx:key="index"
+    >
+      <view class="course-main">
+        <view class="course-info">
+          <view class="course-header">
+            <text class="course-name">{{item.courseName}}</text>
+          </view>          <view class="course-details">
+            <text class="course-info-tag course-credit">{{item.credit}}学分</text>
+            <text class="course-info-tag course-teacher" wx:if="{{item.teacher && item.teacher.length <= 8}}">{{item.teacher}}</text>
+            <text class="course-info-tag course-teacher" wx:elif="{{item.teacher}}">{{item.teacher.substring(0, 6)}}...</text>
+          </view>
+          <view class="course-extra-info" wx:if="{{item.time || item.location}}">
+            <text class="course-time" wx:if="{{item.time}}">🕒 {{item.time}}</text>
+            <text class="course-location" wx:if="{{item.location}}">📍 {{item.location}}</text>
+          </view>
+        </view>
+        <view class="course-actions">
+          <button 
+            class="action-btn drop-btn"
+            bindtap="dropCourse"
+            data-course="{{item}}"
+            data-index="{{index}}"
+          >
+            退课
+          </button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 可选课程列表 -->
+  <view class="course-list" wx:if="{{currentTab === 1}}">
+    <!-- 板块选择器 -->
+    <view class="block-selector" wx:if="{{blockList.length > 0}}">
+      <scroll-view scroll-x class="block-scroll">
+        <view class="block-list">
+          <view 
+            class="block-item {{currentBlock === item.id ? 'active' : ''}}"
+            wx:for="{{blockList}}" 
+            wx:key="id"
+            bindtap="selectBlock"
+            data-block="{{item.id}}"
+          >
+            {{item.name}}
+          </view>
+        </view>
+      </scroll-view>
+    </view>    <!-- 可选课程 -->
+    <view 
+      class="course-item available-course"
+      wx:for="{{availableCourses}}" 
+      wx:key="index"
+    >
+      <!-- 课程基本信息 -->
+      <view class="course-main" bindtap="toggleCourseExpansion" data-index="{{index}}">
+        <view class="course-info">
+          <view class="course-header">
+            <text class="course-name">{{item.courseName}}</text>
+            <text class="expand-icon">{{item.isExpanded ? '▼' : '▶'}}</text>
+          </view>          <view class="course-details">
+            <text class="course-info-tag course-credit">{{item.credit}}学分</text>
+            <text class="course-info-tag course-available {{item.available <= 0 ? 'full' : ''}}" wx:if="{{item.available !== undefined}}">
+              {{item.available <= 0 ? '已满' : (item.available > 999 ? '999+' : '剩' + item.available)}}
+            </text>
+            <text class="course-info-tag course-class-count" wx:if="{{item.classCount > 0}}">
+              {{item.classCount > 99 ? '99+班' : item.classCount + '班'}}
+            </text>
+          </view>
+        </view>        <view class="course-actions">
+          <button 
+            class="action-btn select-btn"
+            bindtap="selectCourse"
+            data-course="{{item}}"
+            data-index="{{index}}"
+            catch:tap="onSelectCourseTap"
+          >
+            选课
+          </button>
+        </view>
+      </view>
+      
+      <!-- 教学班列表 - 向下展开 -->
+      <view class="class-list-container" wx:if="{{item.isExpanded}}">
+        <view class="class-list-header">
+          <text class="class-list-title">可选教学班</text>
+          <text class="class-count" wx:if="{{item.classes && item.classes.length > 0}}">
+            共{{item.classes.length}}个教学班
+          </text>
+        </view>
+        
+        <view class="class-list" wx:if="{{item.classes && item.classes.length > 0}}">
+          <view 
+            class="class-item"
+            wx:for="{{item.classes}}" 
+            wx:for-item="cls"
+            wx:for-index="classIndex"
+            wx:key="classId"
+          >
+            <view class="class-info">
+              <view class="class-header">
+                <text class="class-name">{{cls.className || '教学班' + (classIndex + 1)}}</text>                <view class="class-status">
+                  <text class="course-info-tag course-teacher">{{cls.selectedNumber}}/{{cls.capacity}}</text>
+                  <text class="course-info-tag course-available" wx:if="{{cls.available > 0}}">
+                    {{cls.available > 99 ? '99+' : '剩' + cls.available}}
+                  </text>
+                  <text class="course-info-tag course-available full" wx:else>已满</text>
+                </view>
+              </view>
+              <view class="class-details">
+                <text class="class-teacher" wx:if="{{cls.teacher}}">👨‍🏫 {{cls.teacher}}</text>
+                <text class="class-time" wx:if="{{cls.time && cls.time !== '--'}}">🕒 {{cls.time}}</text>
+                <text class="class-location" wx:if="{{cls.place && cls.place !== '--'}}">📍 {{cls.place}}</text>
+              </view>
+            </view>
+            <view class="class-actions">
+              <button 
+                class="action-btn class-select-btn {{cls.available <= 0 || !cls.optional ? 'disabled' : ''}}"
+                bindtap="selectCourseClass"
+                data-course-index="{{index}}"
+                data-class-index="{{classIndex}}"
+                disabled="{{!cls.optional || cls.available <= 0}}"
+              >
+                {{!cls.optional ? '不可选' : (cls.available <= 0 ? '已满' : '选课')}}
+              </button>
+            </view>
+          </view>
+        </view>
+        
+        <view class="class-empty" wx:else>
+          <text class="empty-text">暂无教学班信息</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{getCurrentList().length === 0 && !loading}}">
+    <text class="empty-icon">📚</text>
+    <text class="empty-text">{{currentTab === 0 ? '暂无已选课程' : '暂无可选课程'}}</text>
+    <button class="reload-btn" bindtap="loadCurrentData">重新加载</button>
+  </view>
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+</view>

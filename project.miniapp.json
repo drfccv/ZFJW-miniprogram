@@ -1,0 +1,84 @@
+{
+  "miniVersion": "v2",
+  "name": "我的教务",
+  "version": "0.0.1",
+  "versionCode": 100,
+  "i18nFilePath": "i18n",
+  "mini-android": {
+    "resourcePath": "miniapp/android/nativeResources",
+    "sdkVersion": "1.6.13",
+    "toolkitVersion": "0.11.0",
+    "useExtendedSdk": {
+      "media": true,
+      "bluetooth": false,
+      "network": false,
+      "scanner": false,
+      "xweb": true,
+      "skyline": true
+    },
+    "icons": {
+      "hdpi": "",
+      "xhdpi": "",
+      "xxhdpi": "c:/Users/YUAN LIU/Pictures/144x144.png",
+      "xxxhdpi": "c:/Users/YUAN LIU/Pictures/192x192.png"
+    },
+    "splashscreen": {
+      "hdpi": "",
+      "xhdpi": "",
+      "xxhdpi": ""
+    },
+    "enableVConsole": "open",
+    "privacy": {
+      "enable": true
+    },
+    "abi": {
+      "arm64-v8a": true,
+      "armeabi-v7a": false
+    },
+    "officialPlugins": {
+      "imPush": {
+        "enable": false
+      }
+    },
+    "gdt": {
+      "splashAd_fetchDelay": 0
+    }
+  },
+  "mini-ios": {
+    "sdkVersion": "1.6.15",
+    "toolkitVersion": "0.0.9",
+    "useExtendedSdk": {
+      "WeAppOpenFuns": false,
+      "WeAppNetwork": true,
+      "WeAppBluetooth": false,
+      "WeAppMedia": false,
+      "WeAppLBS": false,
+      "WeAppOthers": false,
+      "WeAppOpenFuns_HasPay": false
+    },
+    "enableVConsole": "open",
+    "icons": {
+      "mainIcon120": "",
+      "mainIcon180": "",
+      "spotlightIcon80": "",
+      "spotlightIcon120": "",
+      "settingsIcon58": "",
+      "settingsIcon87": "",
+      "notificationIcon40": "",
+      "notificationIcon60": "",
+      "appStore1024": ""
+    },
+    "splashScreen": {
+      "customImage": ""
+    },
+    "privacy": {
+      "enable": false
+    },
+    "enableOpenUrlNavigate": true,
+    "officialPlugins": {
+      "imPush": {
+        "enable": false
+      }
+    }
+  }
+}

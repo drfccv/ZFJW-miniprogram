@@ -1,0 +1,113 @@
+/* 案例展示页面样式 */
+.container {
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.case-section {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 24rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 2rpx solid #ecf0f1;
+}
+
+.case-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.case-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background-color: #f8f9fa;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+  border: 2rpx solid transparent;
+}
+
+.case-item:active {
+  background-color: #e9ecef;
+  border-color: #3498db;
+  transform: scale(0.98);
+}
+
+.case-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  margin-right: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.case-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.case-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.case-details {
+  font-size: 24rpx;
+  color: #7f8c8d;
+}
+
+.join-section {
+  padding: 40rpx 20rpx;
+  text-align: center;
+}
+
+.join-btn {
+  background: linear-gradient(to bottom right, #3498db, #2980b9);
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  padding: 28rpx 60rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  box-shadow: 0 6rpx 20rpx rgba(52, 152, 219, 0.3);
+  transition: all 0.3s ease;
+}
+
+.join-btn:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 15rpx rgba(52, 152, 219, 0.4);
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 400px) {
+  .case-item {
+    padding: 16rpx;
+  }
+  
+  .case-icon {
+    width: 60rpx;
+    height: 60rpx;
+  }
+  
+  .case-name {
+    font-size: 26rpx;
+  }
+  
+  .case-details {
+    font-size: 22rpx;
+  }
+}
