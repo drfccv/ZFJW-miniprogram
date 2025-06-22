@@ -38,7 +38,17 @@
     <view class="refresh-btn" bindtap="refreshGrades">
       <text class="refresh-icon">🔄</text>
     </view>
-  </view>  <!-- 成绩统计 -->
+  </view>
+  <!-- 新增：成绩接口类型切换提示 -->
+  <view class="api-type-bar">
+    <text>成绩接口：</text>
+    <text class="api-type-value">{{gradeApiType === 'detail' ? '详细成绩' : '普通成绩'}}</text>
+    <button class="api-type-btn" size="mini" bindtap="onGradeApiTypeChange" data-value="{{gradeApiType === 'detail' ? 'normal' : 'detail'}}">
+      切换为{{gradeApiType === 'detail' ? '普通' : '详细'}}
+    </button>
+  </view>
+
+  <!-- 成绩统计 -->
   <view class="grade-stats" wx:if="{{gradeList.length > 0}}">
     <!-- 第一行统计 -->
     <view class="stats-row">
@@ -79,20 +89,31 @@
       class="grade-item"
       wx:for="{{gradeList}}" 
       wx:key="index"
-      bindtap="showGradeDetail"
       data-index="{{index}}"
+      bindtap="showGradeDetail"
     >
       <view class="course-info">
         <text class="course-name">{{item.courseName}}</text>
-        <text class="course-details">
-          <text class="course-credit">{{item.credit}}学分</text>
-          <text class="course-type" wx:if="{{item.courseType}}">{{item.courseType}}</text>
-        </text>
-        <text class="course-teacher" wx:if="{{item.teacher}}">任课教师：{{item.teacher}}</text>
-      </view>      <view class="grade-info">
-        <text class="grade-score {{item.gradeClass}}">{{item.totalScore || '未出分'}}</text>
-        <text class="grade-gpa" wx:if="{{item.gpa}}">绩点：{{item.gpa}}</text>
+        <!-- 普通模式下小标签（类型、学分、绩点统一风格） -->
+        <block wx:if="{{gradeApiType === 'normal'}}">
+          <view class="course-tags">
+            <text class="tag-type" wx:if="{{item.courseType}}">{{item.courseType}}</text>
+            <text class="tag-credit">学分: {{item.credit}}</text>
+            <text class="tag-gpa" wx:if="{{item.gpa}}">绩点: {{item.gpa}}</text>
+          </view>
+        </block>
+        <!-- 详细模式下小标签（只显示开课学院和学分） -->
+        <block wx:if="{{gradeApiType === 'detail'}}">
+          <view class="course-tags">
+            <text class="tag-college" wx:if="{{item.startCollege}}">{{item.startCollege}}</text>
+            <text class="tag-credit">学分: {{item.credit}}</text>
+          </view>
+        </block>
       </view>
+      <view class="grade-info align-right">
+        <view class="score-badge {{item.gradeClass}}">{{item.totalScore || '未出分'}}</view>
+      </view>
+      <!-- 详细成绩模式下：取消展开明细，点击卡片弹窗显示所有明细 -->
     </view>
   </view>
 

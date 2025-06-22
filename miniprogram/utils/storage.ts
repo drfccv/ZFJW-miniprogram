@@ -420,6 +420,28 @@ class StorageService {  // 存储键名常量
     // 显示完整日期
     return `上次刷新${year}.${month}.${day}`;
   }
+
+  // 缓存详细成绩数据
+  static cacheGradeDetail(year: number, term: number, data: any): void {
+    const cache = this.get<CacheStorage>(this.KEYS.GRADE_CACHE) || {};
+    const key = `${year}-${term}-detail`;
+    cache[key] = {
+      data,
+      timestamp: Date.now()
+    };
+    this.set(this.KEYS.GRADE_CACHE, cache);
+  }
+
+  // 获取缓存的详细成绩数据
+  static getCachedGradeDetail(year: number, term: number): any | null {
+    const cache = this.get<CacheStorage>(this.KEYS.GRADE_CACHE) || {};
+    const key = `${year}-${term}-detail`;
+    const cached = cache[key];
+    if (cached && this.isCacheValid(cached.timestamp)) {
+      return cached.data;
+    }
+    return null;
+  }
 }
 
 export default StorageService;

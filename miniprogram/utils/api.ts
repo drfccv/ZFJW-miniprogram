@@ -276,6 +276,11 @@ class ApiService {
   static getSchoolList() {
     return this.request('/api/school_list', {});
   }
+
+  // 20. 获取详细成绩
+  static getGradeDetail(params: TermParams) {
+    return this.request('/api/grade_detail', params);
+  }
 }
 
 // 错误码说明

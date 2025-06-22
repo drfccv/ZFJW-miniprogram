@@ -1,0 +1,85 @@
+.container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 32rpx 0;
+  box-sizing: border-box;
+}
+
+.profile-detail-card {
+  background: #fff;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 122, 255, 0.08);
+  padding: 40rpx 32rpx 32rpx 32rpx;
+  margin: 0 32rpx;
+}
+
+.avatar-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.avatar-circle {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: linear-gradient(to bottom right, #007AFF, #5AC8FA);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.15);
+}
+
+.avatar-text {
+  font-size: 54rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+.name-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 8rpx;
+}
+
+.sid {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.info-list {
+  margin-top: 8rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f1f3f4;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.label {
+  width: 160rpx;
+  color: #888;
+  font-size: 26rpx;
+  flex-shrink: 0;
+}
+
+.value {
+  color: #333;
+  font-size: 26rpx;
+  word-break: break-all;
+  flex: 1;
+} 

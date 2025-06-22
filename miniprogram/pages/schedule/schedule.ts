@@ -733,9 +733,7 @@ Page({  data: {
     const storedTerm = StorageService.getCurrentTerm();
     let academicYear: number;
     let currentTerm: number;
-    
     if (storedTerm) {
-      // 如果有存储的学期设置，使用它
       academicYear = storedTerm.year;
       currentTerm = storedTerm.term;
       console.log('课表页面使用存储的学期设置:', academicYear, currentTerm);
@@ -745,8 +743,6 @@ Page({  data: {
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
       const currentDay = now.getDate();
-      
-      // 学年和学期判断逻辑
       if (currentMonth >= 9 || (currentMonth <= 3 && currentDay <= 1)) {
         if (currentMonth >= 9) {
           academicYear = currentYear;
@@ -758,25 +754,26 @@ Page({  data: {
         academicYear = currentYear - 1;
         currentTerm = 2;
       }
-      
       console.log('课表页面计算学期:', academicYear, currentTerm);
     }
-      // 计算默认的第一周日期
+    // 计算默认的第一周日期
     let firstWeekDate: string;
     if (currentTerm === 1) {
       firstWeekDate = this.getFirstMondayOfSeptember(academicYear);
     } else {
       firstWeekDate = this.getThirdMondayOfFebruary(academicYear + 1);
     }
-      // 计算当前周次
-    const currentWeek = this.calculateCurrentWeek(firstWeekDate, 20);
-    
+    // 默认总周数16周
+    const totalWeeks = 16;
+    // 计算当前周次
+    const currentWeek = this.calculateCurrentWeek(firstWeekDate, totalWeeks);
     return {
       currentYear: academicYear,
       currentTerm,
       weekStartDay: 1, // 默认周一开始
       firstWeekDate,
-      currentWeek
+      currentWeek,
+      totalWeeks
     };
   },
   // 计算当前周次

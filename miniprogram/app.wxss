@@ -13,10 +13,17 @@
 @import './styles/components.wxss';
 
 /* ===== 全局基础样式 ===== */
+@font-face {
+  font-family: 'OPPO Sans 4.0 Light';
+  src: url('/fonts/OPPO Sans 4.0.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
 page {
   background-color: #f8f9fa;
   color: #333333;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-family: 'OPPO Sans 4.0 Light', 'OPPO Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   font-size: 28rpx;
   line-height: 1.6;
 }

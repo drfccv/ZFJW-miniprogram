@@ -21,7 +21,7 @@ Page({  data: {
     weekStartIndex: 1,
     weekStartOptions: ['周日', '周一'],
     firstWeekDate: '',
-    totalWeeks: 20, // 总周次，默认20周
+    totalWeeks: 16, // 总周次，默认16周
     weekList: [] as number[],
     refreshing: false
   },  onLoad() {
@@ -71,8 +71,8 @@ Page({  data: {
       firstWeekDate = this.getThirdMondayOfFebruary(academicYear + 1);
     }
 
-    // 默认总周次为20周
-    const totalWeeks = 20;
+    // 默认总周次为16周
+    const totalWeeks = 16;
     
     this.setData({
       currentYear: academicYear,
@@ -397,62 +397,11 @@ Page({  data: {
     const daysToFirstMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek);
     date.setDate(date.getDate() + daysToFirstMonday + 14); // 第三个周一
     return date.toISOString().split('T')[0];
-  },  // 显示总周次选择器
-  showWeekPicker() {
-    if (!this.data.weekList || this.data.weekList.length === 0) {
-      // 重新初始化 weekList
-      const weekList = [];
-      for (let i = 1; i <= 20; i++) {
-        weekList.push(i);
-      }
-      
-      this.setData({
-        weekList: weekList
-      });
-    }    // 使用 showModal 让用户输入周数，因为 showActionSheet 最多只支持6个选项
-    wx.showModal({
-      title: `总周次设置（当前：${this.data.totalWeeks}周）`,
-      editable: true,
-      placeholderText: String(this.data.totalWeeks),
-      success: (res) => {
-        if (res.confirm && res.content) {
-          const inputWeeks = parseInt(res.content.trim());
-          
-          // 验证输入的周数
-          if (isNaN(inputWeeks)) {
-            wx.showToast({
-              title: '请输入有效的数字',
-              icon: 'none'
-            });
-            return;
-          }
-          
-          if (inputWeeks < 1 || inputWeeks > 20) {
-            wx.showToast({
-              title: '周数必须在1-20之间',
-              icon: 'none'
-            });
-            return;
-          }
-          
-          // 设置新的总周次
-          this.setData({
-            totalWeeks: inputWeeks
-          });
-          
-          wx.showToast({
-            title: `设置为${inputWeeks}周`,
-            icon: 'success'
-          });
-        }
-      },
-      fail: (error) => {
-        console.error('showModal 失败:', error);
-        wx.showToast({
-          title: '输入框打开失败',
-          icon: 'none'
-        });
-      }
-    });
+  },  // 新增：总周次picker变更事件
+  onTotalWeeksChange(e: any) {
+    const index = e.detail.value;
+    const weeks = this.data.weekList[index];
+    this.setData({ totalWeeks: weeks });
+    wx.showToast({ title: `设置为${weeks}周`, icon: 'success' });
   }
 });

@@ -25,13 +25,16 @@
   <!-- 课表显示设置 -->
   <view class="setting-section">
     <view class="section-title">课表显示设置</view>    <!-- 总周次 -->
-    <view class="setting-item" bindtap="showWeekPicker">
-      <view class="setting-label">总周次</view>
-      <view class="setting-value">
-        <text>{{totalWeeks}}周</text>
-        <text class="arrow">></text>
+    <picker mode="selector" range="{{weekList}}" value="{{totalWeeks - 1}}" bindchange="onTotalWeeksChange">
+      <view class="setting-item">
+        <view class="setting-label">总周次</view>
+        <view class="setting-value">
+          <text>{{totalWeeks}}周</text>
+          <text class="arrow">></text>
+        </view>
       </view>
-    </view>    
+    </picker>
+    
     <!-- 每周起始日 -->
     <view class="setting-item" bindtap="showWeekStartPicker">
       <view class="setting-label">每周起始日</view>
@@ -42,13 +45,15 @@
     </view>
     
     <!-- 第一周日期设置 -->
-    <view class="setting-item" bindtap="showFirstWeekDatePicker">
-      <view class="setting-label">第一周开始日期</view>
-      <view class="setting-value">
-        <text>{{firstWeekDate}}</text>
-        <text class="arrow">></text>
+    <picker mode="date" value="{{firstWeekDate}}" bindchange="onFirstWeekDateChange">
+      <view class="setting-item">
+        <view class="setting-label">第一周开始日期</view>
+        <view class="setting-value">
+          <text>{{firstWeekDate}}</text>
+          <text class="arrow">></text>
+        </view>
       </view>
-    </view>
+    </picker>
   </view>
 
   <!-- 操作按钮 -->

@@ -23,11 +23,16 @@ Page({  data: {
       { key: 'grade', name: '成绩', desc: '成绩查询', icon: '📊' },
       { key: 'exam', name: '考试', desc: '考试安排', icon: '📝' },
       { key: 'notification', name: '通知', desc: '通知公告', icon: '📢' }
-    ]
+    ],
+    gradeApiType: 'normal', // 成绩接口类型 normal/detail
+    showGradeApiTypeDialog: false, // 成绩接口类型选择弹窗
   },
 
   onLoad() {
     this.loadUserInfo();
+    // 读取成绩接口类型
+    const gradeApiType = StorageService.get('gradeApiType') || 'normal';
+    this.setData({ gradeApiType });
   },
 
   onShow() {
@@ -455,6 +460,28 @@ QQ：2713587802
       content: `${feature}功能还在开发中，敬请期待！`,
       showCancel: false,
       confirmText: '知道了'
+    });
+  },
+
+  // 显示成绩接口类型选择弹窗
+  showGradeApiTypeDialog() {
+    this.setData({ showGradeApiTypeDialog: true });
+  },
+  // 隐藏成绩接口类型选择弹窗
+  hideGradeApiTypeDialog() {
+    this.setData({ showGradeApiTypeDialog: false });
+  },
+  // 切换成绩接口类型
+  onGradeApiTypeChange(e: any) {
+    const value = e.currentTarget.dataset.value;
+    this.setData({ gradeApiType: value, showGradeApiTypeDialog: false });
+    StorageService.set('gradeApiType', value);
+    wx.showToast({ title: '已切换', icon: 'success' });
+  },
+
+  goToProfileDetail() {
+    wx.navigateTo({
+      url: '/pages/profile-detail/profile-detail',
     });
   },
 });

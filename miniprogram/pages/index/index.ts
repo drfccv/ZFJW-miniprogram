@@ -315,5 +315,11 @@ Page({
     } catch (error) {
       console.error('显示通知详情失败:', error);
     }
-  }
+  },
+
+  goToProfileDetail() {
+    wx.navigateTo({
+      url: '/pages/profile-detail/profile-detail',
+    });
+  },
 });

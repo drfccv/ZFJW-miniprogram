@@ -10,7 +10,8 @@
     "pages/course/course",
     "pages/export/export",
     "pages/classroom/classroom",
-    "pages/schedule-settings/schedule-settings"
+    "pages/schedule-settings/schedule-settings",
+    "pages/profile-detail/profile-detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -40,7 +41,7 @@
         "pagePath": "pages/profile/profile",
         "text": "我的",
         "iconPath": "images/Icon3.png",
-        "selectedIconPath": "images/Icon4.png"
+        "selectedIconPath": "images/Icon5.png"
       }
     ],
     "position": "bottom"

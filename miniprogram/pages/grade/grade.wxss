@@ -506,8 +506,7 @@
   transition: all 0.3s;
 }
 
-.grade-item:active {
-  transform: scale(0.98);
+.grade-item:active, .grade-item:hover {
   background: #f8f9fa;
 }
 
@@ -555,9 +554,16 @@
   color: #999;
 }
 
-.grade-info {
-  text-align: right;
-  flex-shrink: 0;
+.grade-info.align-right {
+  flex: none;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.score-badge {
+  float: right;
 }
 
 /* 成绩分数样式 - 使用更高优先级 */
@@ -637,4 +643,180 @@
 .loading-text {
   font-size: 28rpx;
   color: #999;
+}
+
+.api-type-bar {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 32rpx;
+  background: #fffbe6;
+  color: #b8860b;
+  font-size: 24rpx;
+  border-bottom: 1rpx solid #ffe58f;
+}
+
+.api-type-value {
+  font-weight: bold;
+  margin: 0 16rpx;
+}
+
+.api-type-btn {
+  margin-left: 16rpx;
+  font-size: 22rpx;
+  background: #ffe58f;
+  color: #b8860b;
+  border-radius: 8rpx;
+  padding: 4rpx 16rpx;
+  border: none;
+}
+
+.grade-detail-items {
+  margin-top: 8rpx;
+  padding-left: 16rpx;
+  font-size: 22rpx;
+  color: #666;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+  font-size: 24rpx;
+}
+
+.detail-label {
+  color: #888;
+  margin-right: 8rpx;
+  min-width: 120rpx;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #333;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.detail-weight {
+  color: #999;
+  font-size: 22rpx;
+}
+
+.detail-empty {
+  color: #bbb;
+  font-size: 22rpx;
+  text-align: center;
+  padding: 12rpx 0;
+}
+
+.expand-btn {
+  margin-top: 12rpx;
+  color: #007aff;
+  font-size: 24rpx;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.expand-arrow {
+  font-size: 22rpx;
+  margin-left: 8rpx;
+}
+
+.grade-detail-card {
+  background: #f6f8fa;
+  border-radius: 12rpx;
+  margin-top: 12rpx;
+  padding: 18rpx 20rpx 10rpx 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+
+.animated-expand {
+  animation: expandDown 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes expandDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20rpx) scaleY(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.course-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin: 8rpx 0 0 0;
+}
+.tag-credit, .tag-gpa, .tag-nature, .tag-class, .tag-college {
+  background: #f5f5f5;
+  color: #888;
+  font-size: 20rpx;
+  border-radius: 8rpx;
+  padding: 4rpx 14rpx;
+  margin-right: 0;
+}
+.score-badge {
+  min-width: 90rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  display: inline-block;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: bold;
+  border-radius: 18rpx;
+  background: linear-gradient(90deg, #f8fafc 60%, #e6f0fa 100%);
+  margin-left: 8rpx;
+  margin-right: 0;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+.score-badge.excellent {
+  color: #4caf50;
+}
+.score-badge.good {
+  color: #4caf50;
+}
+.score-badge.average {
+  color: #ff9800;
+}
+.score-badge.poor {
+  color: #f44336;
+}
+.score-badge.unknown {
+  color: #999;
+}
+.grade-detail-items-inline {
+  margin-top: 8rpx;
+  margin-bottom: 4rpx;
+}
+.detail-item-inline {
+  display: flex;
+  align-items: center;
+  font-size: 22rpx;
+  margin-bottom: 4rpx;
+}
+.detail-label {
+  color: #888;
+  margin-right: 8rpx;
+  min-width: 100rpx;
+}
+.detail-value {
+  color: #333;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+.detail-weight {
+  color: #999;
+  font-size: 20rpx;
+}
+
+.detail-divider {
+  height: 1rpx;
+  background: #e5e5e5;
+  margin: 10rpx 0 10rpx 0;
+  width: 100%;
 }

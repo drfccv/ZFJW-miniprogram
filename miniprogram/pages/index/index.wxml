@@ -1,7 +1,7 @@
 <!--首页-->
 <view class="container">
   <!-- 用户信息卡片 -->
-  <view class="user-card" wx:if="{{userInfo}}">
+  <view class="user-card" wx:if="{{userInfo}}" bindtap="goToProfileDetail">
     <view class="user-avatar">
       <text class="avatar-text">{{userInfo.name ? userInfo.name.charAt(0) : '学'}}</text>
     </view>

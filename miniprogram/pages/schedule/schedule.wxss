@@ -7,7 +7,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-bottom: 20rpx; /* 与上部间距保持一致 */
+  padding-top: 20rpx;
+  padding-bottom: 20rpx; /* 与顶部一致，底部距离更近 */
   box-sizing: border-box;
 }
 
@@ -37,7 +38,7 @@
 .schedule-wrapper {
   flex: 1;
   overflow: hidden;
-  padding: 20rpx 16rpx 20rpx 16rpx; /* 恢复上下平衡的间距 */
+  padding: 20rpx 16rpx 20rpx 16rpx; /* 上下左右间距一致 */
 }
 
 .week-item:not(.active):active {
