@@ -39,8 +39,17 @@ Page({  data: {
     let academicYear: number;
     let currentTerm: number;
     
-    // 学年和学期判断逻辑
-    if (currentMonth >= 9 || (currentMonth <= 3 && currentDay <= 1)) {
+    // 精确的学年和学期判断逻辑
+    // 第一学期：9月1日 - 次年3月1日
+    // 第二学期：3月2日 - 8月31日
+    if ((currentMonth === 9) || 
+        (currentMonth === 10) || 
+        (currentMonth === 11) || 
+        (currentMonth === 12) ||
+        (currentMonth === 1) ||
+        (currentMonth === 2) ||
+        (currentMonth === 3 && currentDay <= 1)) {
+      // 第一学期
       if (currentMonth >= 9) {
         academicYear = currentYear;
       } else {
@@ -48,6 +57,7 @@ Page({  data: {
       }
       currentTerm = 1;
     } else {
+      // 第二学期（3月2日-8月31日）
       academicYear = currentYear - 1;
       currentTerm = 2;
     }
@@ -403,5 +413,28 @@ Page({  data: {
     const weeks = this.data.weekList[index];
     this.setData({ totalWeeks: weeks });
     wx.showToast({ title: `设置为${weeks}周`, icon: 'success' });
+  },
+  // 新增：官方picker日期变更事件
+  onFirstWeekDateChange(e: any) {
+    const date = e.detail.value;
+    // 校验格式（YYYY-MM-DD）
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) {
+      wx.showToast({ title: '日期格式错误', icon: 'error' });
+      return;
+    }
+    // 验证日期有效性
+    const testDate = new Date(date);
+    if (!testDate.getTime()) {
+      wx.showToast({ title: '日期无效', icon: 'error' });
+      return;
+    }
+    // 重新计算当前周次
+    const currentWeek = this.calculateCurrentWeek(date);
+    this.setData({
+      firstWeekDate: date,
+      currentWeek
+    });
+    wx.showToast({ title: '日期设置成功', icon: 'success' });
   }
 });

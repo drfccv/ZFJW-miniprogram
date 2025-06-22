@@ -648,7 +648,8 @@
 .api-type-bar {
   display: flex;
   align-items: center;
-  padding: 16rpx 32rpx;
+  justify-content: space-between;
+  padding: 16rpx 50rpx;
   background: #fffbe6;
   color: #b8860b;
   font-size: 24rpx;
@@ -661,13 +662,13 @@
 }
 
 .api-type-btn {
-  margin-left: 16rpx;
-  font-size: 22rpx;
+  font-size: 20rpx;
   background: #ffe58f;
   color: #b8860b;
-  border-radius: 8rpx;
-  padding: 4rpx 16rpx;
+  border-radius: 6rpx;
+  padding: 3rpx 12rpx;
   border: none;
+  margin-right: 0;
 }
 
 .grade-detail-items {
@@ -752,7 +753,7 @@
   gap: 12rpx;
   margin: 8rpx 0 0 0;
 }
-.tag-credit, .tag-gpa, .tag-nature, .tag-class, .tag-college {
+.tag-credit, .tag-gpa, .tag-nature, .tag-class, .tag-college, .tag-type {
   background: #f5f5f5;
   color: #888;
   font-size: 20rpx;

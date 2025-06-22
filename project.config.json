@@ -48,7 +48,7 @@
     "ignore": [],
     "include": []
   },
-  "appid": "wxid=?=1234567890abcdef",
+  "appid": "wxid=1234567890abcdef",
   "projectname": "miniprogram-344",
   "projectArchitecture": "multiPlatform"
 }

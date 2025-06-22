@@ -5,7 +5,7 @@ Page({
     userInfo: {},
   },
   onLoad() {
-    const userInfo = StorageService.get('userinfo') || {};
+    const userInfo = StorageService.get('userInfo') || {};
     this.setData({ userInfo });
   },
 }); 

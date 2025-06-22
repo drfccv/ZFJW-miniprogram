@@ -1,15 +1,15 @@
 {
   "miniVersion": "v2",
   "name": "我的教务",
-  "version": "2.0.1",
-  "versionCode": 201,
+  "version": "2.0.2",
+  "versionCode": 202,
   "i18nFilePath": "i18n",
   "mini-android": {
     "resourcePath": "miniapp/android/nativeResources",
     "sdkVersion": "1.6.13",
     "toolkitVersion": "0.11.0",
     "useExtendedSdk": {
-      "media": true,
+      "media": false,
       "bluetooth": false,
       "network": false,
       "scanner": false,
@@ -27,7 +27,7 @@
       "xhdpi": "",
       "xxhdpi": ""
     },
-    "enableVConsole": "open",
+    "enableVConsole": "close",
     "privacy": {
       "enable": true
     },

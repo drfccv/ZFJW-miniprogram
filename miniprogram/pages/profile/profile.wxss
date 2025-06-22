@@ -400,8 +400,8 @@
 }
 
 .api-type-option.selected {
-  background: #fffbe6;
-  color: #b8860b;
+  background: #e6f0ff;
+  color: #007AFF;
 }
 
 .api-type-title {
@@ -418,7 +418,7 @@
 .api-type-check {
   position: absolute;
   right: 24rpx;
-  color: #faad14;
+  color: #007AFF;
   font-size: 32rpx;
   font-weight: bold;
 }

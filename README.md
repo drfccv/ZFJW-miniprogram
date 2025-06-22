@@ -1,6 +1,6 @@
 # 正方教务系统微信小程序
 
-![GitHub](https://img.shields.io/badge/License-MIT-yellow.svg)
+![GitHub](https://img.shields.io/github/license/drfccv/ZFJW-miniprogram)
 ![WeChat Mini Program](https://img.shields.io/badge/微信小程序-v2.0.0-brightgreen)
 ![Backend](https://img.shields.io/badge/后端项目-ZFJW--backend-blue)
 
