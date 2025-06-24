@@ -461,15 +461,12 @@ Page({
   showGradeDetail(e: any) {
     const index = e.currentTarget.dataset.index;
     const grade = this.data.gradeList[index];
-    // 详细模式下只展示期中、平时、期末成绩
+    // 详细模式下展示所有明细项（包括实验成绩等所有项目）
     if (this.data.gradeApiType === 'detail' && Array.isArray(grade.detailItems)) {
-      // 只筛选包含"期中"、"平时"、"期末"字样的明细
-      const detailList = grade.detailItems.filter(item =>
-        item.xmblmc && (item.xmblmc.indexOf('期中') >= 0 || item.xmblmc.indexOf('平时') >= 0 || item.xmblmc.indexOf('期末') >= 0)
-      );
+      const detailList = grade.detailItems;
       let content = '';
       if (detailList.length === 0) {
-        content = '暂无期中、平时、期末成绩';
+        content = '暂无详细成绩';
       } else {
         content = detailList.map(item => `${item.xmblmc}：${item.xmcj}`).join('\n');
       }
