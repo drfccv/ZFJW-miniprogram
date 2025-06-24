@@ -8,16 +8,30 @@
 
   <!-- 学期选择器 -->
   <view class="term-selector">
-    <view class="selector-item" bindtap="showYearPicker">
-      <text class="selector-label">学年:</text>
-      <text class="selector-value">{{currentYear}}</text>
-      <text class="selector-arrow">▼</text>
-    </view>
-    <view class="selector-item" bindtap="showTermPicker">
-      <text class="selector-label">学期:</text>
-      <text class="selector-value">{{currentTerm === 1 ? '第一学期' : '第二学期'}}</text>
-      <text class="selector-arrow">▼</text>
-    </view>
+    <picker
+      mode="selector"
+      range="{{yearRange}}"
+      value="{{yearIndex}}"
+      bindchange="onYearChange"
+    >
+      <view class="selector-item">
+        <text class="selector-label">学年:</text>
+        <text class="selector-value">{{yearRange[yearIndex]}}</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+    </picker>
+    <picker
+      mode="selector"
+      range="{{['第一学期', '第二学期']}}"
+      value="{{termIndex}}"
+      bindchange="onTermChange"
+    >
+      <view class="selector-item">
+        <text class="selector-label">学期:</text>
+        <text class="selector-value">{{currentTerm === 1 ? '第一学期' : '第二学期'}}</text>
+        <text class="selector-arrow">▼</text>
+      </view>
+    </picker>
     <view class="refresh-btn" bindtap="refreshExams">
       <text class="refresh-icon">🔄</text>
     </view>
@@ -59,28 +73,4 @@
   <view class="loading-state" wx:if="{{loading}}">
     <text class="loading-text">加载中...</text>
   </view>
-
-  <!-- 学年选择器 -->
-  <picker 
-    wx:if="{{showYearSelector}}"
-    mode="selector"
-    range="{{yearRange}}"
-    value="{{yearIndex}}"
-    bindchange="onYearChange"
-    bindcancel="hideYearPicker"
-  >
-    <view></view>
-  </picker>
-
-  <!-- 学期选择器 -->
-  <picker 
-    wx:if="{{showTermSelector}}"
-    mode="selector"
-    range="{{['第一学期', '第二学期']}}"
-    value="{{termIndex}}"
-    bindchange="onTermChange"
-    bindcancel="hideTermPicker"
-  >
-    <view></view>
-  </picker>
 </view>
