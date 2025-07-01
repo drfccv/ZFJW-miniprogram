@@ -1,5 +1,6 @@
 import ApiService from '../../utils/api';
 import StorageService from '../../utils/storage';
+import { AuthUtils } from '../../utils/authUtils';
 
 interface UserInfo {
   name: string;
@@ -29,6 +30,8 @@ Page({  data: {
   },
 
   onLoad() {
+    // 登录校验
+    AuthUtils.checkLoginStatus();
     this.loadUserInfo();
     // 读取成绩接口类型
     const gradeApiType = StorageService.get('gradeApiType') || 'normal';
@@ -36,12 +39,14 @@ Page({  data: {
   },
 
   onShow() {
+    // 登录校验
+    AuthUtils.checkLoginStatus();
     this.loadUserInfo();
   },  // 加载用户信息
   loadUserInfo() {
     const userInfo = StorageService.get<UserInfo>(StorageService.KEYS.USER_INFO);
-    const apiBaseUrl = StorageService.get<string>(StorageService.KEYS.API_BASE_URL);
-    const defaultPage = StorageService.getDefaultStartPage();
+    const apiBaseUrl = StorageService.get<string>(StorageService.KEYS.API_BASE_URL) || '';
+    const defaultPage = StorageService.getDefaultStartPage() || 'index';
     
     // 根据默认页面key找到对应的显示名称
     const defaultPageOption = this.data.defaultPageOptions.find(option => option.key === defaultPage);
@@ -49,7 +54,7 @@ Page({  data: {
     
     this.setData({
       userInfo,
-      apiBaseUrl: apiBaseUrl || '',
+      apiBaseUrl,
       selectedDefaultPage: defaultPage,
       defaultPageName
     });
@@ -482,6 +487,18 @@ QQ：2713587802
   goToProfileDetail() {
     wx.navigateTo({
       url: '/pages/profile-detail/profile-detail',
+    });
+  },
+
+  // 跳转到官方教务webview页面
+  goToOfficialJw() {
+    const loginInfo = StorageService.getLoginInfo();
+    if (!loginInfo || !loginInfo.cookies) {
+      wx.showToast({ title: '请先登录', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({
+      url: `/pages/official-jw/official-jw?cookie=${encodeURIComponent(typeof loginInfo.cookies === 'string' ? loginInfo.cookies : JSON.stringify(loginInfo.cookies))}`
     });
   },
 });

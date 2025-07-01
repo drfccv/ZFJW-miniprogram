@@ -281,6 +281,45 @@ class ApiService {
   static getGradeDetail(params: TermParams) {
     return this.request('/api/grade_detail', params);
   }
+
+  // 21. 获取教学评价菜单
+  static getEvaluateMenu(params: AuthParams) {
+    return this.request('/api/evaluate_menu', params);
+  }
+
+  // 22. 获取教学评价详情
+  static getEvaluateDetail(params: AuthParams & { jxb_id: string }) {
+    return this.request('/api/evaluate_detail', params);
+  }
+
+  // 23. 保存教学评价
+  static saveEvaluate(params: AuthParams & {
+    action_url?: string;
+    jxb_id: string;
+    kch_id: string;
+    comment_name: string;
+    comment: string;
+    evaluation_data: { items: Array<{ input_name: string; score: string }> };
+  }) {
+    return this.request('/api/evaluate_save', params);
+  }
+
+  // 24. 提交教学评价
+  static submitEvaluate(params: AuthParams & {
+    action_url?: string;
+    jxb_id: string;
+    kch_id: string;
+    comment_name: string;
+    comment: string;
+    evaluation_data: { items: Array<{ input_name: string; score: string }> };
+  }) {
+    return this.request('/api/evaluate_submit', params);
+  }
+
+  // 获取指定学校配置信息
+  static getSchoolConfig(schoolName: string) {
+    return this.requestGet(`/api/school/${encodeURIComponent(schoolName)}`);
+  }
 }
 
 // 错误码说明

@@ -1,0 +1,92 @@
+<!--教学评价详情页面-->
+<view class="container">
+  <!-- 课程信息 -->
+  <view class="course-info">
+    <text class="course-name">{{evaluateDetail.course_name}}</text>
+    <text class="course-teacher" wx:if="{{evaluateDetail.teacher_name}}">授课教师：{{evaluateDetail.teacher_name}}</text>
+  </view>
+
+  <!-- 评价表单 -->
+  <view class="evaluate-form" wx:if="{{evaluateDetail.evaluation_items && evaluateDetail.evaluation_items.length > 0}}">
+    <view class="form-section">
+      <text class="section-title">评价项目</text>
+      <block wx:for="{{evaluateDetail.evaluation_items}}" wx:key="pjzbxm_id">
+        <view class="evaluate-card">
+          <view class="item-header">
+            <text class="item-title">{{item.content}}</text>
+          </view>
+          <view class="item-options">
+            <!-- 只读状态 -->
+            <text wx:if="{{evaluateDetail.is_evaluated}}">得分：{{item.score}}</text>
+            <!-- 可输入状态 -->
+            <view wx:if="{{!evaluateDetail.is_evaluated}}" class="score-input-row">
+              <text class="score-range">打分范围: {{item.min_score}}-{{item.max_score}}</text>
+              <input 
+                class="score-input"
+                type="digit"
+                placeholder="请输入分数"
+                min="{{item.min_score}}"
+                max="{{item.max_score}}"
+                value="{{item.current_value || item.score}}"
+                bindinput="onScoreInput"
+                data-pjzbxm_id="{{item.pjzbxm_id}}"
+                data-min="{{item.min_score}}"
+                data-max="{{item.max_score}}"
+                disabled="{{evaluateDetail.is_evaluated}}"
+              />
+            </view>
+          </view>
+        </view>
+        <view wx:if="{{index !== evaluateDetail.evaluation_items.length - 1}}" class="evaluate-divider"></view>
+      </block>
+    </view>
+    <!-- 评语 -->
+    <view class="form-section">
+      <text class="section-title">评语</text>
+      <textarea 
+        class="suggestion-input"
+        placeholder="请输入您的评语..."
+        value="{{comment}}"
+        bindinput="onCommentInput"
+        maxlength="{{evaluateDetail.comment_max_length}}"
+        disabled="{{evaluateDetail.is_evaluated}}"
+      ></textarea>
+      <view class="input-counter-row">
+        <text class="input-counter">{{comment.length}}/{{evaluateDetail.comment_max_length}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons" wx:if="{{!evaluateDetail.is_evaluated}}">
+    <button 
+      class="action-btn save-btn" 
+      bindtap="saveEvaluate"
+      loading="{{saving}}"
+      disabled="{{submitted}}"
+    >
+      {{saving ? '保存中...' : '保存评价'}}
+    </button>
+    <button 
+      class="action-btn submit-btn" 
+      bindtap="submitEvaluate"
+      loading="{{submitting}}"
+      disabled="{{submitted}}"
+    >
+      {{submitting ? '提交中...' : (submitted ? '已提交' : '提交评价')}}
+    </button>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-icon">⏳</view>
+    <text class="loading-text">正在加载评价详情...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-state" wx:if="{{error && !loading}}">
+    <view class="error-icon">❌</view>
+    <text class="error-text">{{error}}</text>
+    <button class="retry-btn" bindtap="loadEvaluateDetail">重试</button>
+  </view>
+</view> 

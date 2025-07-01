@@ -35,6 +35,16 @@
         <text class="menu-text">通知公告</text>
       </view>
       
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/evaluate/evaluate">
+        <view class="menu-icon evaluate-icon">📝</view>
+        <text class="menu-text">教学评价</text>
+      </view>
+      
+      <view class="menu-item" bindtap="goToOfficialJw">
+        <view class="menu-icon jw-icon">🏛️</view>
+        <text class="menu-text">官方教务</text>
+      </view>
+      
       <view class="menu-item menu-item-disabled" bindtap="showComingSoon" data-feature="PDF导出">
         <view class="menu-icon export-icon">📄</view>
         <text class="menu-text">PDF导出</text>

@@ -1,0 +1,65 @@
+<!--教学评价页面-->
+<view class="container">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <view class="status-item">
+      <text class="status-number">{{totalCourses}}</text>
+      <text class="status-label">总课程</text>
+    </view>
+    <view class="status-item">
+      <text class="status-number">{{evaluatedCourses}}</text>
+      <text class="status-label">已评价</text>
+    </view>
+    <view class="status-item">
+      <text class="status-number">{{pendingCourses}}</text>
+      <text class="status-label">待评价</text>
+    </view>
+  </view>
+
+  <view class="auto-evaluate-bar">
+    <button class="auto-evaluate-btn" bindtap="autoEvaluateAll" loading="{{autoEvaluating}}" disabled="{{autoEvaluating}}">一键评教</button>
+    <button class="refresh-btn" bindtap="loadCourseList" disabled="{{autoEvaluating}}">🔄 刷新</button>
+    <text class="auto-evaluate-result">{{autoEvaluateResult}}</text>
+  </view>
+
+  <!-- 课程列表 -->
+  <view class="course-list" wx:if="{{courseList.length > 0}}">
+    <view class="course-item" wx:for="{{courseList}}" wx:key="course_id" bindtap="goToEvaluateDetail" data-course="{{item}}">
+      <view class="course-item-main">
+        <view class="course-info">
+          <view class="course-title-row">
+            <text class="course-name">{{item.course_name}}</text>
+            <text class="course-teacher">{{item.teacher}}</text>
+          </view>
+          <view class="course-sub-row">
+            <text class="course-college">{{item.college}}</text>
+          </view>
+        </view>
+        <view class="course-status-block">
+          <text class="status-badge {{item.evaluated ? 'evaluated' : 'pending'}}">{{item.evaluated ? '已评价' : '待评价'}}</text>
+          <view class="course-arrow">〉</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{courseList.length === 0 && !loading}}">
+    <view class="empty-icon">📝</view>
+    <text class="empty-text">暂无需要评价的课程</text>
+    <text class="empty-desc">当前学期没有需要评价的课程，或评价时间已结束</text>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-icon">⏳</view>
+    <text class="loading-text">正在加载评价课程...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-state" wx:if="{{error && !loading}}">
+    <view class="error-icon">❌</view>
+    <text class="error-text">{{error}}</text>
+    <button class="retry-btn" bindtap="loadCourseList">重试</button>
+  </view>
+</view> 

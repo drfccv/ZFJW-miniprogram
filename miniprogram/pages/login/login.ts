@@ -9,6 +9,16 @@ interface LoginFormData {
   schoolName: string;
 }
 
+// 工具函数：判断验证码图片是base64还是URL
+function getCaptchaImgSrc(raw: string): string {
+  if (!raw) return '';
+  if (raw.startsWith('data:image')) return raw;
+  if (raw.startsWith('/9j/') || raw.length > 100) {
+    return 'data:image/jpeg;base64,' + raw;
+  }
+  return raw + (raw.includes('?') ? '&' : '?') + 't=' + Date.now();
+}
+
 Page({  data: {
     formData: {
       sid: '',
@@ -328,46 +338,38 @@ Page({  data: {
   },
   // 显示验证码
   showCaptcha(result: LoginResult) {
-    console.log('显示验证码，图片数据:', result.captchaImage ? '已获取' : '未获取');
-    console.log('验证码图片长度:', (result.captchaImage && result.captchaImage.length) || 0);
-    
+    // 优先用captchaImage（已带前缀），否则尝试captchaData.kaptcha_pic
+    let raw = result.captchaImage || (result.captchaData && result.captchaData.kaptcha_pic) || '';
+    const imgUrl = getCaptchaImgSrc(raw);
     this.setData({
       showCaptcha: true,
-      captchaImage: result.captchaImage || '',
+      captchaImage: imgUrl,
       captchaData: result.captchaData,
       'formData.kaptcha': '' // 清空验证码输入
     });
-  },  // 刷新验证码
+  },
+  // 刷新验证码
   async refreshCaptcha() {
     const { formData } = this.data;
-    
     if (!formData.sid || !formData.password || !formData.schoolName) {
       return;
     }
-
-    console.log('刷新验证码，参数:', {
-      sid: formData.sid,
-      schoolName: formData.schoolName,
-      hasPassword: !!formData.password
-    });
-
     try {
       const loginManager = LoginManager.getInstance();
       const result = await loginManager.forceCaptcha(
         { sid: formData.sid, password: formData.password },
         formData.schoolName
       );
-
       if (result.needCaptcha) {
-        console.log('刷新验证码成功，图片数据:', result.captchaImage ? '已获取' : '未获取');
+        let raw = result.captchaImage || (result.captchaData && result.captchaData.kaptcha_pic) || '';
+        const imgUrl = getCaptchaImgSrc(raw);
         this.setData({
-          captchaImage: result.captchaImage || '',
+          captchaImage: imgUrl,
           captchaData: result.captchaData,
           'formData.kaptcha': ''
         });
       }
     } catch (error) {
-      console.error('刷新验证码失败:', error);
       wx.showToast({
         title: '刷新验证码失败',
         icon: 'none'
@@ -429,8 +431,9 @@ Page({  data: {
   onCaptchaError(e: any) {
     console.error('验证码图片加载失败:', e.detail);
     wx.showToast({
-      title: '验证码加载失败，请刷新',
+      title: '验证码加载失败，已自动刷新',
       icon: 'none'
     });
+    this.refreshCaptcha();
   },
 });

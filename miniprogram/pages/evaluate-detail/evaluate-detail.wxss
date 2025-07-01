@@ -1,0 +1,312 @@
+/* 教学评价详情页面样式 */
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 课程信息 */
+.course-info {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.course-name {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.course-teacher {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+
+.course-notice {
+  display: block;
+  font-size: 26rpx;
+  color: #ff6b35;
+  background: #fff3cd;
+  padding: 16rpx;
+  border-radius: 8rpx;
+  border-left: 4rpx solid #ff6b35;
+}
+
+/* 评价表单 */
+.evaluate-form {
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 20rpx;
+}
+
+.form-section {
+  padding: 30rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+/* 评价项目 */
+.evaluate-item {
+  margin-bottom: 40rpx;
+}
+
+.evaluate-item:last-child {
+  margin-bottom: 0;
+}
+
+.item-header {
+  margin-bottom: 8rpx;
+}
+
+.item-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.item-content {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.item-options {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.option-item {
+  font-size: 28rpx;
+  color: #007aff;
+  padding: 8rpx 20rpx;
+  border-radius: 8rpx;
+  background: #f0f8ff;
+  border: 1rpx solid #e0e0e0;
+}
+
+/* 其他建议 */
+.suggestion-input {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  transition: all 0.2s;
+  background: white;
+}
+
+.option-item.selected {
+  border-color: #007aff;
+  background: #f0f8ff;
+}
+
+.option-item:active {
+  background: #f8f8f8;
+}
+
+.option-text {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+}
+
+.option-check {
+  color: #007aff;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+/* 其他建议 */
+.suggestion-input {
+  width: 100%;
+  min-height: 200rpx;
+  padding: 20rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #333;
+  background: white;
+  box-sizing: border-box;
+}
+
+.suggestion-input:focus {
+  border-color: #007aff;
+}
+
+.input-counter {
+  display: block;
+  text-align: right;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 0;
+}
+
+.action-btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.save-btn {
+  background: #f8f9fa;
+  color: #333;
+  border: 2rpx solid #e0e0e0;
+}
+
+.save-btn:active {
+  background: #e9ecef;
+}
+
+.save-btn[disabled] {
+  background: #f8f9fa;
+  color: #999;
+  border-color: #e0e0e0;
+}
+
+.submit-btn {
+  background: #007aff;
+  color: white;
+}
+
+.submit-btn:active {
+  background: #0056b3;
+}
+
+.submit-btn[disabled] {
+  background: #ccc;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+}
+
+.loading-icon {
+  font-size: 60rpx;
+  margin-bottom: 20rpx;
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 错误状态 */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 60rpx;
+  margin-bottom: 20rpx;
+}
+
+.error-text {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 30rpx;
+  line-height: 1.5;
+}
+
+.retry-btn {
+  background: #007aff;
+  color: white;
+  border: none;
+  border-radius: 8rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}
+
+.retry-btn:active {
+  background: #0056b3;
+}
+
+.evaluate-divider {
+  height: 1rpx;
+  background: #f0f0f0;
+  margin: 0 8rpx 28rpx 8rpx;
+  border-radius: 1rpx;
+}
+
+.score-buttons {
+  display: flex;
+  gap: 12rpx;
+}
+
+.score-btn {
+  width: 56rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+  color: #666;
+  text-align: center;
+  font-size: 28rpx;
+  border: 2rpx solid #e0e0e0;
+  margin-right: 4rpx;
+  transition: all 0.2s;
+}
+
+.score-btn.selected {
+  background: #007aff;
+  color: #fff;
+  border-color: #007aff;
+  font-weight: bold;
+}
+
+.score-btn:active {
+  background: #e6f0ff;
+} 

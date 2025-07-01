@@ -197,7 +197,7 @@ class StorageService {  // 存储键名常量
   }
   // 获取API基础地址
   static getApiBaseUrl(): string {
-    return this.get<string>(this.KEYS.API_BASE_URL) || 'http://localhost:5000';
+    return this.get<string>(this.KEYS.API_BASE_URL) || 'https://zfjw.api.liuyuan.top';
   }
 
   // 设置API基础地址

@@ -1,0 +1,294 @@
+/* 教学评价页面样式 */
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 状态栏 */
+.status-bar {
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.status-number {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.status-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 课程列表 */
+.course-list {
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.course-item {
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.course-item:last-child {
+  border-bottom: none;
+}
+
+.course-item:active {
+  background-color: #f8f8f8;
+}
+
+.course-item-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 20rpx;
+}
+
+.course-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.course-title-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.course-name {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.course-teacher {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.course-sub-row {
+  display: flex;
+  flex-direction: row;
+  gap: 16rpx;
+  margin-top: 6rpx;
+}
+
+.course-class, .course-college {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.course-status-block {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  min-width: 120rpx;
+  justify-content: flex-end;
+  height: 44rpx;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36rpx;
+  min-width: 80rpx;
+  padding: 0 20rpx;
+  border-radius: 18rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  box-sizing: border-box;
+  margin-right: 0;
+  line-height: 36rpx;
+  vertical-align: middle;
+  position: relative;
+}
+
+.status-badge text, .status-badge span {
+  display: inline-block;
+  height: 40rpx;
+  line-height: 40rpx;
+  vertical-align: middle;
+  position: relative;
+  top: 0;
+}
+
+.status-badge.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.evaluated {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.course-arrow {
+  color: #ccc;
+  font-size: 30rpx;
+  margin-left: 0;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+}
+
+.loading-icon {
+  font-size: 60rpx;
+  margin-bottom: 20rpx;
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 错误状态 */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 60rpx;
+  margin-bottom: 20rpx;
+}
+
+.error-text {
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 30rpx;
+  line-height: 1.5;
+}
+
+.retry-btn {
+  background: #007aff;
+  color: white;
+  border: none;
+  border-radius: 8rpx;
+  padding: 20rpx 40rpx;
+  font-size: 28rpx;
+}
+
+.retry-btn:active {
+  background: #0056b3;
+}
+
+.auto-evaluate-bar {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin: 24rpx 0 16rpx 0;
+  background: white;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  padding: 30rpx 20rpx;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.auto-evaluate-btn {
+  background: #007aff;
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 30rpx;
+  padding: 12rpx 36rpx;
+  border: none;
+}
+
+.auto-evaluate-btn[disabled] {
+  background: #ccc;
+  color: #999;
+}
+
+.auto-evaluate-result {
+  font-size: 28rpx;
+  color: #007aff;
+}
+
+.refresh-btn {
+  background: #f8f9fa;
+  color: #007aff;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  padding: 12rpx 28rpx;
+  border: 2rpx solid #e0e0e0;
+  margin-left: 12rpx;
+  transition: background 0.2s;
+}
+.refresh-btn:active {
+  background: #e6f0ff;
+}
+.refresh-btn[disabled] {
+  color: #bbb;
+  border-color: #eee;
+  background: #f8f9fa;
+} 

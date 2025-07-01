@@ -39,14 +39,6 @@
       <text class="refresh-icon">🔄</text>
     </view>
   </view>
-  <!-- 新增：成绩接口类型切换提示 -->
-  <view class="api-type-bar">
-    <text>成绩接口：</text>
-    <text class="api-type-value">{{gradeApiType === 'detail' ? '详细成绩' : '普通成绩'}}</text>
-    <button class="api-type-btn" size="mini" bindtap="onGradeApiTypeChange" data-value="{{gradeApiType === 'detail' ? 'normal' : 'detail'}}">
-      切换为{{gradeApiType === 'detail' ? '普通' : '详细'}}
-    </button>
-  </view>
 
   <!-- 成绩统计 -->
   <view class="grade-stats" wx:if="{{gradeList.length > 0}}">

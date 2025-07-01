@@ -11,7 +11,10 @@
     "pages/export/export",
     "pages/classroom/classroom",
     "pages/schedule-settings/schedule-settings",
-    "pages/profile-detail/profile-detail"
+    "pages/profile-detail/profile-detail",
+    "pages/evaluate/evaluate",
+    "pages/evaluate-detail/evaluate-detail",
+    "pages/official-jw/official-jw"
   ],
   "window": {
     "navigationBarTextStyle": "black",

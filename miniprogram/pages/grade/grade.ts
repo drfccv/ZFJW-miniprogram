@@ -53,19 +53,21 @@ Page({
     termIndex: 0,
     lastUpdateTime: '', // 最后更新时间显示文本
     isFromCache: false,  // 是否来自缓存
-    gradeApiType: 'normal', // normal/detail
+    gradeApiType: 'normal', // 新增成绩接口类型
   },
   onLoad() {
     this.initData();
     // 读取成绩接口类型
-    let gradeApiType = StorageService.get('gradeApiType');
-    if (typeof gradeApiType !== 'string') gradeApiType = 'normal';
+    const gradeApiType = String(StorageService.get('gradeApiType') || 'normal');
     this.setData({ gradeApiType });
     this.loadGrades();
   },
   onShow() {
     // 如果数据为空，重新加载
     if (this.data.gradeList.length === 0) {
+      // 读取成绩接口类型
+      const gradeApiType = String(StorageService.get('gradeApiType') || 'normal');
+      this.setData({ gradeApiType });
       this.loadGrades();
     } else {
       // 检查缓存是否仍然有效
@@ -85,6 +87,9 @@ Page({
             earnedCredits: 0
           }
         });
+        // 读取成绩接口类型
+        const gradeApiType = String(StorageService.get('gradeApiType') || 'normal');
+        this.setData({ gradeApiType });
         this.loadGrades();
       }
     }
@@ -93,10 +98,8 @@ Page({
   onPullDownRefresh() {
     // 下拉刷新时强制从网络获取
     const refreshPromise = this.loadGrades(true);
-    if (refreshPromise && typeof refreshPromise.finally === 'function') {
-      refreshPromise.finally(() => {
-        wx.stopPullDownRefresh();
-      });
+    if (refreshPromise && typeof refreshPromise.then === 'function') {
+      refreshPromise.then(() => wx.stopPullDownRefresh()).catch(() => wx.stopPullDownRefresh());
     } else {
       wx.stopPullDownRefresh();
     }
@@ -170,173 +173,70 @@ Page({
     });
   },// 加载成绩
   async loadGrades(forceRefresh: boolean = false) {
-    const gradeApiType = this.data.gradeApiType || StorageService.get('gradeApiType') || 'normal';
-    // 检查登录状态
-    const apiParams = AuthUtils.getApiParamsWithTerm(this.data.currentYear, this.data.currentTerm);
-    if (!apiParams) {
-      return;
-    }
-    if (gradeApiType === 'detail') {
-      // 详细成绩接口缓存key分开
-      if (!forceRefresh) {
-        const cached = StorageService.getCachedGradeDetail(this.data.currentYear, this.data.currentTerm);
-        if (cached) {
-          this.setData({
-            gradeList: cached,
-            gradeStats: this.calculateStats(cached),
-            lastUpdateTime: '（从缓存加载）',
-            isFromCache: true
-          });
-          this.loadGrades(true);
+    const gradeApiType = this.data.gradeApiType || String(StorageService.get('gradeApiType') || 'normal');
+    this.setData({ loading: true });
+    try {
+      const apiParams = AuthUtils.getApiParamsWithTerm(this.data.currentYear, this.data.currentTerm);
+      if (!apiParams) {
+        this.setData({ loading: false });
+        return;
+      }
+      let result;
+      if (gradeApiType === 'detail') {
+        result = await ApiService.getGradeDetail(apiParams);
+      } else {
+        result = await ApiService.getGrade(apiParams);
+      }
+      if (result.code === 1000 && result.data) {
+        let coursesData = [];
+        const responseData = result.data as any;
+        if (responseData.data && responseData.data.courses && Array.isArray(responseData.data.courses)) {
+          coursesData = responseData.data.courses;
+        } else if (responseData.courses && Array.isArray(responseData.courses)) {
+          coursesData = responseData.courses;
+        } else if (Array.isArray(responseData)) {
+          coursesData = responseData;
+        } else if (responseData.data && Array.isArray(responseData.data)) {
+          coursesData = responseData.data;
+        }
+        if (!Array.isArray(coursesData) || coursesData.length === 0) {
+          wx.showToast({ title: '暂无成绩数据', icon: 'none' });
           return;
         }
+        const gradeData = coursesData.map((course: any, index: number) => {
+          const converted = {
+            courseName: course.title || course.courseName || course.name || course.course_name || '未知课程',
+            teacher: course.teacher || course.teacher_name || course.instructor || '',
+            credit: parseFloat(course.credit || course.credits || course.xf || '0') || 0,
+            courseType: course.category || course.courseType || course.nature || course.type || course.course_type || '',
+            totalScore: course.grade || course.totalScore || course.score || course.cj || '未出分',
+            gpa: parseFloat(course.grade_point || course.gpa || course.jd || '0') || undefined,
+            gradeNature: course.grade_nature || course.gradeNature || '',
+            mark: course.mark || course.bz || '',
+            startCollege: course.start_college || course.startCollege || course.college || '',
+            courseId: course.course_id || course.courseId || course.id || '',
+            className: course.class_name || course.className || course.class || '',
+            gradeClass: this.getGradeClass(course.grade || course.totalScore || course.score || course.cj || '未出分'),
+            expanded: false,
+          };
+          return converted;
+        });
+        const gradeList = Array.isArray(gradeData) ? gradeData : [];
+        const gradeStats = this.calculateStats(gradeList);
+        this.setData({
+          gradeList,
+          gradeStats,
+          lastUpdateTime: '（刚刚刷新）',
+          isFromCache: false
+        });
+        wx.showToast({ title: `加载成功，共${gradeList.length}门课程`, icon: 'success' });
+      } else {
+        AuthUtils.handleApiError(result.code, result.msg);
       }
-      this.setData({ loading: true });
-      try {
-        const result = await ApiService.getGradeDetail(apiParams);
-        // 兼容API响应结构，正确获取items
-        let items: any[] = [];
-        if (result && result.data) {
-          if (Array.isArray(result.data.items)) {
-            items = result.data.items;
-          } else if (result.data.data && Array.isArray(result.data.data.items)) {
-            items = result.data.data.items;
-          }
-        }
-        if (result.code === 1000 && items.length > 0) {
-          // 合并同一课程的所有成绩项
-          const courseMap: { [kch_id: string]: Grade } = {};
-          items.forEach((item: any) => {
-            const kch_id = item.kch_id || item.kch || item.courseId || item.kcmc;
-            if (!courseMap[kch_id]) {
-              courseMap[kch_id] = {
-                courseName: item.kcmc,
-                courseId: item.kch_id || item.kch,
-                credit: parseFloat(item.xf || '0'),
-                className: item.jxbmc,
-                startCollege: item.kkbmmc,
-                detailItems: [],
-                totalScore: '',
-                gpa: undefined,
-                gradeNature: '',
-                mark: '',
-                expanded: false,
-              };
-            }
-            // 分类成绩，全部push，解析权重
-            let weight = '';
-            if (item.xmblmc) {
-              const match = item.xmblmc.match(/\(([^)]*)\)/);
-              if (match) weight = match[1];
-            }
-            courseMap[kch_id].detailItems!.push({ xmblmc: item.xmblmc, xmcj: item.xmcj, weight });
-            // 识别总评成绩
-            if (
-              item.xmblmc &&
-              (item.xmblmc.includes('总评') ||
-                item.xmblmc.includes('总成绩') ||
-                item.xmblmc === '总评成绩' ||
-                item.xmblmc === '总评')
-            ) {
-              courseMap[kch_id].totalScore = item.xmcj;
-            }
-          });
-          // 组装gradeList，主卡片显示总评，平时/期中/期末等直接在主卡片下方展示
-          const gradeList = Object.values(courseMap).map(course => {
-            // 控制台输出格式化后的课程明细
-            const logDetail = course.detailItems.map(d => `${d.xmblmc}: ${d.xmcj}${d.weight ? `（${d.weight}）` : ''}`).join('，');
-            console.log(`课程：${course.courseName}，明细：${logDetail}`);
-            return { ...course, gradeClass: this.getGradeClass(course.totalScore) };
-          });
-          StorageService.cacheGradeDetail(this.data.currentYear, this.data.currentTerm, gradeList);
-          this.setData({
-            gradeList,
-            gradeStats: this.calculateStats(gradeList),
-            lastUpdateTime: '（刚刚刷新）',
-            isFromCache: false
-          });
-          wx.showToast({ title: `加载成功，共${gradeList.length}门课程`, icon: 'success' });
-        } else {
-          AuthUtils.handleApiError(result.code, result.msg);
-        }
-      } catch (error) {
-        wx.showToast({ title: '加载失败', icon: 'none' });
-      }
-      this.setData({ loading: false });
-      return;
-    } else {
-      // 普通成绩接口缓存key分开
-      if (!forceRefresh) {
-        const cachedGrade = StorageService.getCachedGrade(this.data.currentYear, this.data.currentTerm);
-        if (cachedGrade) {
-          const gradeList = Array.isArray(cachedGrade) ? cachedGrade : [];
-          const gradeStats = this.calculateStats(gradeList);
-          this.setData({
-            gradeList,
-            gradeStats,
-            lastUpdateTime: `（${StorageService.formatUpdateTime(Date.now())}）`,
-            isFromCache: true
-          });
-          this.loadGrades(true);
-          return;
-        }
-      }
-      this.setData({ loading: true });
-      try {
-        const result = await ApiService.getGrade(apiParams);
-        if (result.code === 1000 && result.data) {
-          let coursesData = [];
-          const responseData = result.data as any;
-          if (responseData.data && responseData.data.courses && Array.isArray(responseData.data.courses)) {
-            coursesData = responseData.data.courses;
-          } else if (responseData.courses && Array.isArray(responseData.courses)) {
-            coursesData = responseData.courses;
-          } else if (Array.isArray(responseData)) {
-            coursesData = responseData;
-          } else if (responseData.data && Array.isArray(responseData.data)) {
-            coursesData = responseData.data;
-          }
-          if (!Array.isArray(coursesData) || coursesData.length === 0) {
-            wx.showToast({ title: '暂无成绩数据', icon: 'none' });
-            return;
-          }
-          const gradeData = coursesData.map((course: any, index: number) => {
-            const converted = {
-              courseName: course.title || course.courseName || course.name || course.course_name || '未知课程',
-              teacher: course.teacher || course.teacher_name || course.instructor || '',
-              credit: parseFloat(course.credit || course.credits || course.xf || '0') || 0,
-              courseType: course.category || course.courseType || course.nature || course.type || course.course_type || '',
-              totalScore: course.grade || course.totalScore || course.score || course.cj || '未出分',
-              gpa: parseFloat(course.grade_point || course.gpa || course.jd || '0') || undefined,
-              gradeNature: course.grade_nature || course.gradeNature || '',
-              mark: course.mark || course.bz || '',
-              startCollege: course.start_college || course.startCollege || course.college || '',
-              courseId: course.course_id || course.courseId || course.id || '',
-              className: course.class_name || course.className || course.class || '',
-              gradeClass: this.getGradeClass(course.grade || course.totalScore || course.score || course.cj || '未出分'),
-              expanded: false,
-            };
-            return converted;
-          });
-          StorageService.cacheGrade(this.data.currentYear, this.data.currentTerm, gradeData);
-          const gradeList = Array.isArray(gradeData) ? gradeData : [];
-          const gradeStats = this.calculateStats(gradeList);
-          this.setData({
-            gradeList,
-            gradeStats,
-            lastUpdateTime: '（刚刚刷新）',
-            isFromCache: false
-          });
-          wx.showToast({ title: `加载成功，共${gradeList.length}门课程`, icon: 'success' });
-        } else {
-          AuthUtils.handleApiError(result.code, result.msg);
-        }
-      } catch (error) {
-        wx.showToast({ title: '加载失败', icon: 'none' });
-      }
-      this.setData({ loading: false });
-      return;
+    } catch (error) {
+      wx.showToast({ title: '加载失败', icon: 'none' });
     }
+    this.setData({ loading: false });
   },
   // 计算成绩统计
   calculateStats(gradeList: Grade[]): GradeStats {
@@ -461,23 +361,6 @@ Page({
   showGradeDetail(e: any) {
     const index = e.currentTarget.dataset.index;
     const grade = this.data.gradeList[index];
-    // 详细模式下展示所有明细项（包括实验成绩等所有项目）
-    if (this.data.gradeApiType === 'detail' && Array.isArray(grade.detailItems)) {
-      const detailList = grade.detailItems;
-      let content = '';
-      if (detailList.length === 0) {
-        content = '暂无详细成绩';
-      } else {
-        content = detailList.map(item => `${item.xmblmc}：${item.xmcj}`).join('\n');
-      }
-      wx.showModal({
-        title: '成绩明细',
-        content,
-        showCancel: false,
-        confirmText: '确定'
-      });
-      return;
-    }
     // 普通模式下保持原有内容
     let content = `课程名称：${grade.courseName}`;
     if (grade.teacher) content += `\n任课教师：${grade.teacher}`;
@@ -543,14 +426,6 @@ Page({
       
       this.loadGrades();
     });
-  },
-  // 切换成绩接口类型（供成绩页切换用）
-  onGradeApiTypeChange(e: any) {
-    const value = e.currentTarget.dataset.value;
-    this.setData({ gradeApiType: value });
-    StorageService.set('gradeApiType', value);
-    wx.showToast({ title: '已切换', icon: 'success' });
-    this.loadGrades(true);
   },
   // 新增：展开/收起详细成绩方法
   toggleExpand(e: any) {
