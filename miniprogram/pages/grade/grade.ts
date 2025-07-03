@@ -34,8 +34,8 @@ interface GradeStats {
 
 Page({
   data: {
-    currentYear: new Date().getFullYear(),
-    currentTerm: 1,
+    currentYear: new Date().getFullYear() as number | null,
+    currentTerm: 1 as number | null,
     gradeList: [] as Grade[],
     gradeStats: {
       totalCourses: 0,
@@ -71,7 +71,7 @@ Page({
       this.loadGrades();
     } else {
       // 检查缓存是否仍然有效
-      const cachedData = StorageService.getCachedGrade(this.data.currentYear, this.data.currentTerm);
+      const cachedData = StorageService.getCachedGrade(this.data.currentYear != null ? this.data.currentYear : 0, this.data.currentTerm != null ? this.data.currentTerm : 0);
       if (!cachedData || !Array.isArray(cachedData) || cachedData.length === 0) {
         console.log('检测到成绩缓存已被清除，重新加载数据');
         this.setData({ 
@@ -97,7 +97,7 @@ Page({
 
   onPullDownRefresh() {
     // 下拉刷新时强制从网络获取
-    const refreshPromise = this.loadGrades(true);
+    const refreshPromise = this.loadGrades();
     if (refreshPromise && typeof refreshPromise.then === 'function') {
       refreshPromise.then(() => wx.stopPullDownRefresh()).catch(() => wx.stopPullDownRefresh());
     } else {
@@ -154,15 +154,16 @@ Page({
     for (let i = academicYear - 3; i <= academicYear + 1; i++) {
       yearRange.push(`${i}-${i + 1}`);
     }
+    yearRange.push('全部学年');
 
     const yearIndex = yearRange.findIndex(year => year === `${academicYear}-${academicYear + 1}`);
 
     this.setData({
       currentYear: academicYear,
-      currentTerm,
+      currentTerm: currentTerm,
       yearRange,
-      yearIndex: yearIndex >= 0 ? yearIndex : Math.floor(yearRange.length / 2),
-      termIndex: currentTerm - 1
+      yearIndex: yearIndex >= 0 ? yearIndex : yearRange.length - 1,
+      termIndex: currentTerm
     });
     
     console.log('成绩页面初始化完成:', {
@@ -172,11 +173,11 @@ Page({
       yearIndex: this.data.yearIndex
     });
   },// 加载成绩
-  async loadGrades(forceRefresh: boolean = false) {
+  async loadGrades() {
     const gradeApiType = this.data.gradeApiType || String(StorageService.get('gradeApiType') || 'normal');
     this.setData({ loading: true });
     try {
-      const apiParams = AuthUtils.getApiParamsWithTerm(this.data.currentYear, this.data.currentTerm);
+      const apiParams = AuthUtils.getApiParamsWithTerm(this.data.currentYear != null ? this.data.currentYear : undefined, this.data.currentTerm != null ? this.data.currentTerm : undefined);
       if (!apiParams) {
         this.setData({ loading: false });
         return;
@@ -203,20 +204,20 @@ Page({
           wx.showToast({ title: '暂无成绩数据', icon: 'none' });
           return;
         }
-        const gradeData = coursesData.map((course: any, index: number) => {
+        const gradeData = coursesData.map((course: any) => {
           const converted = {
             courseName: course.title || course.courseName || course.name || course.course_name || '未知课程',
             teacher: course.teacher || course.teacher_name || course.instructor || '',
             credit: parseFloat(course.credit || course.credits || course.xf || '0') || 0,
             courseType: course.category || course.courseType || course.nature || course.type || course.course_type || '',
-            totalScore: course.grade || course.totalScore || course.score || course.cj || '未出分',
+            totalScore: course.grade || course.totalScore || course.score || course.cj || '无',
             gpa: parseFloat(course.grade_point || course.gpa || course.jd || '0') || undefined,
             gradeNature: course.grade_nature || course.gradeNature || '',
             mark: course.mark || course.bz || '',
             startCollege: course.start_college || course.startCollege || course.college || '',
             courseId: course.course_id || course.courseId || course.id || '',
             className: course.class_name || course.className || course.class || '',
-            gradeClass: this.getGradeClass(course.grade || course.totalScore || course.score || course.cj || '未出分'),
+            gradeClass: this.getGradeClass(course.grade || course.totalScore || course.score || course.cj || '无'),
             expanded: false,
           };
           return converted;
@@ -251,27 +252,13 @@ Page({
     let earnedCredits = 0;
 
     gradeList.forEach(grade => {
-      // 详细模式下优先用总评分数和学分计算GPA
       let score = 0;
       if (grade.totalScore && !isNaN(Number(grade.totalScore))) {
         score = parseFloat(grade.totalScore.toString());
       }
       const credit = parseFloat((grade.credit && grade.credit.toString()) || '0');
-      // GPA算法：常见4分制
-      let gpa = 0;
-      if (!isNaN(score)) {
-        if (score >= 90) gpa = 4.0;
-        else if (score >= 85) gpa = 3.7;
-        else if (score >= 82) gpa = 3.3;
-        else if (score >= 78) gpa = 3.0;
-        else if (score >= 75) gpa = 2.7;
-        else if (score >= 72) gpa = 2.3;
-        else if (score >= 68) gpa = 2.0;
-        else if (score >= 66) gpa = 1.7;
-        else if (score >= 64) gpa = 1.5;
-        else if (score >= 60) gpa = 1.0;
-        else gpa = 0;
-      }
+      // GPA算法：直接用获取到的绩点
+      let gpa = grade.gpa != null ? grade.gpa : 0;
       // 统计总学分
       if (credit > 0) {
         totalCredits += credit;
@@ -381,51 +368,37 @@ Page({
   // 学年变更
   onYearChange(e: any) {
     const yearIndex = e.detail.value;
-    const yearStr = this.data.yearRange[yearIndex];
-    const year = parseInt(yearStr.split('-')[0]);
-    
-    console.log('成绩页面学年变更:', yearStr, '→', year);
-    
-    this.setData({
-      yearIndex,
-      currentYear: year
-    });
-    
-    // 保存到存储
-    StorageService.setCurrentTerm(year, this.data.currentTerm);
-    
+    if (yearIndex === this.data.yearRange.length - 1) {
+      this.setData({
+        yearIndex,
+        currentYear: 0
+      });
+    } else {
+      const yearStr = this.data.yearRange[yearIndex];
+      const year = parseInt(yearStr.split('-')[0]);
+      this.setData({
+        yearIndex,
+        currentYear: year
+      });
+    }
+    StorageService.setCurrentTerm(this.data.currentYear != null ? this.data.currentYear : 0, this.data.currentTerm != null ? this.data.currentTerm : 0);
     this.loadGrades();
   },  // 学期变更
   onTermChange(e: any) {
     const termIndex = parseInt(e.detail.value);
-    const term = termIndex + 1;
-    
-    console.log('成绩页面学期变更事件:', {
-      eventDetail: e.detail,
-      parsedTermIndex: termIndex,
-      oldTermIndex: this.data.termIndex,
-      newTermIndex: termIndex,
-      oldTerm: this.data.currentTerm,
-      newTerm: term,
-      termName: term === 1 ? '第一学期' : '第二学期'
-    });
-    
-    // 确保数据类型正确
-    this.setData({
-      termIndex: termIndex,
-      currentTerm: term
-    }, () => {
-      // 在setData完成后执行回调
-      console.log('成绩页面学期变更后的数据:', {
-        termIndex: this.data.termIndex,
-        currentTerm: this.data.currentTerm
+    if (termIndex === 0) {
+      this.setData({
+        termIndex,
+        currentTerm: 0
       });
-      
-      // 保存到存储
-      StorageService.setCurrentTerm(this.data.currentYear, term);
-      
-      this.loadGrades();
-    });
+    } else {
+      this.setData({
+        termIndex,
+        currentTerm: termIndex
+      });
+    }
+    StorageService.setCurrentTerm(this.data.currentYear != null ? this.data.currentYear : 0, this.data.currentTerm != null ? this.data.currentTerm : 0);
+    this.loadGrades();
   },
   // 新增：展开/收起详细成绩方法
   toggleExpand(e: any) {

@@ -24,13 +24,13 @@
     <picker
       class="hidden-picker"
       mode="selector"
-      range="{{['第一学期', '第二学期']}}"
+      range="{{['全部学期', '第一学期', '第二学期']}}"
       value="{{termIndex}}"
       bindchange="onTermChange"
     >
       <view class="selector-item">
         <text class="selector-label">学期:</text>
-        <text class="selector-value">{{termIndex === 0 ? '第一学期' : '第二学期'}}</text>
+        <text class="selector-value">{{['全部学期', '第一学期', '第二学期'][termIndex]}}</text>
         <text class="selector-arrow">▼</text>
       </view>
     </picker>
@@ -103,7 +103,7 @@
         </block>
       </view>
       <view class="grade-info align-right">
-        <view class="score-badge {{item.gradeClass}}">{{item.totalScore || '未出分'}}</view>
+        <view class="score-badge {{item.gradeClass}}">{{item.totalScore || '无'}}</view>
       </view>
       <!-- 详细成绩模式下：取消展开明细，点击卡片弹窗显示所有明细 -->
     </view>
