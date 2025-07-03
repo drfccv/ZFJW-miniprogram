@@ -22,7 +22,7 @@
         <text class="day-date">{{item.date}}</text>
       </view>
     </view><!-- 课表内容 -->
-    <view class="schedule-body">      <view 
+    <view class="schedule-body {{animationClass}}">      <view 
         class="schedule-row" 
         style="height: max(calc((100vh - 300rpx) / {{maxPeriods}}), 80rpx);"
         wx:for="{{mergedScheduleGrid}}" 

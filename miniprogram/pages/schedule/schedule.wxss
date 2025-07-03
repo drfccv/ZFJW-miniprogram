@@ -205,6 +205,7 @@
   background: #ffffff;
   box-sizing: border-box;
   overflow: hidden;
+  transition: opacity 0.25s;
 }
 
 .course-cell.has-course {
@@ -239,6 +240,14 @@
   background: transparent;
   border: none;
   margin: 0;
+}
+
+.course-cell.fade-out {
+  opacity: 0;
+}
+
+.course-cell.fade-in {
+  opacity: 1;
 }
 
 /* 课程内容容器 */
@@ -574,4 +583,48 @@
 .detail-confirm-btn:active {
   background: #0056CC;
   transform: translateY(2rpx);
+}
+
+.slide-left {
+  animation: slideLeft 0.3s;
+}
+.slide-right {
+  animation: slideRight 0.3s;
+}
+@keyframes slideLeft {
+  from { transform: translateX(100%); opacity: 0.5; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideRight {
+  from { transform: translateX(-100%); opacity: 0.5; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+.slide-out-left {
+  animation: slideOutLeft 0.25s forwards;
+}
+.slide-in-left {
+  animation: slideInLeft 0.25s forwards;
+}
+.slide-out-right {
+  animation: slideOutRight 0.25s forwards;
+}
+.slide-in-right {
+  animation: slideInRight 0.25s forwards;
+}
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(-100%); opacity: 0.5; }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(100%); opacity: 0.5; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0.5; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(-100%); opacity: 0.5; }
+  to   { transform: translateX(0); opacity: 1; }
 }

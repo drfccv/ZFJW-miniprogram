@@ -88,7 +88,8 @@ Page({  data: {
       { period: 10, time: '19:55-20:40' },
       { period: 11, time: '20:50-21:35' }    ] as TimeSlot[],    // 课程详情弹窗相关
     showCourseDetailModal: false,
-    courseDetail: null as Course | null
+    courseDetail: null as Course | null,
+    animationClass: ''
   },  onLoad() {
     console.log('课表页面加载');
     this.initData();
@@ -329,28 +330,27 @@ Page({  data: {
   // 滑动手势结束
   onTouchEnd(e: any) {
     const touchEndX = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
     const deltaX = touchEndX - this.data.touchStartX;
-    const deltaY = touchEndY - this.data.touchStartY;
-    
-    // 判断是否为有效的水平滑动（水平距离大于垂直距离且大于阈值）
-    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-      const settings = this.loadScheduleSettings();
-      const totalWeeks = settings.totalWeeks || 20;
-      
-      if (deltaX > 0) {
-        // 向右滑动，显示上一周
-        this.changeWeek(-1, totalWeeks);
-      } else {
-        // 向左滑动，显示下一周
-        this.changeWeek(1, totalWeeks);
-      }
+    const minSwipeDistance = 50;
+    if (Math.abs(deltaX) > minSwipeDistance) {
+      const direction = deltaX > 0 ? -1 : 1; // 右滑上一周，左滑下一周
+      const outClass = direction === 1 ? 'slide-out-left' : 'slide-out-right';
+      const inClass = direction === 1 ? 'slide-in-left' : 'slide-in-right';
+      this.setData({ animationClass: outClass });
+      setTimeout(() => {
+        const settings = this.loadScheduleSettings();
+        const totalWeeks = settings.totalWeeks || 20;
+        this.changeWeek(direction, totalWeeks);
+        this.setData({ animationClass: inClass });
+        setTimeout(() => {
+          this.setData({ animationClass: '' });
+        }, 250);
+      }, 250);
     }
   },
   // 切换周次
   changeWeek(direction: number, totalWeeks: number) {
     const newWeek = this.data.currentWeek + direction;
-    
     // 边界检查
     if (newWeek < 1 || newWeek > totalWeeks) {
       wx.showToast({
@@ -360,19 +360,12 @@ Page({  data: {
       });
       return;
     }
-      console.log('手动切换周次:', this.data.currentWeek, '->', newWeek);
+    console.log('手动切换周次:', this.data.currentWeek, '->', newWeek);
     this.setData({ currentWeek: newWeek }, () => {
       // 在 setData 完成后更新日期头部和课表网格
       const settings = this.loadScheduleSettings();
       this.updateDayHeaders(settings.weekStartDay);
       this.updateScheduleGrid();
-    });
-    
-    // 显示切换提示
-    wx.showToast({
-      title: `第${newWeek}周`,
-      icon: 'none',
-      duration: 800
     });
   },
 
