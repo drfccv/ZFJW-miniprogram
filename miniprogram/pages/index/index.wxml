@@ -61,27 +61,6 @@
     </view>
   </view>
 
-  <!-- 今日课程 -->
-  <view class="today-schedule" wx:if="{{todayClasses.length > 0}}">
-    <text class="section-title">今日课程</text>
-    <view class="schedule-list">
-      <view 
-        class="schedule-item" 
-        wx:for="{{todayClasses}}" 
-        wx:key="index"
-      >
-        <view class="schedule-time">
-          <text class="time-text">{{item.time}}</text>
-        </view>
-        <view class="schedule-content">
-          <text class="course-name">{{item.courseName}}</text>
-          <text class="course-location">{{item.location}}</text>
-          <text class="course-teacher">{{item.teacher}}</text>
-        </view>
-      </view>
-    </view>
-  </view>
-
   <!-- 登录提示 -->
   <view class="login-prompt" wx:if="{{!isLoggedIn}}">
     <text class="prompt-title">请先登录</text>

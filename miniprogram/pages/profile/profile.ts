@@ -34,7 +34,7 @@ Page({  data: {
     AuthUtils.checkLoginStatus();
     this.loadUserInfo();
     // 读取成绩接口类型
-    const gradeApiType = StorageService.get('gradeApiType') || 'normal';
+    const gradeApiType = String(StorageService.get('gradeApiType') || 'normal');
     this.setData({ gradeApiType });
   },
 
@@ -492,13 +492,8 @@ QQ：2713587802
 
   // 跳转到官方教务webview页面
   goToOfficialJw() {
-    const loginInfo = StorageService.getLoginInfo();
-    if (!loginInfo || !loginInfo.cookies) {
-      wx.showToast({ title: '请先登录', icon: 'none' });
-      return;
-    }
     wx.navigateTo({
-      url: `/pages/official-jw/official-jw?cookie=${encodeURIComponent(typeof loginInfo.cookies === 'string' ? loginInfo.cookies : JSON.stringify(loginInfo.cookies))}`
+      url: '/pages/official-jw/official-jw'
     });
   },
 });

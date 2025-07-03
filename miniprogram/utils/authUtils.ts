@@ -106,16 +106,15 @@ export class AuthUtils {
    * @param term 学期
    * @returns API请求参数，如果未登录返回null
    */
-  static getApiParamsWithTerm(year: number, term: number): { cookies: any; school_name: string; year: number; term: number } | null {
+  static getApiParamsWithTerm(year?: number | null, term?: number | null): { cookies: any; school_name: string; year: number; term: number } | null {
     const baseParams = this.getApiParams();
     if (!baseParams) {
       return null;
     }
-    
     return {
       ...baseParams,
-      year,
-      term
+      year: year != null ? year : 0,
+      term: term != null ? term : 0
     };
   }
 }

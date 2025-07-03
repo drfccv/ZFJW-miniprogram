@@ -7,13 +7,6 @@ interface UserInfo {
   [key: string]: any;
 }
 
-interface TodayClass {
-  time: string;
-  courseName: string;
-  location: string;
-  teacher: string;
-}
-
 interface Notification {
   title: string;
   time: string;
@@ -26,7 +19,6 @@ Page({
     userInfo: null as UserInfo | null,
     isLoggedIn: false,
     weather: '',
-    todayClasses: [] as TodayClass[],
     notifications: [] as Notification[],
     notificationUpdateTime: '' // 通知更新时间显示文本
   },
@@ -55,56 +47,7 @@ Page({
 
   // 加载数据
   async loadData() {
-    await Promise.all([
-      this.loadTodaySchedule(),
-      this.loadNotifications()
-    ]);
-  },
-
-  // 加载今日课程
-  async loadTodaySchedule() {
-    try {
-      const loginInfo = StorageService.getLoginInfo();
-      if (!loginInfo) return;
-
-      const currentTerm = StorageService.getCurrentTerm();
-      if (!currentTerm) {
-        // 默认使用当前学期
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
-        const term = month >= 2 && month <= 7 ? 2 : 1; // 2-7月为春季学期，8-1月为秋季学期
-        StorageService.setCurrentTerm(year, term);
-      }
-
-      const term = currentTerm || { year: new Date().getFullYear(), term: 1 };
-      
-      // 先尝试从缓存获取
-      let scheduleData = StorageService.getCachedSchedule(term.year, term.term);
-      
-      if (!scheduleData) {
-        // 缓存中没有数据，从API获取
-        const result = await ApiService.getSchedule({
-          cookies: loginInfo.cookies,
-          school_name: loginInfo.schoolName,
-          year: term.year,
-          term: term.term
-        });
-
-        if (result.code === 1000 && result.data) {
-          scheduleData = result.data;
-          StorageService.cacheSchedule(term.year, term.term, scheduleData);
-        }
-      }
-
-      if (scheduleData) {
-        // 解析今日课程
-        const todayClasses = this.parseTodayClasses(scheduleData);
-        this.setData({ todayClasses });
-      }
-    } catch (error) {
-      console.error('加载今日课程失败:', error);
-    }
+    await this.loadNotifications();
   },
 
   // 加载通知消息
@@ -177,36 +120,6 @@ Page({
     });
   },
 
-  // 解析今日课程
-  parseTodayClasses(scheduleData: any): TodayClass[] {
-    const today = new Date();
-    const dayOfWeek = today.getDay(); // 0=周日, 1=周一, ..., 6=周六
-    const todayClasses: TodayClass[] = [];
-
-    if (scheduleData && Array.isArray(scheduleData)) {
-      scheduleData.forEach((course: any) => {
-        if (course.weeks && course.weeks.includes(this.getCurrentWeek())) {
-          if (course.dayOfWeek === dayOfWeek) {
-            todayClasses.push({
-              time: this.formatClassTime(course.startTime, course.endTime),
-              courseName: course.courseName || '未知课程',
-              location: course.location || '未知地点',
-              teacher: course.teacher || '未知教师'
-            });
-          }
-        }
-      });
-    }
-
-    return todayClasses.sort((a, b) => a.time.localeCompare(b.time));
-  },
-
-  // 获取当前周次（简化处理，实际应根据学期开始时间计算）
-  getCurrentWeek(): number {
-    // 这里简化处理，返回第1周，实际应该根据学期开始时间计算
-    return 1;
-  },
-
   // 格式化通知时间
   formatNotificationTime(timeStr: string): string {
     if (!timeStr) return '';
@@ -220,12 +133,6 @@ Page({
     } catch (error) {
       return timeStr;
     }
-  },
-
-  // 格式化上课时间
-  formatClassTime(startTime: string, endTime: string): string {
-    if (!startTime || !endTime) return '时间待定';
-    return `${startTime}-${endTime}`;
   },
 
   // 生成通知摘要（截取前30个字符，适合首页显示）
