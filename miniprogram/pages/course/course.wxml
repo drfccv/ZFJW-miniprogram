@@ -26,7 +26,7 @@
     >
       <view class="selector-item">
         <text class="selector-label">学年:</text>
-        <text class="selector-value">{{yearRange[yearIndex] || currentYear + '-' + (currentYear + 1)}}</text>
+        <text class="selector-value">{{yearRange[yearIndex] || '请选择学年'}}</text>
         <text class="selector-arrow">▼</text>
       </view>
     </picker>

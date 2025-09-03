@@ -72,13 +72,22 @@ Page({
       const now = new Date();
       const year = now.getFullYear();
       const month = now.getMonth() + 1; // 1-12
+      const day = now.getDate();
       
-      if (month >= 9 || month <= 1) {
-        // 9月-1月为第1学期
-        currentYear = month >= 9 ? year : year - 1;
+      // 学年和学期判断逻辑（与其他页面保持一致）
+      if (month >= 9 || (month <= 3 && day <= 1)) {
+        // 9月1日 - 次年3月1日：第一学期
+        if (month >= 9) {
+          // 9-12月：当前学年的第一学期 (如2024年9月 = 2024-2025学年第1学期)
+          currentYear = year;
+        } else {
+          // 1-3月1日：上一学年的第一学期 (如2025年1月 = 2024-2025学年第1学期)
+          currentYear = year - 1;
+        }
         currentTermNum = 1;
       } else {
-        // 2月-8月为第2学期
+        // 3月2日 - 8月31日：第二学期
+        // (如2025年6月 = 2024-2025学年第2学期)
         currentYear = year - 1;
         currentTermNum = 2;
       }
@@ -411,5 +420,21 @@ Page({
       console.error('解析考试时间失败:', timeStr, error);
       return { date: timeStr, time: '' };
     }
+  },
+
+  onShareAppMessage() {
+    return {
+      title: '考试安排 - 正方教务系统小程序',
+      path: '/pages/exam/exam',
+      imageUrl: '/images/share-default.png'
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: '考试安排 - 正方教务系统小程序',
+      query: '',
+      imageUrl: '/images/share-default.png'
+    };
   },
 });

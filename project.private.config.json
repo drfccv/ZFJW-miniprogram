@@ -19,5 +19,22 @@
     "ignoreDevUnusedFiles": true
   },
   "libVersion": "3.8.9",
-  "projectname": "ZFJW"
+  "projectname": "ZFJW",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": 1008,
+          "launchMode": "default",
+          "groupInfo": {
+            "groupIdx": 0,
+            "groupName": "测试模拟群0"
+          }
+        }
+      ]
+    }
+  }
 }

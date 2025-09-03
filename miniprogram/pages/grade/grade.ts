@@ -381,7 +381,10 @@ Page({
         currentYear: year
       });
     }
-    StorageService.setCurrentTerm(this.data.currentYear != null ? this.data.currentYear : 0, this.data.currentTerm != null ? this.data.currentTerm : 0);
+    // 仅当选择了具体学年且学期为1或2时才写入存储
+    if (this.data.currentYear && (this.data.currentTerm === 1 || this.data.currentTerm === 2)) {
+      StorageService.setCurrentTerm(this.data.currentYear, this.data.currentTerm);
+    }
     this.loadGrades();
   },  // 学期变更
   onTermChange(e: any) {
@@ -397,7 +400,10 @@ Page({
         currentTerm: termIndex
       });
     }
-    StorageService.setCurrentTerm(this.data.currentYear != null ? this.data.currentYear : 0, this.data.currentTerm != null ? this.data.currentTerm : 0);
+    // 仅当选择了具体学年且学期为1或2时才写入存储
+    if (this.data.currentYear && (this.data.currentTerm === 1 || this.data.currentTerm === 2)) {
+      StorageService.setCurrentTerm(this.data.currentYear, this.data.currentTerm);
+    }
     this.loadGrades();
   },
   // 新增：展开/收起详细成绩方法
@@ -406,5 +412,19 @@ Page({
     const gradeList = this.data.gradeList.slice();
     gradeList[index].expanded = !gradeList[index].expanded;
     this.setData({ gradeList });
+  },
+  onShareAppMessage() {
+    return {
+      title: '成绩查询 - 正方教务系统小程序',
+      path: '/pages/grade/grade',
+      imageUrl: '/images/share-default.png'
+    };
+  },
+  onShareTimeline() {
+    return {
+      title: '成绩查询 - 正方教务系统小程序',
+      query: '',
+      imageUrl: '/images/share-default.png'
+    };
   },
 });

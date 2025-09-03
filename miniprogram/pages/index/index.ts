@@ -229,4 +229,20 @@ Page({
       url: '/pages/profile-detail/profile-detail',
     });
   },
+
+  onShareAppMessage() {
+    return {
+      title: '正方教务系统小程序',
+      path: '/pages/index/index',
+      imageUrl: '/images/share-default.png'
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: '正方教务系统小程序',
+      query: '',
+      imageUrl: '/images/share-default.png'
+    };
+  },
 });

@@ -102,14 +102,32 @@ class StorageService {  // 存储键名常量
     this.remove(this.KEYS.USER_INFO);
   }
 
-  // 设置当前学期
+  // 设置当前学期（仅保存合法值：year>=1970 且 term 为 1 或 2）
   static setCurrentTerm(year: number, term: number): void {
-    this.set(this.KEYS.CURRENT_TERM, { year, term });
+    try {
+      const isValidYear = Number.isInteger(year) && year >= 1970;
+      const isValidTerm = term === 1 || term === 2;
+      if (!isValidYear || !isValidTerm) {
+        console.warn('忽略保存无效的学期设置:', { year, term });
+        return;
+      }
+      this.set(this.KEYS.CURRENT_TERM, { year, term });
+    } catch (e) {
+      console.error('保存当前学期失败:', e);
+    }
   }
 
-  // 获取当前学期
+  // 获取当前学期（若存储为非法值则返回 null）
   static getCurrentTerm(): { year: number; term: number } | null {
-    return this.get(this.KEYS.CURRENT_TERM);
+    const value = this.get<any>(this.KEYS.CURRENT_TERM);
+    if (!value || typeof value !== 'object') return null;
+    const { year, term } = value;
+    const isValidYear = Number.isInteger(year) && year >= 1970;
+    const isValidTerm = term === 1 || term === 2;
+    if (!isValidYear || !isValidTerm) {
+      return null;
+    }
+    return { year, term };
   }
 
   // 缓存课表数据
@@ -197,7 +215,7 @@ class StorageService {  // 存储键名常量
   }
   // 获取API基础地址
   static getApiBaseUrl(): string {
-    return this.get<string>(this.KEYS.API_BASE_URL) || 'https://zfjw.api.liuyuan.top';
+    return this.get<string>(this.KEYS.API_BASE_URL) || 'http://localhost:5000';
   }
 
   // 设置API基础地址

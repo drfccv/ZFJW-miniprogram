@@ -496,4 +496,20 @@ QQ：2713587802
       url: '/pages/official-jw/official-jw'
     });
   },
+
+  onShareAppMessage() {
+    return {
+      title: '我的 - 正方教务系统小程序',
+      path: '/pages/profile/profile',
+      imageUrl: '/images/share-default.png'
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: '我的 - 正方教务系统小程序',
+      query: '',
+      imageUrl: '/images/share-default.png'
+    };
+  },
 });

@@ -146,16 +146,11 @@ Page({  data: {
           academicYear = currentYear - 1;
         }
         currentTerm = 1;
-        // 选课默认显示下一学期（第二学期）
-        currentTerm = 2;
       } else {
         // 3月2日 - 8月31日：第二学期
         // (如2025年6月 = 2024-2025学年第2学期)
         academicYear = currentYear - 1;
         currentTerm = 2;
-        // 选课默认显示下一学年的第一学期
-        academicYear = academicYear + 1; // 下一学年
-        currentTerm = 1;
       }
         console.log('课程页面计算学期:', academicYear, currentTerm);
     }

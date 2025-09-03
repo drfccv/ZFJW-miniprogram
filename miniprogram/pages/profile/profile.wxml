@@ -40,9 +40,10 @@
         <text class="menu-text">教学评价</text>
       </view>
       
-      <view class="menu-item" bindtap="goToOfficialJw">
+      <view class="menu-item menu-item-disabled">
         <view class="menu-icon jw-icon">🏛️</view>
         <text class="menu-text">官方教务</text>
+        <text class="menu-status">无权限</text>
       </view>
       
       <view class="menu-item menu-item-disabled" bindtap="showComingSoon" data-feature="PDF导出">

@@ -815,4 +815,18 @@ Page({  data: {
     date.setDate(date.getDate() + daysToFirstMonday + 14); // 第三个周一
     return date.toISOString().split('T')[0];
   },
+
+  onShareAppMessage() {
+    return {
+      title: '课表 - 正方教务系统小程序',
+      path: '/pages/schedule/schedule'
+    };
+  },
+  onShareTimeline() {
+    return {
+      title: '课表 - 正方教务系统小程序',
+      query: '',
+      imageUrl: '/images/share-default.png'
+    };
+  },
 });
