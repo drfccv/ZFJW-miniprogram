@@ -31,20 +31,20 @@
       {
         "pagePath": "pages/index/index",
         "text": "首页",
-        "iconPath": "images/house.png",
-        "selectedIconPath": "images/house1.png"
+        "iconPath": "images/Home.png",
+        "selectedIconPath": "images/Home1.png"
       },
       {
         "pagePath": "pages/schedule/schedule",
         "text": "课表",
-        "iconPath": "images/Icon1.png",
-        "selectedIconPath": "images/Icon2.png"
+        "iconPath": "images/CalendarDays.png",
+        "selectedIconPath": "images/CalendarDays1.png"
       },
       {
         "pagePath": "pages/profile/profile",
-        "text": "我的",
-        "iconPath": "images/Icon3.png",
-        "selectedIconPath": "images/Icon5.png"
+        "text": "更多",
+        "iconPath": "images/Cog6Tooth.png",
+        "selectedIconPath": "images/Cog6Tooth1.png"
       }
     ],
     "position": "bottom"

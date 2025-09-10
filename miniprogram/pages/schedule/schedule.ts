@@ -63,6 +63,8 @@ Page({  data: {
     yearRange: [] as string[],
     yearIndex: 0,
     termIndex: 0,
+    // 冲突课程缓存：存储每个冲突位置的默认显示课程索引
+    conflictCache: {} as {[key: string]: number}, // key格式: "day_period", value: courseIndex
     // 滑动手势相关
     touchStartX: 0,
     touchStartY: 0,
@@ -92,12 +94,14 @@ Page({  data: {
     animationClass: ''
   },  onLoad() {
     console.log('课表页面加载');
+    this.loadConflictCache(); // 加载冲突课程缓存
     this.initData();
     this.loadFromCacheOrInit();
   },onShow() {
     console.log('课表页面显示，当前数据长度:', this.data.scheduleData.length);
     
-    // 重新加载设置（在从设置页面返回时更新）
+    // 重新加载缓存和设置（在从设置页面返回时更新）
+    this.loadConflictCache();
     const settings = this.loadScheduleSettings();
       // 检查设置是否有变化
     if (settings.currentYear !== this.data.currentYear || 
@@ -442,36 +446,176 @@ Page({  data: {
     
     return weeks;
   },// 获取课程数据
-  getCourseData(period: number, dayOfWeek: number): Course | null {
+  getCourseData(period: number, dayOfWeek: number): Course[] {
     const courses = this.data.scheduleData.filter(course => {
       const dayMatch = course.dayOfWeek === dayOfWeek;
-      const periodMatch = course.startPeriod !== undefined && 
-                         course.endPeriod !== undefined &&
-                         course.startPeriod <= period && 
-                         course.endPeriod >= period;
+      // 只在课程的第一节显示课程，避免连堂课重复显示
+      const periodMatch = course.startPeriod === period;
       const weekMatch = course.weeksList && 
                        course.weeksList.includes(this.data.currentWeek);
-      
-      // 添加调试信息（只对第一个课程显示，避免日志过多）
-      if (course === this.data.scheduleData[0] && period === 1 && dayOfWeek === 1) {
-        console.log('课程筛选调试 - 第一门课程:', {
-          courseName: course.title,
-          dayOfWeek: course.dayOfWeek,
-          dayMatch,
-          startPeriod: course.startPeriod,
-          endPeriod: course.endPeriod,
-          periodMatch,
-          weeksList: course.weeksList,
-          currentWeek: this.data.currentWeek,
-          weekMatch
-        });
-      }
       
       return dayMatch && periodMatch && weekMatch;
     });
 
+    // 如果有多个课程冲突，记录日志
+    if (courses.length > 1) {
+      console.log(`课程冲突: 第${period}节 星期${dayOfWeek} - ${courses.map(c => c.title).join(', ')}`);
+    }
+
+    return courses;
+  },
+
+  // 获取单个课程数据
+  getSingleCourseData(period: number, dayOfWeek: number): Course | null {
+    const courses = this.getCourseData(period, dayOfWeek);
     return courses.length > 0 ? courses[0] : null;
-  },  // 显示课程详情
+  },  // 获取冲突课程缓存key（不包含周次，所有周次共享同一选择）
+  getConflictCacheKey(day: number, period: number): string {
+    return `${day}_${period}`;
+  },
+
+  // 保存冲突课程选择到缓存
+  saveConflictChoice(day: number, period: number, courseIndex: number) {
+    const key = this.getConflictCacheKey(day, period);
+    const cache = { ...this.data.conflictCache };
+    cache[key] = courseIndex;
+    
+    this.setData({ conflictCache: cache });
+    
+    // 同时保存到本地存储
+    StorageService.set('conflictCache', cache);
+    console.log(`保存冲突课程选择: ${key} -> ${courseIndex}`);
+  },
+
+  // 从缓存获取冲突课程选择
+  getConflictChoice(day: number, period: number): number {
+    const key = this.getConflictCacheKey(day, period);
+    const choice = this.data.conflictCache[key];
+    return choice !== undefined ? choice : 0; // 默认返回第一个课程
+  },
+
+  // 加载冲突课程缓存
+  loadConflictCache() {
+    const cache = StorageService.get<{[key: string]: number}>('conflictCache') || {};
+    this.setData({ conflictCache: cache });
+    console.log('加载冲突课程缓存:', cache);
+  },
+
+  // 清除冲突课程缓存
+  clearConflictCache() {
+    this.setData({ conflictCache: {} });
+    StorageService.remove('conflictCache');
+    console.log('清除冲突课程缓存');
+  },
+
+  // 切换冲突课程
+  switchConflictCourse(e: any) {
+    // 微信小程序中使用 stopPropagation() 而不是 stopPropagation
+    if (e && typeof e.stopPropagation === 'function') {
+      e.stopPropagation();
+    }
+    
+    const dataset = e.currentTarget.dataset;
+    if (!dataset) {
+      console.warn('无法获取事件数据');
+      return;
+    }
+    
+    const { period, day } = dataset;
+    const periodIndex = parseInt(period);
+    const dayIndex = parseInt(day);
+    
+    console.log(`切换冲突课程: 第${periodIndex + 1}节 星期${dayIndex + 1}`);
+    
+    // 获取当前合并网格
+    const currentGrid = this.data.mergedScheduleGrid;
+    if (!currentGrid[periodIndex] || !currentGrid[periodIndex][dayIndex]) {
+      console.warn('找不到对应的网格位置');
+      return;
+    }
+    
+    const cellCourses = currentGrid[periodIndex][dayIndex];
+    if (cellCourses.length === 0) {
+      console.warn('该位置没有课程');
+      return;
+    }
+    
+    // 找到主课程（非占位符的课程）
+    const mainCourse = cellCourses.find((course: any) => !course.isPlaceholder);
+    if (!mainCourse || !mainCourse.conflictCourses || mainCourse.conflictCourses.length <= 1) {
+      console.warn('该课程没有冲突或只有一个课程');
+      return;
+    }
+    
+    // 切换到下一个课程
+    const nextIndex = (mainCourse.currentConflictIndex + 1) % mainCourse.conflictCourses.length;
+    const nextCourse = mainCourse.conflictCourses[nextIndex];
+    
+    console.log(`从 ${mainCourse.title} 切换到 ${nextCourse.title}`);
+    
+    // 保存选择到缓存
+    this.saveConflictChoice(dayIndex + 1, periodIndex + 1, nextIndex);
+    
+    // 计算新课程的节次数
+    const newCoursePeriods = nextCourse.endPeriod - nextCourse.startPeriod + 1;
+    const oldCoursePeriods = mainCourse.periods;
+    
+    // 更新主课程
+    const updatedMainCourse = {
+      ...nextCourse,
+      periods: newCoursePeriods,
+      isFirst: true,
+      isMerged: newCoursePeriods > 1,
+      isConflict: true,
+      conflictCourses: mainCourse.conflictCourses,
+      currentConflictIndex: nextIndex
+    };
+    
+    // 更新网格中的主课程
+    const mainCourseIndex = cellCourses.findIndex((course: any) => !course.isPlaceholder);
+    if (mainCourseIndex !== -1) {
+      currentGrid[periodIndex][dayIndex][mainCourseIndex] = updatedMainCourse;
+    }
+    
+    // 清除旧的占位符（可能范围不同）
+    for (let i = 1; i < Math.max(oldCoursePeriods, newCoursePeriods); i++) {
+      const placeholderPeriod = periodIndex + i;
+      if (placeholderPeriod < currentGrid.length && placeholderPeriod >= 0) {
+        const placeholderCell = currentGrid[placeholderPeriod][dayIndex];
+        // 移除与当前课程相关的占位符
+        const filteredCell = placeholderCell.filter((course: any) => 
+          !(course.isPlaceholder && course.originalCourse && 
+            course.originalCourse.title === mainCourse.title)
+        );
+        currentGrid[placeholderPeriod][dayIndex] = filteredCell;
+      }
+    }
+    
+    // 添加新的占位符（根据新课程的节次数）
+    for (let i = 1; i < newCoursePeriods; i++) {
+      const placeholderPeriod = periodIndex + i;
+      if (placeholderPeriod < currentGrid.length && placeholderPeriod >= 0) {
+        currentGrid[placeholderPeriod][dayIndex].push({
+          ...nextCourse,
+          isPlaceholder: true,
+          isFirst: false,
+          isConflict: true,
+          conflictCourses: mainCourse.conflictCourses,
+          currentConflictIndex: nextIndex,
+          originalCourse: updatedMainCourse
+        });
+      } else if (placeholderPeriod >= currentGrid.length) {
+        console.warn(`切换后的课程占位符超出边界: 课程${nextCourse.title} 第${placeholderPeriod + 1}节 > 最大节次${currentGrid.length}`);
+      }
+    }
+    
+    // 更新数据
+    this.setData({
+      mergedScheduleGrid: currentGrid
+    });
+  },
+
+  // 显示课程详情
   showCourseDetail(e: any) {
     const course = e.currentTarget.dataset.course;
     if (!course) return;
@@ -542,9 +686,10 @@ Page({  data: {
     for (let period = 1; period <= maxPeriods; period++) {
       const row: any[] = [];
       for (let day = 1; day <= 7; day++) {
-        const course = this.getCourseData(period, day);
-        row.push(course);
-        if (course) totalCoursesInGrid++;
+        const courses = this.getCourseData(period, day);
+        // 存储课程数组，每个单元格可能包含多个课程
+        row.push(courses);
+        totalCoursesInGrid += courses.length;
       }
       grid.push(row);
     }
@@ -567,56 +712,129 @@ Page({  data: {
     for (let period = 0; period < maxPeriods; period++) {
       const row: any[] = [];
       for (let day = 0; day < 7; day++) {
-        row.push(null);
+        row.push([]);
       }
       mergedGrid.push(row);
     }
     
     // 处理每一天的课程
     for (let day = 0; day < 7; day++) {
-      const dayCourses: Array<{course: any, period: number}> = [];
-      
-      // 收集这一天的所有课程
+      // 收集每个时间段的所有课程
       for (let period = 0; period < maxPeriods; period++) {
-        const course = grid[period][day];
-        if (course) {
-          dayCourses.push({ course, period });
+        const coursesInPeriod = grid[period][day]; // 访问网格数据
+        
+        if (coursesInPeriod.length === 0) {
+          // 没有课程，保持空数组
+          continue;
+        }
+        
+        if (coursesInPeriod.length === 1) {
+          // 只有一个课程，处理连堂课显示
+          const course = coursesInPeriod[0];
+          
+          // 计算课程跨越的节次
+          const coursePeriods = course.endPeriod - course.startPeriod + 1;
+          
+          // 在第一个时间段放置完整课程
+          const courseData = {
+            ...course,
+            periods: coursePeriods,
+            isFirst: true,
+            isMerged: coursePeriods > 1,
+            isConflict: false
+          };
+          mergedGrid[period][day].push(courseData);
+          
+          // 在后续时间段放置占位符
+          for (let i = 1; i < coursePeriods; i++) {
+            const placeholderPeriod = period + i;
+            if (placeholderPeriod < maxPeriods && placeholderPeriod >= 0) {
+              mergedGrid[placeholderPeriod][day].push({
+                ...course,
+                isPlaceholder: true,
+                isFirst: false,
+                originalCourse: course
+              });
+            } else if (placeholderPeriod >= maxPeriods) {
+              console.warn(`单个课程占位符超出边界: 课程${course.title} 第${placeholderPeriod + 1}节 > 最大节次${maxPeriods}`);
+            }
+          }
+        } else {
+          // 多个课程冲突，只显示第一个课程，其他课程作为备选
+          // 首先去重，避免重复显示相同课程
+          const uniqueCourses = coursesInPeriod.filter((course: any, index: number, array: any[]) => {
+            const courseKey = `${course.title}_${course.teacher}_${course.place}`;
+            return array.findIndex((c: any) => `${c.title}_${c.teacher}_${c.place}` === courseKey) === index;
+          });
+          
+          if (uniqueCourses.length > 1) {
+            // 从缓存获取默认显示的课程索引
+            const cachedIndex = this.getConflictChoice(day + 1, period + 1);
+            const validIndex = cachedIndex < uniqueCourses.length ? cachedIndex : 0;
+            const defaultCourse = uniqueCourses[validIndex];
+            const coursePeriods = defaultCourse.endPeriod - defaultCourse.startPeriod + 1;
+            
+            const courseData = {
+              ...defaultCourse,
+              periods: coursePeriods,
+              isFirst: true,
+              isMerged: coursePeriods > 1,
+              isConflict: true,
+              conflictCourses: uniqueCourses, // 存储所有冲突课程
+              currentConflictIndex: validIndex // 当前显示的课程索引
+            };
+            mergedGrid[period][day].push(courseData);
+            
+            // 为连堂课在后续节次放置占位符
+            for (let i = 1; i < coursePeriods; i++) {
+              const placeholderPeriod = period + i;
+              if (placeholderPeriod < maxPeriods && placeholderPeriod >= 0) {
+                mergedGrid[placeholderPeriod][day].push({
+                  ...defaultCourse,
+                  isPlaceholder: true,
+                  isFirst: false,
+                  isConflict: true,
+                  conflictCourses: uniqueCourses,
+                  currentConflictIndex: validIndex,
+                  originalCourse: defaultCourse
+                });
+              } else if (placeholderPeriod >= maxPeriods) {
+                console.warn(`冲突课程占位符超出边界: 课程${defaultCourse.title} 第${placeholderPeriod + 1}节 > 最大节次${maxPeriods}`);
+              }
+            }
+            
+            console.log(`课程冲突: 第${period + 1}节 星期${day + 1} - 显示${defaultCourse.title}（索引${validIndex}），共${uniqueCourses.length}个课程可切换`);
+          } else {
+            // 只有一个唯一课程，按正常逻辑处理
+            const course = uniqueCourses[0];
+            const coursePeriods = course.endPeriod - course.startPeriod + 1;
+            
+            const courseData = {
+              ...course,
+              periods: coursePeriods,
+              isFirst: true,
+              isMerged: coursePeriods > 1,
+              isConflict: false
+            };
+            mergedGrid[period][day].push(courseData);
+            
+            for (let i = 1; i < coursePeriods; i++) {
+              const placeholderPeriod = period + i;
+              if (placeholderPeriod < maxPeriods && placeholderPeriod >= 0) {
+                mergedGrid[placeholderPeriod][day].push({
+                  ...course,
+                  isPlaceholder: true,
+                  isFirst: false,
+                  originalCourse: course
+                });
+              }
+            }
+          }
         }
       }
-      
-      // 按课程名称和时间分组，合并连堂课
-      const groupedCourses = this.groupConsecutiveCourses(dayCourses);
-      
-      // 填充到合并后的网格中
-      groupedCourses.forEach(group => {
-        const firstPeriod = group.periods[0];
-        const courseData = {
-          ...group.course,
-          periods: group.periods.length,
-          isFirst: true,
-          isMerged: group.periods.length > 1
-        };
-        
-        // 设置第一个节次为课程数据
-        mergedGrid[firstPeriod][day] = courseData;
-        
-        // 其他节次设置为占位（用于布局，但在WXML中不显示）
-        for (let i = 1; i < group.periods.length; i++) {
-          const period = group.periods[i];
-          mergedGrid[period][day] = {
-            ...group.course,
-            isPlaceholder: true,
-            isFirst: false,
-            originalCourse: group.course // 保留原始课程信息以便调试
-          };
-        }
-      });
     }
     
-    console.log('合并连堂课完成:');
-    console.log('- 原始网格:', grid);
-    console.log('- 合并后网格:', mergedGrid);
-    console.log('- 实际显示节次数:', maxPeriods);
+    console.log('合并连堂课完成，最大节次数:', maxPeriods);
     return mergedGrid;
   },
   // 将连续的相同课程分组
@@ -678,6 +896,7 @@ Page({  data: {
     });
     
     console.log('课表网格已更新，显示节次数:', maxPeriods);
+    console.log('=== 课表网格更新完成 ===');
   },
 
   // 计算实际课程的最大节次
@@ -822,6 +1041,7 @@ Page({  data: {
       path: '/pages/schedule/schedule'
     };
   },
+
   onShareTimeline() {
     return {
       title: '课表 - 正方教务系统小程序',

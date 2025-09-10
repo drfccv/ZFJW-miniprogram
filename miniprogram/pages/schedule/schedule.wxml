@@ -35,25 +35,50 @@
         </view>
         
         <!-- 课程单元格 -->
-        <view class="day-column" wx:for="{{dayHeaders}}" wx:key="dayIndex" wx:for-item="day" wx:for-index="dayIndex"><!-- 有课程且是第一节时显示完整课程信息 -->          <view 
-            wx:if="{{timeSlot[dayIndex] && timeSlot[dayIndex].isFirst}}"
-            class="course-cell has-course {{timeSlot[dayIndex].isMerged ? 'merged-course' : ''}}"
-            style="{{timeSlot[dayIndex].isMerged ? 'height: calc(' + timeSlot[dayIndex].periods + ' * max(((100vh - 300rpx) / ' + maxPeriods + '), 80rpx));' : ''}}"
-            bindtap="showCourseDetail"
-            data-course="{{timeSlot[dayIndex]}}"
-          >
-            <view class="course-content">
-              <text class="course-name">{{timeSlot[dayIndex].title}}</text>
-              <text class="course-location">{{timeSlot[dayIndex].place}}</text>
-              <text class="course-teacher">{{timeSlot[dayIndex].teacher}}</text>
+        <view class="day-column" wx:for="{{dayHeaders}}" wx:key="dayIndex" wx:for-item="day" wx:for-index="dayIndex">
+          <!-- 判断该时间段是否有课程 -->
+          <view wx:if="{{timeSlot[dayIndex] && timeSlot[dayIndex].length > 0}}" class="course-cell-container">
+            <!-- 遍历该时间段的所有课程（支持冲突课程和占位符） -->
+            <view 
+              wx:for="{{timeSlot[dayIndex]}}" 
+              wx:key="courseIndex" 
+              wx:for-item="course" 
+              wx:for-index="courseIndex"
+            >
+              <!-- 显示课程（包括正常课程和冲突课程） -->
+              <view 
+                wx:if="{{!course.isPlaceholder}}"
+                class="course-cell has-course {{course.isMerged ? 'merged-course' : ''}} {{course.isConflict ? 'conflict-course' : ''}}"
+                style="{{course.isMerged ? 'height: calc(' + course.periods + ' * max(((100vh - 300rpx) / ' + maxPeriods + '), 80rpx));' : ''}}"
+                bindtap="showCourseDetail"
+                data-course="{{course}}"
+              >
+                <view class="course-content">
+                  <text class="course-name">{{course.title}}</text>
+                  <text class="course-location">{{course.place}}</text>
+                  <text class="course-teacher">{{course.teacher}}</text>
+                  <text wx:if="{{course.isConflict && !course.conflictCourses}}" class="conflict-indicator">冲突</text>
+                  
+                  <!-- 冲突课程切换按钮 -->
+                  <view 
+                    wx:if="{{course.conflictCourses && course.conflictCourses.length > 1}}"
+                    class="conflict-switch-btn"
+                    catchtap="switchConflictCourse"
+                    data-period="{{periodIndex}}"
+                    data-day="{{dayIndex}}"
+                  >
+                    <text class="conflict-count">{{course.currentConflictIndex + 1}}/{{course.conflictCourses.length}}</text>
+                  </view>
+                </view>
+              </view>
+              
+              <!-- 显示占位符 -->
+              <view 
+                wx:elif="{{course.isPlaceholder}}"
+                class="course-cell placeholder-cell"
+              >
+              </view>
             </view>
-          </view>
-          
-          <!-- 占位格子：用于连堂课的后续节次，保持结构但透明 -->
-          <view 
-            wx:elif="{{timeSlot[dayIndex] && timeSlot[dayIndex].isPlaceholder}}"
-            class="course-cell placeholder-cell"
-          >
           </view>
           
           <!-- 空格子 -->
@@ -81,44 +106,107 @@
 </view>
 
 <!-- 课程详情弹窗 -->
-<view class="course-detail-modal" wx:if="{{showCourseDetailModal && courseDetail}}" bindtap="hideCourseDetail">
+<view class="course-detail-modal {{showCourseDetailModal ? 'show' : ''}}" wx:if="{{showCourseDetailModal && courseDetail}}" bindtap="hideCourseDetail">
   <view class="course-detail-content" catchtap="">
+    <!-- 头部 -->
     <view class="course-detail-header">
-      <text class="course-detail-title">课程详情</text>
-      <text class="course-detail-close" bindtap="hideCourseDetail">✕</text>
+      <view class="header-left">
+        <text class="course-detail-title">{{courseDetail.title}}</text>
+        <text class="course-detail-subtitle">课程详情</text>
+      </view>
+      <view class="header-right">
+        <view class="close-btn" bindtap="hideCourseDetail">
+          <text class="close-icon">✕</text>
+        </view>
+      </view>
     </view>
+
+    <!-- 主要信息卡片 -->
     <view class="course-detail-body">
-      <view class="course-detail-item">
-        <text class="detail-label">课程名称：</text>
-        <text class="detail-value">{{courseDetail.title}}</text>
+      <view class="info-card">
+        <view class="card-header">
+          <text class="card-title">基本信息</text>
+        </view>
+        <view class="info-grid">
+          <view class="info-item">
+            <view class="info-icon teacher-icon">👨‍🏫</view>
+            <view class="info-content">
+              <text class="info-label">授课教师</text>
+              <text class="info-value">{{courseDetail.teacher}}</text>
+            </view>
+          </view>
+          <view class="info-item">
+            <view class="info-icon location-icon">📍</view>
+            <view class="info-content">
+              <text class="info-label">上课地点</text>
+              <text class="info-value">{{courseDetail.place}}</text>
+            </view>
+          </view>
+        </view>
       </view>
-      <view class="course-detail-item">
-        <text class="detail-label">授课教师：</text>
-        <text class="detail-value">{{courseDetail.teacher}}</text>
+
+      <!-- 时间信息卡片 -->
+      <view class="info-card">
+        <view class="card-header">
+          <text class="card-title">时间安排</text>
+        </view>
+        <view class="info-grid">
+          <view class="info-item full-width">
+            <view class="info-icon time-icon">⏰</view>
+            <view class="info-content">
+              <text class="info-label">上课时间</text>
+              <text class="info-value">{{courseDetail.time}}</text>
+            </view>
+          </view>
+          <view class="info-item full-width">
+            <view class="info-icon week-icon">📅</view>
+            <view class="info-content">
+              <text class="info-label">上课周次</text>
+              <text class="info-value">{{courseDetail.weeks}}</text>
+            </view>
+          </view>
+        </view>
       </view>
-      <view class="course-detail-item">
-        <text class="detail-label">上课地点：</text>
-        <text class="detail-value">{{courseDetail.place}}</text>
+
+      <!-- 学分信息卡片 -->
+      <view class="info-card">
+        <view class="card-header">
+          <text class="card-title">学分信息</text>
+        </view>
+        <view class="info-grid">
+          <view class="info-item">
+            <view class="info-icon credit-icon">🎯</view>
+            <view class="info-content">
+              <text class="info-label">学分</text>
+              <text class="info-value highlight">{{courseDetail.credit}}</text>
+            </view>
+          </view>
+          <view class="info-item">
+            <view class="info-icon hours-icon">⏱️</view>
+            <view class="info-content">
+              <text class="info-label">总学时</text>
+              <text class="info-value">{{courseDetail.total_hours}}</text>
+            </view>
+          </view>
+        </view>
       </view>
-      <view class="course-detail-item">
-        <text class="detail-label">上课时间：</text>
-        <text class="detail-value">{{courseDetail.time}}</text>
-      </view>
-      <view class="course-detail-item">
-        <text class="detail-label">上课周次：</text>
-        <text class="detail-value">{{courseDetail.weeks}}</text>
-      </view>
-      <view class="course-detail-item">
-        <text class="detail-label">学分：</text>
-        <text class="detail-value">{{courseDetail.credit}}</text>
-      </view>
-      <view class="course-detail-item">
-        <text class="detail-label">总学时：</text>
-        <text class="detail-value">{{courseDetail.total_hours}}</text>
+
+      <!-- 额外信息（如果有冲突） -->
+      <view class="info-card" wx:if="{{courseDetail.isConflict}}">
+        <view class="card-header conflict-header">
+          <text class="card-title">⚠️ 课程冲突</text>
+        </view>
+        <view class="conflict-notice">
+          <text class="conflict-text">该时间段存在多门课程冲突，可点击课程表中的切换按钮进行切换。</text>
+        </view>
       </view>
     </view>
+
+    <!-- 底部操作 -->
     <view class="course-detail-footer">
-      <button class="detail-confirm-btn" bindtap="hideCourseDetail">确定</button>
+      <button class="detail-confirm-btn" bindtap="hideCourseDetail">
+        <text class="btn-text">确定</text>
+      </button>
     </view>
   </view>
 </view>

@@ -359,28 +359,9 @@
 .action-icon {
   font-size: 60rpx;
   margin-bottom: 20rpx;
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.grade-icon {
-  background: linear-gradient(to bottom right, #FF6B6B, #FF8E8E);
-}
-
-.exam-icon {
-  background: linear-gradient(to bottom right, #4ECDC4, #44A08D);
-}
-
-.course-icon {
-  background: linear-gradient(to bottom right, #45B7D1, #96CEB4);
-}
-
-.notification-icon {
-  background: linear-gradient(to bottom right, #FFA07A, #FFB347);
 }
 
 .action-text {
