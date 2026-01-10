@@ -170,7 +170,6 @@ Page({  data: {
         icon: 'success'
       });
     } catch (error) {
-      console.error('刷新数据失败:', error);
       wx.showToast({
         title: '刷新失败',
         icon: 'none'
@@ -254,26 +253,9 @@ Page({  data: {
 
   // 显示应用信息
   showAppInfo() {
-    const content = `正方教务系统小程序
-版本：2.0.0
-
-主要功能：
-• 课表查询与显示
-• 成绩查询
-• 考试安排查看
-• 通知公告查看
-• 选课管理
-• 智能缓存策略
-• 记住登录信息
-• 个性化设置
-
-系统特色：
-• 优雅的UI设计
-• 智能数据缓存
-• 离线数据查看
-• 自定义启动页面
-• 多学校支持
-• 隐私保护`;
+    const content = `Drfccv助手小程序
+版本：2.0.0`
+;
 
     wx.showModal({
       title: '应用信息',
@@ -328,14 +310,12 @@ Page({  data: {
 数据存储：
 • 所有数据仅保存在本地设备
 • 支持用户随时清除所有数据
-• 密码采用加密存储
 
 数据传输：
 • 仅与教务系统进行必要通信
 • 不向第三方传输用户数据
 • 支持用户自定义API地址
-
-我们承诺保护您的隐私安全！`;
+`;
 
     wx.showModal({
       title: '隐私声明',
@@ -499,7 +479,7 @@ QQ：2713587802
 
   onShareAppMessage() {
     return {
-      title: '我的 - 正方教务系统小程序',
+      title: '我的 - Drfccv助手小程序',
       path: '/pages/profile/profile',
       imageUrl: '/images/share-default.png'
     };
@@ -507,7 +487,7 @@ QQ：2713587802
 
   onShareTimeline() {
     return {
-      title: '我的 - 正方教务系统小程序',
+      title: '我的 - Drfccv助手小程序',
       query: '',
       imageUrl: '/images/share-default.png'
     };

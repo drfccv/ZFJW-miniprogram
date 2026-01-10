@@ -16,7 +16,7 @@ interface Notification {
 
 Page({
   data: {
-    userInfo: null as UserInfo | null,
+    userInfo: { name: '', sid: '' } as UserInfo,
     isLoggedIn: false,
     weather: '',
     notifications: [] as Notification[],
@@ -37,7 +37,7 @@ Page({
   // 检查登录状态
   checkLoginStatus() {
     const isLoggedIn = StorageService.isLoggedIn();
-    const userInfo = StorageService.get<UserInfo>(StorageService.KEYS.USER_INFO);
+    const userInfo = StorageService.get<UserInfo>(StorageService.KEYS.USER_INFO) || { name: '', sid: '' };
     
     this.setData({
       isLoggedIn,
@@ -232,7 +232,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '正方教务系统小程序',
+      title: 'Drfccv助手小程序',
       path: '/pages/index/index',
       imageUrl: '/images/share-default.png'
     };
@@ -240,7 +240,7 @@ Page({
 
   onShareTimeline() {
     return {
-      title: '正方教务系统小程序',
+      title: 'Drfccv助手小程序',
       query: '',
       imageUrl: '/images/share-default.png'
     };

@@ -1,9 +1,0 @@
-{
-  "navigationStyle": "default",
-  "navigationBarBackgroundColor": "#ffffff",
-  "navigationBarTitleText": "案例",
-  "navigationBarTextStyle": "black",
-  "backgroundColor": "#f8f9fa",
-  "usingComponents": {},
-  "componentFramework": "glass-easel"
-}

@@ -585,10 +585,24 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 32rpx 32rpx 24rpx 32rpx;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 36rpx 32rpx 28rpx 32rpx;
+  background: linear-gradient(to bottom right, #007AFF, #5AC8FA);
   color: white;
   border-radius: 24rpx 24rpx 0 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.course-detail-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200rpx;
+  height: 200rpx;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(50%, -50%);
 }
 
 .header-left {
@@ -619,17 +633,20 @@
 .close-btn {
   width: 56rpx;
   height: 56rpx;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  backdrop-filter: blur(10rpx);
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  z-index: 1;
 }
 
 .close-btn:active {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(0.9);
 }
 
 .close-icon {
@@ -648,11 +665,11 @@
 /* 信息卡片 */
 .info-card {
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  border: 1rpx solid #f0f2f5;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  border: none;
 }
 
 .info-card:last-child {
@@ -661,14 +678,14 @@
 
 .card-header {
   padding: 24rpx 32rpx 16rpx 32rpx;
-  border-bottom: 1rpx solid #f6f8fa;
-  background: #fafbfc;
+  border-bottom: 1rpx solid #f0f2f5;
+  background: linear-gradient(to right, #f8f9fa, #ffffff);
 }
 
 .card-title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #2c3e50;
+  color: #333;
 }
 
 .conflict-header {
@@ -711,27 +728,27 @@
 }
 
 .teacher-icon {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #007AFF, #5AC8FA);
 }
 
 .location-icon {
-  background: linear-gradient(135deg, #f093fb, #f5576c);
+  background: linear-gradient(135deg, #34C759, #30D158);
 }
 
 .time-icon {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  background: linear-gradient(135deg, #007AFF, #00C7BE);
 }
 
 .week-icon {
-  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  background: linear-gradient(135deg, #5AC8FA, #00D4FF);
 }
 
 .credit-icon {
-  background: linear-gradient(135deg, #fa709a, #fee140);
+  background: linear-gradient(135deg, #FF9500, #FFCC00);
 }
 
 .hours-icon {
-  background: linear-gradient(135deg, #a8edea, #fed6e3);
+  background: linear-gradient(135deg, #AF52DE, #BF5AF2);
 }
 
 .info-content {
@@ -741,7 +758,7 @@
 
 .info-label {
   font-size: 24rpx;
-  color: #8e9aaf;
+  color: #999;
   display: block;
   margin-bottom: 6rpx;
   font-weight: 500;
@@ -749,15 +766,15 @@
 
 .info-value {
   font-size: 28rpx;
-  color: #2c3e50;
-  font-weight: 500;
+  color: #333;
+  font-weight: 600;
   word-wrap: break-word;
   word-break: break-all;
   line-height: 1.4;
 }
 
 .info-value.highlight {
-  color: #e74c3c;
+  color: #007AFF;
   font-weight: 700;
   font-size: 32rpx;
 }
@@ -785,20 +802,20 @@
 
 .detail-confirm-btn {
   width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(to bottom right, #007AFF, #5AC8FA);
   color: #ffffff;
   border: none;
   border-radius: 16rpx;
   padding: 28rpx;
   font-size: 30rpx;
   font-weight: 600;
-  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.3);
+  box-shadow: 0 6rpx 20rpx rgba(0, 122, 255, 0.3);
   transition: all 0.3s ease;
 }
 
 .detail-confirm-btn:active {
   transform: translateY(2rpx);
-  box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4rpx 15rpx rgba(0, 122, 255, 0.4);
 }
 
 .btn-text {

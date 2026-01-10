@@ -40,6 +40,11 @@
         <text class="menu-text">教学评价</text>
       </view>
       
+      <view class="menu-item" bindtap="navigateTo" data-url="/pages/classroom/classroom">
+        <view class="menu-icon classroom-icon">🏢</view>
+        <text class="menu-text">空教室</text>
+      </view>
+      
       <view class="menu-item menu-item-disabled">
         <view class="menu-icon jw-icon">🏛️</view>
         <text class="menu-text">官方教务</text>
@@ -49,12 +54,6 @@
       <view class="menu-item menu-item-disabled" bindtap="showComingSoon" data-feature="PDF导出">
         <view class="menu-icon export-icon">📄</view>
         <text class="menu-text">PDF导出</text>
-        <text class="menu-status">开发中</text>
-      </view>
-      
-      <view class="menu-item menu-item-disabled" bindtap="showComingSoon" data-feature="空教室查询">
-        <view class="menu-icon classroom-icon">🏢</view>
-        <text class="menu-text">空教室</text>
         <text class="menu-status">开发中</text>
       </view>
     </view>

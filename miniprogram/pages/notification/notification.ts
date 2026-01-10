@@ -265,14 +265,14 @@ Page({
   },
   onShareAppMessage() {
     return {
-      title: '通知公告 - 正方教务系统小程序',
+      title: '通知公告 - Drfccv助手小程序',
       path: '/pages/notification/notification',
       imageUrl: '/images/share-default.png'
     };
   },
   onShareTimeline() {
     return {
-      title: '通知公告 - 正方教务系统小程序',
+      title: '通知公告 - Drfccv助手小程序',
       query: '',
       imageUrl: '/images/share-default.png'
     };

@@ -83,8 +83,18 @@ interface DropCourseParams extends AuthParams {
   term: number;
 }
 
-interface EmptyClassroomParams {
-  school_name: string;
+interface EmptyClassroomParams extends TermParams {
+  weeks: number | number[] | string;
+  day_of_weeks: number | number[] | string;
+  time_slots: number | number[] | string;
+  campus_id?: string;
+  building?: string;
+}
+
+interface CampusListParams extends AuthParams {}
+
+interface BuildingListParams extends TermParams {
+  campus_id?: string;
 }
 
 class ApiService {
@@ -259,15 +269,25 @@ class ApiService {
 
   // 16. 空教室查询
   static getEmptyClassroom(params: EmptyClassroomParams) {
-    return this.request('/api/empty_classroom', params);
+    return this.request('/api/classroom', params);
   }
 
-  // 17. 课表PDF导出
+  // 17. 获取校区列表
+  static getCampusList(params: CampusListParams) {
+    return this.request('/api/campus_list', params);
+  }
+
+  // 18. 获取教学楼列表
+  static getBuildingList(params: BuildingListParams) {
+    return this.request('/api/building_list', params);
+  }
+
+  // 19. 课表PDF导出
   static getSchedulePdf(params: TermParams) {
     return this.request('/api/schedule_pdf', params);
   }
 
-  // 18. 学业生涯PDF导出
+  // 20. 学业生涯PDF导出
   static getAcademiaPdf(params: AuthParams) {
     return this.request('/api/academia_pdf', params);
   }
@@ -351,5 +371,7 @@ export type {
   BlockCoursesParams,
   SelectCourseParams,
   DropCourseParams,
-  EmptyClassroomParams
+  EmptyClassroomParams,
+  CampusListParams,
+  BuildingListParams
 };

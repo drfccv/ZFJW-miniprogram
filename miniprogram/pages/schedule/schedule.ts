@@ -1037,14 +1037,14 @@ Page({  data: {
 
   onShareAppMessage() {
     return {
-      title: '课表 - 正方教务系统小程序',
+      title: '课表 - Drfccv助手小程序',
       path: '/pages/schedule/schedule'
     };
   },
 
   onShareTimeline() {
     return {
-      title: '课表 - 正方教务系统小程序',
+      title: '课表 - Drfccv助手小程序',
       query: '',
       imageUrl: '/images/share-default.png'
     };

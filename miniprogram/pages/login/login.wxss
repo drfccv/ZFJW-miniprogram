@@ -6,15 +6,20 @@
   background: linear-gradient(to bottom right, #f8f9fa 0%, #e3f2fd 50%, #ffffff 100%);
   display: flex;
   flex-direction: column;
-  padding: 48rpx;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
   box-sizing: border-box;
 }
 
 /* 顶部装饰 */
 .header {
   text-align: center;
-  margin-bottom: 48rpx;
-  margin-top: 48rpx;
+  margin-bottom: 80rpx;
+  margin-top: 0;
+  width: 100%;
+  max-width: 600rpx;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -51,16 +56,19 @@
 
 /* 登录表单 */
 .login-form {
-  background: #ffffff;
-  border-radius: 20rpx;
-  padding: 48rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
-  border: 1rpx solid #f1f3f4;
-  margin-bottom: 30rpx;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+  margin-bottom: 0;
+  width: 100%;
+  max-width: 600rpx;
+  flex-shrink: 0;
 }
 
 .form-group {
-  margin-bottom: 30rpx;
+  margin-bottom: 24rpx;
   position: relative;
 }
 
@@ -75,18 +83,19 @@
 .input {
   width: 100%;
   height: 88rpx;
-  border: 2rpx solid #dee2e6;
-  border-radius: 12rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 16rpx;
   padding: 0 24rpx;
   font-size: 28rpx;
   color: #333333;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.7);
   box-sizing: border-box;
   transition: all 0.3s ease;
 }
 
 .input:focus {
   border-color: #007AFF;
+  background-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 0 3rpx rgba(0, 122, 255, 0.1);
   outline: none;
 }
@@ -131,15 +140,16 @@
 .captcha-image {
   width: 160rpx;
   height: 88rpx;
-  border: 2rpx solid #dee2e6;
-  border-radius: 12rpx;
-  background: #f8f9fa;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 16rpx;
+  background: rgba(255, 255, 255, 0.8);
   object-fit: cover;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .captcha-image:active {
   border-color: #007AFF;
+  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.15);
 }
 
 .captcha-placeholder {
@@ -172,13 +182,13 @@
   width: 36rpx;
   height: 36rpx;
   border: 2rpx solid #dee2e6;
-  border-radius: 6rpx;
+  border-radius: 8rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 16rpx;
   transition: all 0.3s ease;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .checkbox.checked {
@@ -202,15 +212,15 @@
 /* 登录按钮 */
 .login-btn {
   width: 100%;
-  height: 88rpx;
+  height: 96rpx;
   background: linear-gradient(to bottom right, #007AFF, #5AC8FA);
   color: #ffffff;
   font-size: 32rpx;
   font-weight: 600;
-  border-radius: 12rpx;
+  border-radius: 48rpx;
   border: none;
-  margin-top: 30rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.2);
+  margin-top: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 122, 255, 0.3);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -367,9 +377,9 @@
 .school-picker {
   width: 100%;
   height: 88rpx;
-  border: 2rpx solid #dee2e6;
-  border-radius: 12rpx;
-  background-color: #ffffff;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 16rpx;
+  background-color: rgba(255, 255, 255, 0.7);
   box-sizing: border-box;
   transition: all 0.3s ease;
   position: relative;
@@ -441,6 +451,7 @@
 /* 选择器的焦点状态 */
 .school-picker:focus {
   border-color: #007AFF;
+  background-color: rgba(255, 255, 255, 0.9);
   box-shadow: 0 0 0 3rpx rgba(0, 122, 255, 0.1);
 }
 
@@ -451,7 +462,7 @@
 
 /* 禁用状态的选择器 */
 .school-picker[disabled] {
-  background-color: #f8f9fa;
+  background-color: rgba(248, 249, 250, 0.6);
   border-color: #e9ecef;
 }
 

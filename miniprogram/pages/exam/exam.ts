@@ -424,7 +424,7 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: '考试安排 - 正方教务系统小程序',
+      title: '考试安排 - Drfccv助手小程序',
       path: '/pages/exam/exam',
       imageUrl: '/images/share-default.png'
     };
@@ -432,7 +432,7 @@ Page({
 
   onShareTimeline() {
     return {
-      title: '考试安排 - 正方教务系统小程序',
+      title: '考试安排 - Drfccv助手小程序',
       query: '',
       imageUrl: '/images/share-default.png'
     };

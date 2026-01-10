@@ -1,17 +1,9 @@
 <!--登录页面-->
 <view class="login-container">
   <view class="header">
-    <text class="title">正方教务系统</text>
-    <text class="subtitle">学生端登录</text>
-  </view>  <!-- 重要说明 -->
-  <view class="notice-section">
-    <view class="notice-title">📘 使用说明</view>
-    <view class="notice-content">
-      <text class="notice-text">请选择您的学校，系统将自动配置教务系统</text>
-      <text class="notice-text">✅ 支持学校：从列表中选择</text>
-      <text class="notice-text">💡 系统会自动处理教务系统连接</text>
-    </view>
-  </view>
+    <text class="title">Drfccv助手</text>
+    <text class="subtitle">学生登录</text>
+  </view> 
 
   <form class="login-form" bindsubmit="handleLogin">    <!-- 学校选择器 -->
     <view class="form-group">

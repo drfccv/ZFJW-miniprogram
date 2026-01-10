@@ -1,28 +1,102 @@
 <!--classroom.wxml-->
+<wxs module="utils">
+  var isInArray = function(arr, val) {
+    if (!arr || arr.length === undefined) {
+      return false;
+    }
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i] === val) {
+        return true;
+      }
+    }
+    return false;
+  };
+  
+  module.exports = {
+    isInArray: isInArray
+  };
+</wxs>
+
 <view class="container">
   <!-- 查询条件 -->
   <view class="query-section">
     <view class="section-title">查询条件</view>
     
-    <!-- 日期选择 -->
+    <!-- 学年学期 -->
     <view class="condition-item">
-      <view class="condition-label">查询日期</view>
-      <picker mode="date" value="{{currentDate}}" bindchange="onDateChange">
+      <view class="condition-label">学年学期</view>
+      <view class="inline-pickers">
+        <picker class="inline-picker" mode="selector" range="{{yearOptions}}" value="{{yearOptions.indexOf(year)}}" bindchange="onYearChange">
+          <view class="picker-input-inline">
+            <text>{{year}}-{{year+1}}学年</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+        <picker class="inline-picker" mode="selector" range="{{termOptions}}" value="{{term - 1}}" bindchange="onTermChange">
+          <view class="picker-input-inline">
+            <text>第{{term}}学期</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 校区选择 -->
+    <view class="condition-item">
+      <view class="condition-label">校区</view>
+      <picker mode="selector" range="{{campusList}}" range-key="campus_name" value="{{campusIndex}}" bindchange="onCampusChange">
         <view class="picker-input">
-          <text>{{currentDate}}</text>
+          <text>{{campusList[campusIndex].campus_name || '请选择校区'}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 教学楼选择 -->
+    <view class="condition-item">
+      <view class="condition-label">教学楼</view>
+      <picker mode="selector" range="{{buildingNames}}" value="{{buildingIndex}}" bindchange="onBuildingChange">
+        <view class="picker-input">
+          <text>{{buildingNames[buildingIndex] || '请选择教学楼'}}</text>
           <text class="picker-arrow">▼</text>
         </view>
       </picker>
     </view>
     
-    <!-- 时间段选择 -->
+    <!-- 周次选择（可多选） -->
     <view class="condition-item">
-      <view class="condition-label">时间段</view>
+      <view class="condition-label">周次 (可多选)</view>
+      <view class="card-buttons">
+        <view class="card-btn {{utils.isInArray(selectedWeeks, item) ? 'active' : ''}}" 
+              wx:for="{{weekOptions}}" wx:key="*this"
+              bindtap="toggleWeek" data-week="{{item}}">
+          第{{item}}周
+        </view>
+      </view>
+    </view>
+
+    <!-- 星期选择（可多选） -->
+    <view class="condition-item">
+      <view class="condition-label">星期 (可多选)</view>
+      <view class="card-buttons">
+        <view class="card-btn {{utils.isInArray(selectedDays, item.value) ? 'active' : ''}}" 
+              wx:for="{{dayOptions}}" wx:key="value"
+              bindtap="toggleDay" data-day="{{item.value}}">
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+    
+    <!-- 节次选择（可多选） -->
+    <view class="condition-item">
+      <view class="condition-label">节次 (可多选)</view>
       <view class="time-slots">
-        <view class="time-slot {{currentSlot === index ? 'active' : ''}}" 
-              wx:for="{{timeSlots}}" wx:key="index"
-              bindtap="selectTimeSlot" data-index="{{index}}">
-          {{item}}
+        <view class="time-slot {{utils.isInArray(selectedTimeSlots, item.slot_number) ? 'active' : ''}}" 
+              wx:for="{{timeSlots}}" wx:key="slot_number"
+              bindtap="toggleTimeSlot" data-slot="{{item.slot_number}}">
+          <view class="slot-period">{{item.period}}</view>
+          <view class="slot-time">第{{item.slot_number}}节</view>
+          <view class="slot-detail">{{item.time}}</view>
         </view>
       </view>
     </view>
@@ -41,14 +115,23 @@
     </view>
     
     <view class="classroom-list">
-      <view class="building-group" wx:for="{{groupedClassrooms}}" wx:key="building">
-        <view class="building-header">
-          <view class="building-name">{{item.building}}</view>
-          <view class="building-count">{{item.rooms.length}}间</view>
+      <view class="building-group" wx:for="{{groupedClassrooms}}" wx:key="building" wx:for-index="buildingIndex">
+        <view class="building-header" bindtap="toggleBuilding" data-building="{{item.building}}">
+          <view class="building-info">
+            <view class="building-name">{{item.building}}</view>
+            <view class="building-count">{{item.rooms.length}}间</view>
+          </view>
+          <view class="collapse-icon {{collapsedBuildings[item.building] ? 'collapsed' : ''}}">▼</view>
         </view>
         
-        <view class="room-grid">
-          <view class="room-item" wx:for="{{item.rooms}}" wx:key="room" wx:for-item="room">
+        <view class="room-grid" wx:if="{{!collapsedBuildings[item.building]}}">
+          <view class="room-item" 
+                wx:for="{{item.rooms}}" 
+                wx:key="code" 
+                wx:for-item="room"
+                bindtap="showRoomDetail" 
+                data-index="{{index}}"
+                data-building-index="{{buildingIndex}}">
             <view class="room-number">{{room.roomNumber}}</view>
             <view class="room-info">
               <text class="room-capacity">{{room.capacity}}人</text>
@@ -60,29 +143,55 @@
     </view>
   </view>
   
+  <!-- 教室详情弹窗 -->
+  <view class="room-detail-mask" wx:if="{{showClassroomDetail}}" bindtap="closeRoomDetail">
+    <view class="room-detail-content" catchtap="{{true}}">
+      <view class="detail-header">
+        <view class="detail-title">教室详情</view>
+        <view class="detail-close" bindtap="closeRoomDetail">✕</view>
+      </view>
+      
+      <view class="detail-body" wx:if="{{selectedClassroom}}">
+        <view class="detail-item">
+          <view class="detail-label">教室名称</view>
+          <view class="detail-value">{{selectedClassroom.roomNumber}}</view>
+        </view>
+        <view class="detail-item">
+          <view class="detail-label">所在楼栋</view>
+          <view class="detail-value">{{selectedClassroom.building}}</view>
+        </view>
+        <view class="detail-item">
+          <view class="detail-label">校区</view>
+          <view class="detail-value">{{selectedClassroom.campus}}</view>
+        </view>
+        <view class="detail-item">
+          <view class="detail-label">容纳人数</view>
+          <view class="detail-value">{{selectedClassroom.capacity}}人</view>
+        </view>
+        <view class="detail-item" wx:if="{{selectedClassroom.examCapacity}}">
+          <view class="detail-label">考试容量</view>
+          <view class="detail-value">{{selectedClassroom.examCapacity}}人</view>
+        </view>
+        <view class="detail-item">
+          <view class="detail-label">教室类型</view>
+          <view class="detail-value">{{selectedClassroom.type}}</view>
+        </view>
+        <view class="detail-item" wx:if="{{selectedClassroom.department}}">
+          <view class="detail-label">所属单位</view>
+          <view class="detail-value">{{selectedClassroom.department}}</view>
+        </view>
+        <view class="detail-item" wx:if="{{selectedClassroom.code}}">
+          <view class="detail-label">教室编码</view>
+          <view class="detail-value">{{selectedClassroom.code}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{!loading && classrooms.length === 0 && hasQueried}}">
     <view class="empty-icon">🏢</view>
     <view class="empty-text">该时间段暂无空教室</view>
     <view class="empty-desc">请尝试选择其他时间段</view>
-  </view>
-  
-  <!-- 使用说明 -->
-  <view class="help-section" wx:if="{{!hasQueried}}">
-    <view class="section-title">使用说明</view>
-    <view class="help-content">
-      <view class="help-item">
-        <view class="help-icon">📅</view>
-        <view class="help-text">选择要查询的日期</view>
-      </view>
-      <view class="help-item">
-        <view class="help-icon">⏰</view>
-        <view class="help-text">选择时间段</view>
-      </view>
-      <view class="help-item">
-        <view class="help-icon">🔍</view>
-        <view class="help-text">点击查询按钮获取结果</view>
-      </view>
-    </view>
   </view>
 </view>

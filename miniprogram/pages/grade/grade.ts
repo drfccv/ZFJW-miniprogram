@@ -73,7 +73,7 @@ Page({
       // 检查缓存是否仍然有效
       const cachedData = StorageService.getCachedGrade(this.data.currentYear != null ? this.data.currentYear : 0, this.data.currentTerm != null ? this.data.currentTerm : 0);
       if (!cachedData || !Array.isArray(cachedData) || cachedData.length === 0) {
-        console.log('检测到成绩缓存已被清除，重新加载数据');
+        //console.log('检测到成绩缓存已被清除，重新加载数据');
         this.setData({ 
           gradeList: [],
           gradeStats: {
@@ -114,7 +114,7 @@ Page({
       // 如果有存储的学期设置，使用它
       academicYear = storedTerm.year;
       currentTerm = storedTerm.term;
-      console.log('成绩页面使用存储的学期设置:', academicYear, currentTerm);
+      //console.log('成绩页面使用存储的学期设置:', academicYear, currentTerm);
     } else {
       // 否则计算当前学年学期
       const now = new Date();
@@ -140,13 +140,13 @@ Page({
         currentTerm = 2;
       }
       
-      console.log('成绩页面计算学期:', {
+      /*console.log('成绩页面计算学期:', {
         当前日期: `${currentYear}-${currentMonth}-${currentDay}`,
         学年: `${academicYear}-${academicYear + 1}`,
         学期: currentTerm === 1 ? '第一学期' : '第二学期',
         academicYear,
         currentTerm
-      });
+      });*/
     }
     
     // 生成学年范围（当前学年的前后3年）
@@ -166,12 +166,12 @@ Page({
       termIndex: currentTerm
     });
     
-    console.log('成绩页面初始化完成:', {
+/*    console.log('成绩页面初始化完成:', {
       currentYear: this.data.currentYear,
       currentTerm: this.data.currentTerm,
       termIndex: this.data.termIndex,
       yearIndex: this.data.yearIndex
-    });
+    }); */
   },// 加载成绩
   async loadGrades() {
     const gradeApiType = this.data.gradeApiType || String(StorageService.get('gradeApiType') || 'normal');
@@ -316,7 +316,7 @@ Page({
       return 'unknown';
     }
     
-    console.log('分数等级计算:', { 原始分数: score, 解析分数: numScore });
+    //console.log('分数等级计算:', { 原始分数: score, 解析分数: numScore });
     
     if (isNaN(numScore) || numScore <= 0) {
       return 'unknown';
@@ -415,14 +415,14 @@ Page({
   },
   onShareAppMessage() {
     return {
-      title: '成绩查询 - 正方教务系统小程序',
+      title: '成绩查询 - Drfccv助手小程序',
       path: '/pages/grade/grade',
       imageUrl: '/images/share-default.png'
     };
   },
   onShareTimeline() {
     return {
-      title: '成绩查询 - 正方教务系统小程序',
+      title: '成绩查询 - Drfccv助手小程序',
       query: '',
       imageUrl: '/images/share-default.png'
     };
