@@ -173,7 +173,7 @@
 
 .checkbox-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding: 16rpx 0;
   cursor: pointer;
 }
@@ -187,8 +187,10 @@
   align-items: center;
   justify-content: center;
   margin-right: 16rpx;
+  margin-top: 4rpx;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
 }
 
 .checkbox.checked {
@@ -207,6 +209,9 @@
   color: #666666;
   flex: 1;
   user-select: none;
+  line-height: 1.4;
+  word-break: keep-all;
+  white-space: normal;
 }
 
 /* 登录按钮 */
@@ -512,4 +517,17 @@
   font-size: 24rpx;
   color: #1976d2;
   line-height: 1.4;
+}
+
+/* 隐私政策链接样式 */
+.policy-link {
+  font-size: 28rpx;
+  color: #007AFF;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  padding: 0 4rpx;
+}
+
+.policy-link:active {
+  opacity: 0.6;
 }

@@ -28,6 +28,7 @@ Page({  data: {
     } as LoginFormData,
     showPassword: false,
     rememberPassword: false, // 是否记住密码
+    agreePolicy: false, // 是否同意隐私政策和用户协议
     showCaptcha: false,
     captchaImage: '',
     captchaData: null as CaptchaData | null,
@@ -202,6 +203,14 @@ Page({  data: {
       this.saveFormData();
     }
   },
+
+  // 切换同意隐私政策
+  toggleAgreePolicy() {
+    this.setData({
+      agreePolicy: !this.data.agreePolicy
+    });
+  },
+
   // 保存表单数据到缓存
   saveFormData() {
     const { formData, rememberPassword } = this.data;
@@ -247,7 +256,17 @@ Page({  data: {
         icon: 'none'
       });
       return;
-    }    this.setData({ loading: true });
+    }
+
+    if (!this.data.agreePolicy) {
+      wx.showToast({
+        title: '请先阅读并同意隐私政策和用户协议',
+        icon: 'none'
+      });
+      return;
+    }
+
+    this.setData({ loading: true });
     
     console.log('开始登录流程，参数:', {
       sid: formData.sid,
@@ -436,4 +455,24 @@ Page({  data: {
     });
     this.refreshCaptcha();
   },
+
+  // 显示隐私政策
+  showPrivacyPolicy() {
+    wx.showModal({
+      title: '隐私政策',
+      content: '• 您的学号和密码仅用于登录教务系统，不会被存储到服务器\n\n• 登录系统后将会显示你的相关信息\n\n• 所有数据传输均采用加密方式，确保信息安全\n\n• 本应用仅作为辅助工具，不会收集任何个人隐私信息\n\n• 如选择"记住密码"，密码将加密存储在本地设备',
+      showCancel: false,
+      confirmText: '我知道了'
+    });
+  },
+
+  // 显示用户协议
+  showUserAgreement() {
+    wx.showModal({
+      title: '用户协议',
+      content: '欢迎使用Drfccv助手！\n\n1. 本应用仅供学习交流使用\n2. 请遵守相关规定\n3. 不得将账号信息泄露给他人\n4. 使用本应用即表示同意相关条款',
+      showCancel: false,
+      confirmText: '同意'
+    });
+  }
 });

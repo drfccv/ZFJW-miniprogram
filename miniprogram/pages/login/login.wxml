@@ -61,6 +61,20 @@
       </view>
     </view>
 
+    <!-- 同意隐私政策复选框 -->
+    <view class="form-group checkbox-group">
+      <view class="checkbox-item" bindtap="toggleAgreePolicy">
+        <view class="checkbox {{agreePolicy ? 'checked' : ''}}">
+          <text class="checkbox-icon">{{agreePolicy ? '✓' : ''}}</text>
+        </view>
+        <text class="checkbox-label">我已阅读并同意
+          <text class="policy-link" bindtap="showPrivacyPolicy" catchtap="showPrivacyPolicy">《隐私政策》</text>
+          <text>和</text>
+          <text class="policy-link" bindtap="showUserAgreement" catchtap="showUserAgreement">《用户协议》</text>
+        </text>
+      </view>
+    </view>
+
     <!-- 验证码输入框，需要时显示 -->
     <view class="form-group" wx:if="{{showCaptcha}}">
       <view class="captcha-container">
@@ -86,7 +100,7 @@
     <button 
       class="login-btn {{loading ? 'loading' : ''}}" 
       form-type="submit"
-      disabled="{{loading}}"
+      disabled="{{loading || !agreePolicy}}"
     >
       {{loading ? '登录中...' : '登录'}}    </button>
   </form>
