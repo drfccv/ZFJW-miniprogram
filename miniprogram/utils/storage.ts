@@ -25,10 +25,22 @@ class StorageService {  // 存储键名常量
       GRADE_CACHE: 'gradeCache',
       EXAM_CACHE: 'examCache',
       NOTIFICATIONS_CACHE: 'notificationsCache',
+      GRADE_NOTIFICATION_SETTINGS: 'gradeNotificationSettings',
       CURRENT_TERM: 'currentTerm',
       SCHEDULE_SETTINGS: 'scheduleSettings',
       DEFAULT_START_PAGE: 'defaultStartPage', // 默认启动页面
-      LOGIN_FORM_DATA: 'loginFormData' // 登录表单数据缓存
+      LOGIN_FORM_DATA: 'loginFormData', // 登录表单数据缓存
+      OPENID: 'openid', // 微信 OpenID
+      GRADE_PUSH_ENABLED: 'gradePushEnabled', // 成绩推送开关
+      GRADE_PUSH_SUBSCRIBED: 'gradePushSubscribed', // 是否已订阅模板消息
+      GRADE_PUSH_TEMPLATE_ID: 'gradePushTemplateId', // 成绩推送模板ID
+      ACCOUNT_ABNORMAL_TEMPLATE_ID: 'accountAbnormalTemplateId', // 账号异常模板ID
+      IS_MOCK_LOGIN: 'isMockLogin', // mock 登录标记
+      // 各业务独立学期存储
+      GRADE_SEMESTER: 'gradeSemester',         // 成绩查询学期
+      SCHEDULE_SEMESTER: 'scheduleSemester',   // 课表学期
+      COURSE_SEMESTER: 'courseSemester',       // 选课管理学期
+      EXAM_SEMESTER: 'examSemester'            // 考试安排学期
     };
   }
 
@@ -100,6 +112,13 @@ class StorageService {  // 存储键名常量
     this.remove(this.KEYS.COOKIES);
     this.remove(this.KEYS.SCHOOL_NAME);
     this.remove(this.KEYS.USER_INFO);
+    this.remove(this.KEYS.GRADE_NOTIFICATION_SETTINGS);
+    this.remove(this.KEYS.IS_MOCK_LOGIN);
+  }
+
+  // 判断是否为 Mock 登录
+  static isMockLogin(): boolean {
+    return !!this.get<boolean>(this.KEYS.IS_MOCK_LOGIN);
   }
 
   // 设置当前学期（仅保存合法值：year>=1970 且 term 为 1 或 2）
@@ -127,6 +146,54 @@ class StorageService {  // 存储键名常量
     if (!isValidYear || !isValidTerm) {
       return null;
     }
+    return { year, term };
+  }
+
+  // ==================== 各业务独立学期存储 ====================
+
+  // --- 成绩查询 ---
+  static setGradeSemester(year: number, term: number): void {
+    this.set(this.KEYS.GRADE_SEMESTER, { year, term });
+  }
+  static getGradeSemester(): { year: number; term: number } | null {
+    const value = this.get<any>(this.KEYS.GRADE_SEMESTER);
+    return this.validateSemester(value);
+  }
+
+  // --- 课表 ---
+  static setScheduleSemester(year: number, term: number): void {
+    this.set(this.KEYS.SCHEDULE_SEMESTER, { year, term });
+  }
+  static getScheduleSemester(): { year: number; term: number } | null {
+    const value = this.get<any>(this.KEYS.SCHEDULE_SEMESTER);
+    return this.validateSemester(value);
+  }
+
+  // --- 选课管理 ---
+  static setCourseSemester(year: number, term: number): void {
+    this.set(this.KEYS.COURSE_SEMESTER, { year, term });
+  }
+  static getCourseSemester(): { year: number; term: number } | null {
+    const value = this.get<any>(this.KEYS.COURSE_SEMESTER);
+    return this.validateSemester(value);
+  }
+
+  // --- 考试安排 ---
+  static setExamSemester(year: number, term: number): void {
+    this.set(this.KEYS.EXAM_SEMESTER, { year, term });
+  }
+  static getExamSemester(): { year: number; term: number } | null {
+    const value = this.get<any>(this.KEYS.EXAM_SEMESTER);
+    return this.validateSemester(value);
+  }
+
+  // 内部：校验学期值是否合法
+  private static validateSemester(value: any): { year: number; term: number } | null {
+    if (!value || typeof value !== 'object') return null;
+    const { year, term } = value;
+    const isValidYear = Number.isInteger(year) && year >= 1970;
+    const isValidTerm = term === 1 || term === 2;
+    if (!isValidYear || !isValidTerm) return null;
     return { year, term };
   }
 
@@ -362,9 +429,17 @@ class StorageService {  // 存储键名常量
     // 清除设置缓存
     this.remove(this.KEYS.CURRENT_TERM);
     this.remove(this.KEYS.SCHEDULE_SETTINGS);
+    this.remove(this.KEYS.GRADE_SEMESTER);
+    this.remove(this.KEYS.SCHEDULE_SEMESTER);
+    this.remove(this.KEYS.COURSE_SEMESTER);
+    this.remove(this.KEYS.EXAM_SEMESTER);
     
     // 清除用户信息（但保留登录凭证）
     this.remove(this.KEYS.USER_INFO);
+    
+    // 清除推送设置（已通过 unsubscribe 提交取消）
+    this.remove(this.KEYS.GRADE_PUSH_ENABLED);
+    this.remove(this.KEYS.GRADE_PUSH_SUBSCRIBED);
     
     // 清除登录表单数据
     this.clearLoginFormData();

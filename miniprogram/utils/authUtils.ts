@@ -51,6 +51,10 @@ export class AuthUtils {
   static handleApiError(code: number, msg?: string): void {
     switch (code) {
       case 1006: // cookies失效
+        if (StorageService.isMockLogin()) {
+          console.log('Mock 模式，忽略 cookies 失效');
+          break;
+        }
         console.warn('Cookies失效，清除登录信息');
         StorageService.clearLoginInfo();
         wx.showToast({

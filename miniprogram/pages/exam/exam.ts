@@ -58,7 +58,7 @@ Page({
   // 初始化数据
   initData() {
     // 优先从存储中获取当前学期设置
-    const currentTerm = StorageService.getCurrentTerm();
+    const currentTerm = StorageService.getExamSemester();
     let currentYear: number;
     let currentTermNum: number;
     
@@ -355,7 +355,7 @@ Page({
     });
     
     // 保存到存储
-    StorageService.setCurrentTerm(year, this.data.currentTerm);
+    StorageService.setExamSemester(year, this.data.currentTerm);
     
     // 重新加载数据
     this.loadExams();
@@ -384,7 +384,7 @@ Page({
     });
     
     // 保存到存储
-    StorageService.setCurrentTerm(this.data.currentYear, term);
+    StorageService.setExamSemester(this.data.currentYear, term);
     
     // 重新加载数据
     this.loadExams();

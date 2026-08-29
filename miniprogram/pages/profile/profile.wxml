@@ -59,6 +59,26 @@
     </view>
   </view>
 
+  <!-- 消息推送 -->
+  <view class="settings-section">
+    <text class="section-title">消息推送</text>
+
+    <!-- 成绩更新推送 -->
+    <view class="setting-item">
+      <view class="setting-content" bindtap="onTapRenew">
+        <text class="setting-title">成绩更新推送</text>
+        <text class="setting-desc">{{gradePushDesc}}</text>
+      </view>
+      <switch
+        class="setting-switch"
+        checked="{{gradePushEnabled}}"
+        bindchange="toggleGradePush"
+        disabled="{{gradePushLoading}}"
+        color="#007AFF"
+      />
+    </view>
+  </view>
+
   <!-- 系统设置 -->
   <view class="settings-section">
     <text class="section-title">系统设置</text>
@@ -123,7 +143,7 @@
       <view class="setting-item" bindtap="showAbout">
       <view class="setting-content">
         <text class="setting-title">关于应用</text>
-        <text class="setting-desc">版本信息、开源说明、隐私声明</text>
+        <text class="setting-desc">版本信息、隐私声明、联系作者</text>
       </view>
       <text class="setting-arrow">〉</text>
     </view><view class="setting-item" bindtap="logout">

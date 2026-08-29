@@ -171,7 +171,7 @@ Page({  data: {
     console.log('设置的数据 - 学年索引:', yearRange.findIndex(year => year === `${settings.currentYear}-${settings.currentYear + 1}`), '学期索引:', settings.currentTerm - 1, '自动计算周次:', currentWeek);
 
     // 设置当前学期到存储
-    StorageService.setCurrentTerm(settings.currentYear, settings.currentTerm);
+    StorageService.setScheduleSemester(settings.currentYear, settings.currentTerm);
   },  // 更新日期头部
   updateDayHeaders(weekStartDay: number = 1) {
     const settings = this.loadScheduleSettings();
@@ -942,7 +942,7 @@ Page({  data: {
   // 获取默认课表设置
   getDefaultScheduleSettings(): ScheduleSettings {
     // 优先从存储中获取当前学期设置
-    const storedTerm = StorageService.getCurrentTerm();
+    const storedTerm = StorageService.getScheduleSemester();
     let academicYear: number;
     let currentTerm: number;
     if (storedTerm) {

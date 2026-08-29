@@ -148,7 +148,7 @@ Page({  data: {
       StorageService.setScheduleSettings(settings);
       
       // 同时更新 StorageService 中的当前学期设置
-      StorageService.setCurrentTerm(this.data.currentYear, this.data.currentTerm);
+      StorageService.setScheduleSemester(this.data.currentYear, this.data.currentTerm);
       
       wx.showToast({
         title: '设置已保存',

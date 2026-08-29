@@ -1,6 +1,7 @@
 import ApiService from '../../utils/api';
 import StorageService from '../../utils/storage';
 import { AuthUtils } from '../../utils/authUtils';
+import SubscribeManager from '../../utils/subscribeManager';
 
 interface UserInfo {
   name: string;
@@ -27,6 +28,11 @@ Page({  data: {
     ],
     gradeApiType: 'normal', // 成绩接口类型 normal/detail
     showGradeApiTypeDialog: false, // 成绩接口类型选择弹窗
+
+    // 成绩推送相关
+    gradePushEnabled: false,
+    gradePushLoading: false,
+    gradePushDesc: '点击开启，新成绩将微信通知',
   },
 
   onLoad() {
@@ -52,11 +58,19 @@ Page({  data: {
     const defaultPageOption = this.data.defaultPageOptions.find(option => option.key === defaultPage);
     const defaultPageName = defaultPageOption ? defaultPageOption.name : '首页';
     
+    // 读取成绩推送开关状态
+    const gradePushEnabled = SubscribeManager.isPushEnabled();
+    const gradePushDesc = gradePushEnabled
+      ? '已开启，点击续期可增加推送次数'
+      : '点击开启，新成绩将微信通知';
+
     this.setData({
       userInfo,
       apiBaseUrl,
       selectedDefaultPage: defaultPage,
-      defaultPageName
+      defaultPageName,
+      gradePushEnabled,
+      gradePushDesc
     });
   },
 
@@ -182,16 +196,20 @@ Page({  data: {
   clearCache() {
     wx.showModal({
       title: '确认清除',
-      content: '确定要清除所有缓存数据吗？清除后需要重新加载数据。',
+      content: '确定要清除所有缓存数据吗？清除后需要重新加载数据，并取消消息推送。',
       success: (res) => {
         if (res.confirm) {
           try {
+            // 取消消息推送
+            SubscribeManager.unsubscribe().catch(() => {});
+
             // 清除所有缓存数据
             StorageService.clearAllCache();
             
             // 重新加载用户信息（因为用户信息也被清除了）
             this.setData({
-              userInfo: null
+              userInfo: null,
+              gradePushEnabled: false
             });
             
             wx.showToast({
@@ -228,22 +246,150 @@ Page({  data: {
         }
       }
     });
-  },  // 显示关于页面
+  },
+
+  // ==================== 成绩推送 ====================
+
+  // 开关切换：开 = 开启状态，关 = 取消订阅
+  async toggleGradePush(e: any) {
+    if (this.data.gradePushLoading) return;
+    const enabled = e.detail.value;
+    this.setData({ gradePushLoading: true });
+
+    try {
+      if (enabled) {
+        // 开启：先绑定 OpenID
+        wx.showLoading({ title: '开启中...' });
+
+        const loginInfo = StorageService.getLoginInfo();
+        if (!loginInfo) {
+          wx.hideLoading();
+          wx.showToast({ title: '请先登录', icon: 'none' });
+          this.setData({ gradePushEnabled: false, gradePushLoading: false });
+          return;
+        }
+
+        let openid = SubscribeManager.getOpenId();
+        if (!openid) {
+          openid = await SubscribeManager.bindOpenId();
+          if (!openid) {
+            wx.hideLoading();
+            wx.showToast({ title: '绑定微信账号失败', icon: 'none' });
+            this.setData({ gradePushEnabled: false, gradePushLoading: false });
+            return;
+          }
+        }
+
+        wx.hideLoading();
+
+        // 开启后立即申请一次授权
+        const subscribed = await SubscribeManager.requestPushSubscribe();
+        if (subscribed) {
+          SubscribeManager.setPushEnabled(true);
+          this.setData({
+            gradePushEnabled: true,
+            gradePushDesc: '已开启，点击续期可增加推送次数'
+          });
+          wx.showToast({ title: '授权成功，可接收通知', icon: 'success' });
+        } else {
+          // 用户拒绝了首次授权，关闭开关
+          SubscribeManager.setPushEnabled(false);
+          this.setData({
+            gradePushEnabled: false,
+            gradePushDesc: '点击开启，新成绩将微信通知'
+          });
+          wx.showModal({
+            title: '授权被拒绝',
+            content: '未获得授权，将无法接收微信通知。',
+            showCancel: false,
+            confirmText: '知道了'
+          });
+        }
+      } else {
+        // 关闭：取消订阅
+        const unsubscribed = await SubscribeManager.unsubscribe();
+        if (unsubscribed) {
+          this.setData({
+            gradePushEnabled: false,
+            gradePushDesc: '点击开启，新成绩将微信通知'
+          });
+          wx.showToast({ title: '已关闭成绩推送', icon: 'success' });
+        } else {
+          this.setData({ gradePushEnabled: true });
+          wx.showToast({ title: '取消失败', icon: 'none' });
+        }
+      }
+    } catch (error) {
+      console.error('切换推送状态失败:', error);
+      this.setData({ gradePushEnabled: !enabled });
+      wx.hideLoading();
+      wx.showToast({ title: '操作失败', icon: 'none' });
+    }
+
+    this.setData({ gradePushLoading: false });
+  },
+
+  // 点击卡片续期 — 只有开启状态可用，每点一次申请一次授权
+  async onTapRenew() {
+    if (!this.data.gradePushEnabled) {
+      // 关闭状态点击提示先开启
+      wx.showToast({ title: '请先开启推送开关', icon: 'none' });
+      return;
+    }
+    if (this.data.gradePushLoading) return;
+    this.setData({ gradePushLoading: true });
+
+    wx.showLoading({ title: '申请授权中...' });
+
+    try {
+      // 确保已绑定 OpenID
+      let openid = SubscribeManager.getOpenId();
+      if (!openid) {
+        openid = await SubscribeManager.bindOpenId();
+        if (!openid) {
+          wx.hideLoading();
+          wx.showToast({ title: '绑定微信账号失败', icon: 'none' });
+          this.setData({ gradePushLoading: false });
+          return;
+        }
+      }
+
+      wx.hideLoading();
+
+      // 申请订阅授权（每次续期获得一次推送配额）
+      const subscribed = await SubscribeManager.requestPushSubscribe();
+      if (subscribed) {
+        wx.showToast({ title: '续期成功，可继续接收通知', icon: 'success' });
+      } else {
+        wx.showModal({
+          title: '续期被拒绝',
+          content: '未获得续期授权，推送次数用完后可能无法接收通知。',
+          showCancel: false,
+          confirmText: '知道了'
+        });
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('续期授权失败:', error);
+      wx.showToast({ title: '续期失败', icon: 'none' });
+    }
+
+    this.setData({ gradePushLoading: false });
+  },
+
+  // 显示关于页面
   showAbout() {
     wx.showActionSheet({
-      itemList: ['应用信息', '开源地址', '隐私声明', '联系作者'],
+      itemList: ['应用信息', '隐私声明', '联系作者'],
       success: (res) => {
         switch (res.tapIndex) {
           case 0:
             this.showAppInfo();
             break;
           case 1:
-            this.showOpenSource();
-            break;
-          case 2:
             this.showPrivacyPolicy();
             break;
-          case 3:
+          case 2:
             this.showContact();
             break;
         }
@@ -253,9 +399,8 @@ Page({  data: {
 
   // 显示应用信息
   showAppInfo() {
-    const content = `Drfccv助手小程序
-版本：2.0.0`
-;
+    const content = `Drfccv助手
+版本 2.0.0`;
 
     wx.showModal({
       title: '应用信息',
@@ -264,58 +409,35 @@ Page({  data: {
       confirmText: '确定'
     });
   },
-  // 显示开源信息
-  showOpenSource() {
-    const content = `本应用基于开源项目开发
-
-开源协议：MIT License
-项目地址：GitHub
-
-本项目欢迎贡献代码和反馈问题
-支持二次开发和定制
-
-感谢开源社区的支持！`;
-
-    wx.showModal({
-      title: '开源声明',
-      content,
-      showCancel: true,
-      cancelText: '返回',
-      confirmText: '复制地址',
-      success: (res) => {
-        if (res.confirm) {
-          wx.setClipboardData({
-            data: 'https://github.com/drfccv/ZFJW-miniprogram',
-            success: () => {
-              wx.showToast({
-                title: 'GitHub地址已复制',
-                icon: 'success'
-              });
-            }
-          });
-        }
-      }
-    });
-  },
-
   // 显示隐私声明
   showPrivacyPolicy() {
-    const content = `隐私保护承诺
+    const content = `🔒 隐私保护承诺
 
-数据收集：
-• 仅收集必要的学号和密码用于登录
-• 不收集个人隐私信息
-• 不进行用户行为跟踪
+📌 数据收集
+• 仅收集登录所需的学号和密码
+• 仅与教务系统通信获取课表/成绩等数据
+• 不收集任何个人隐私信息
+• 不进行用户行为跟踪分析
 
-数据存储：
-• 所有数据仅保存在本地设备
-• 支持用户随时清除所有数据
+💾 数据存储
+• 所有数据仅保存在微信本地缓存
+• 登录凭证和密码（如选择记住）仅存于本地
+• 支持用户在设置中随时清除所有数据
+• 关闭账号不会在服务器留下任何痕迹
 
-数据传输：
-• 仅与教务系统进行必要通信
-• 不向第三方传输用户数据
-• 支持用户自定义API地址
-`;
+🌐 数据传输
+• 仅与学校教务系统和用户自设后端通信
+• 默认连接用户自定义 API 地址
+• 不向第三方传输任何用户数据
+• 所有网络请求均不含额外埋点
+
+🛡️ 安全说明
+• 建议使用 HTTPS 连接后端服务
+• 密码本地加密存储
+
+📅 最近更新：2026 年 7 月
+
+以上承诺适用于 Drfccv 助手 小程序 V2.0.0`;
 
     wx.showModal({
       title: '隐私声明',
@@ -326,21 +448,22 @@ Page({  data: {
   },
   // 显示联系方式
   showContact() {
-    const content = `联系作者
+    const content = `📬 联系作者
 
-QQ：2713587802
+👤 作者：drfccv
+� QQ：2713587802
 
-学习交流：
+📢 反馈渠道
 • 功能使用咨询
-• 学习技术讨论
 • 问题反馈建议
 • 改进意见收集
+• QQ：直接联系作者
 
-本项目不保存任何个人信息至云端
-均以缓存的形式保存在本地
-仅供学习参考，不得违规使用
+📌 说明
+• 所有数据仅保存在本地，不上传云端
+• 仅供学习参考，不得违规使用
 
-期待您的交流与反馈！`;
+🤝 期待您的反馈与建议！`;
 
     wx.showModal({
       title: '联系作者',

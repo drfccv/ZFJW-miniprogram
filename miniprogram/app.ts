@@ -1,5 +1,6 @@
 // app.ts
 import StorageService from './utils/storage';
+import SubscribeManager from './utils/subscribeManager';
 
 App<IAppOption>({
   globalData: {},
@@ -41,6 +42,14 @@ App<IAppOption>({
           }
         }, 500);
       }
+    }
+
+    // 静默续订订阅消息（用户勾选"总是保持"后不会弹窗）
+    // 确保推送开关开启的用户能持续收到通知
+    if (StorageService.isLoggedIn() && !StorageService.isMockLogin()) {
+      setTimeout(() => {
+        SubscribeManager.checkAndRenewIfNeeded();
+      }, 1000);
     }
   }
 })

@@ -106,7 +106,7 @@ Page({
   },// 初始化数据
   initData() {
     // 优先从存储中获取当前学期设置
-    const storedTerm = StorageService.getCurrentTerm();
+    const storedTerm = StorageService.getGradeSemester();
     let academicYear: number;
     let currentTerm: number;
     
@@ -383,7 +383,7 @@ Page({
     }
     // 仅当选择了具体学年且学期为1或2时才写入存储
     if (this.data.currentYear && (this.data.currentTerm === 1 || this.data.currentTerm === 2)) {
-      StorageService.setCurrentTerm(this.data.currentYear, this.data.currentTerm);
+      StorageService.setGradeSemester(this.data.currentYear, this.data.currentTerm);
     }
     this.loadGrades();
   },  // 学期变更
@@ -402,7 +402,7 @@ Page({
     }
     // 仅当选择了具体学年且学期为1或2时才写入存储
     if (this.data.currentYear && (this.data.currentTerm === 1 || this.data.currentTerm === 2)) {
-      StorageService.setCurrentTerm(this.data.currentYear, this.data.currentTerm);
+      StorageService.setGradeSemester(this.data.currentYear, this.data.currentTerm);
     }
     this.loadGrades();
   },

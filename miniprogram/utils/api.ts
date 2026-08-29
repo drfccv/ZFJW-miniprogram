@@ -102,6 +102,11 @@ class ApiService {
   private static handleResponse<T>(response: ApiResponse<T>): ApiResponse<T> {
     // 检查cookie失效
     if (response.code === 1006) {
+      // Mock 登录跳过登录失效检查（mock cookies 没有实际意义）
+      if (StorageService.isMockLogin()) {
+        console.log('Mock 模式，忽略 cookies 失效');
+        return response;
+      }
       console.warn('Cookies失效，需要重新登录');
       StorageService.clearLoginInfo();
       // 可以触发全局登录失效事件
@@ -119,6 +124,11 @@ class ApiService {
     return response;
   }  // 获取学校列表的专用GET方法
   private static requestGet<T>(url: string): Promise<ApiResponse<T>> {
+    // Mock 模式下跳过所有 API 请求
+    if (StorageService.isMockLogin()) {
+      return Promise.resolve({ code: 1000, data: [] as any });
+    }
+
     const apiBaseUrl = StorageService.getApiBaseUrl();
     const cleanBaseUrl = apiBaseUrl.replace(/\/$/, '');
     const cleanUrl = url.startsWith('/') ? url : '/' + url;
@@ -154,6 +164,11 @@ class ApiService {
 
   // 通用POST请求方法
   private static request<T>(url: string, data: any): Promise<ApiResponse<T>> {
+    // Mock 模式下跳过所有 API 请求
+    if (StorageService.isMockLogin()) {
+      return Promise.resolve({ code: 1000, data: {} as any });
+    }
+
     // 使用配置的API地址或默认地址
     const apiBaseUrl = StorageService.getApiBaseUrl();
     const cleanBaseUrl = apiBaseUrl.replace(/\/$/, '');
@@ -339,6 +354,31 @@ class ApiService {
   // 获取指定学校配置信息
   static getSchoolConfig(schoolName: string) {
     return this.requestGet(`/api/school/${encodeURIComponent(schoolName)}`);
+  }
+
+  // ==================== 消息推送相关接口 ====================
+
+  // 25. 绑定微信 OpenID（登录成功后调用）
+  static bindOpenId(params: AuthParams & { code: string; sid: string }) {
+    return this.request('/api/bind_openid', params);
+  }
+
+  // 26. 订阅成绩推送（后端统一订阅成绩+异常两个模板，不再需要 template_id）
+  static subscribeGradePush(params: AuthParams & {
+    openid: string;
+    sid: string;
+  }) {
+    return this.request('/api/subscribe_grade_push', params);
+  }
+
+  // 27. 取消订阅成绩推送
+  static unsubscribeGradePush(params: AuthParams & { openid: string }) {
+    return this.request('/api/unsubscribe_grade_push', params);
+  }
+
+  // 28. 查询成绩推送状态
+  static getGradePushStatus(params: AuthParams & { openid: string }) {
+    return this.request('/api/grade_push_status', params);
   }
 }
 

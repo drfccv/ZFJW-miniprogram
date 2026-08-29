@@ -12,3 +12,9 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+
+# Visual Studio
+.vs/
+
+# 微信开发者工具私有配置（含本地调试信息，不提交）
+project.private.config.json

@@ -119,7 +119,7 @@ Page({  data: {
   // 初始化数据
   initData() {
     // 优先从存储中获取当前学期设置
-    const storedTerm = StorageService.getCurrentTerm();
+    const storedTerm = StorageService.getCourseSemester();
     let academicYear: number;
     let currentTerm: number;
     
@@ -826,7 +826,7 @@ Page({  data: {
     });
     
     // 保存到存储
-    StorageService.setCurrentTerm(year, this.data.currentTerm);
+    StorageService.setCourseSemester(year, this.data.currentTerm);
     
     this.loadCurrentData();
   },
@@ -852,7 +852,7 @@ Page({  data: {
     });
     
     // 保存到存储
-    StorageService.setCurrentTerm(this.data.currentYear, term);
+    StorageService.setCourseSemester(this.data.currentYear, term);
     
     this.loadCurrentData();
   }

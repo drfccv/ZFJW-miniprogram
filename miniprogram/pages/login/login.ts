@@ -1,6 +1,7 @@
 import LoginManager, { LoginResult, CaptchaData } from '../../utils/loginManager';
 import StorageService from '../../utils/storage';
 import ApiService, { SchoolInfo } from '../../utils/api';
+import SubscribeManager from '../../utils/subscribeManager';
 
 interface LoginFormData {
   sid: string;
@@ -18,6 +19,9 @@ function getCaptchaImgSrc(raw: string): string {
   }
   return raw + (raw.includes('?') ? '&' : '?') + 't=' + Date.now();
 }
+
+// mock 登录凭据（开发调试用）
+const MOCK_CREDENTIALS = { sid: 'test', password: 'password' };
 
 Page({  data: {
     formData: {
@@ -267,7 +271,36 @@ Page({  data: {
     }
 
     this.setData({ loading: true });
-    
+
+    // ====== Mock 登录（开发调试用） ======
+    const isMock = formData.sid === MOCK_CREDENTIALS.sid
+      && formData.password === MOCK_CREDENTIALS.password;
+    if (isMock) {
+      console.log('使用 Mock 登录');
+      // 保存 mock 登录凭证
+      StorageService.saveLoginInfo(
+        { mock_session: 'mock_session_token_' + Date.now() },
+        formData.schoolName
+      );
+      // 保存 mock 用户信息
+      const mockUserInfo = {
+        name: '测试用户',
+        sid: 'test',
+        className: '测试班级',
+        major: '测试专业'
+      };
+      StorageService.set(StorageService.KEYS.USER_INFO, mockUserInfo);
+      StorageService.set('school_name', formData.schoolName);
+      // 标记 Mock 登录，跳过后续 API 调用以免触发登录失效
+      StorageService.set(StorageService.KEYS.IS_MOCK_LOGIN, true);
+      wx.showToast({ title: 'Mock 登录成功', icon: 'success' });
+      setTimeout(() => {
+        wx.switchTab({ url: '/pages/index/index' });
+      }, 1000);
+      this.setData({ loading: false });
+      return;
+    }
+
     console.log('开始登录流程，参数:', {
       sid: formData.sid,
       schoolName: formData.schoolName,
@@ -417,6 +450,9 @@ Page({  data: {
         // 保存用户信息
         StorageService.set(StorageService.KEYS.USER_INFO, result.data);
         
+        // 静默绑定 OpenID（为成绩推送做准备）
+        SubscribeManager.bindOpenId();
+
         // 跳转到首页
         setTimeout(() => {
           wx.switchTab({
@@ -425,6 +461,8 @@ Page({  data: {
         }, 1000);
       } else {
         console.warn('获取用户信息失败，但仍然跳转');
+        // 仍然尝试绑定 OpenID
+        SubscribeManager.bindOpenId();
         setTimeout(() => {
           wx.switchTab({
             url: '/pages/index/index'
