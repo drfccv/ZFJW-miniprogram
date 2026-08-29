@@ -10,7 +10,7 @@
   <view class="schedule-wrapper" 
         bindtouchstart="onTouchStart" 
         bindtouchend="onTouchEnd">
-    <scroll-view class="schedule-container" scroll-y wx:if="{{scheduleData.length > 0}}">    <!-- 表头 -->
+    <view class="schedule-container" wx:if="{{scheduleData.length > 0}}">    <!-- 表头 -->
     <view class="schedule-header">
       <!-- 时间列头 -->
       <view class="time-column-header">
@@ -24,7 +24,7 @@
     </view><!-- 课表内容 -->
     <view class="schedule-body {{animationClass}}">      <view 
         class="schedule-row" 
-        style="height: max(calc((100vh - 300rpx) / {{maxPeriods}}), 80rpx);"
+
         wx:for="{{mergedScheduleGrid}}" 
         wx:key="index" 
         wx:for-item="timeSlot" 
@@ -49,7 +49,7 @@
               <view 
                 wx:if="{{!course.isPlaceholder}}"
                 class="course-cell has-course {{course.isMerged ? 'merged-course' : ''}} {{course.isConflict ? 'conflict-course' : ''}} course-color-{{course.colorIndex}}"
-                style="{{course.isMerged ? 'height: calc(' + course.periods + ' * max(((100vh - 300rpx) / ' + maxPeriods + '), 80rpx));' : 'height: calc((100vh - 300rpx) / ' + maxPeriods + ');'}}"
+                style="{{course.isMerged ? 'height: calc(' + course.periods + ' * 100%);' : 'height: 100%;'}}"
                 bindtap="showCourseDetail"
                 data-course="{{course}}"
               >
@@ -90,7 +90,7 @@
         </view>
       </view>
     </view>
-  </scroll-view>
+  </view>
   
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{scheduleData.length === 0 && !loading}}">

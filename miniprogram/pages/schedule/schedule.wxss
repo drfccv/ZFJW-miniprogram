@@ -41,6 +41,8 @@
   flex: 1;
   overflow: hidden;
   padding: 16rpx 16rpx 16rpx 16rpx; /* 上下左右间距一致 */
+  display: flex;
+  flex-direction: column;
 }
 
 /* 课表容器 */
@@ -142,6 +144,8 @@
   border-bottom: 1rpx solid #f0f2f5;
   align-items: stretch;
   width: 100%;
+  flex: 1;
+  min-height: 80rpx;
 }
 
 .schedule-row:last-child {
@@ -215,9 +219,10 @@
 
 .course-cell.has-course {
   position: absolute;
-  top: 2rpx;
-  left: 2rpx;
-  right: 2rpx;
+  top: 0;
+  left: -2rpx;
+  right: 0;
+  bottom: 0;
   border-radius: 10rpx;
   border: 1rpx solid;
   min-height: 0;
@@ -256,9 +261,9 @@
 
 .course-cell.merged-course {
   position: absolute;
-  top: 2rpx;
-  left: 2rpx;
-  right: 2rpx;
+  top: 0;
+  left: -2rpx;
+  right: 0;
   z-index: 5;
 }
 

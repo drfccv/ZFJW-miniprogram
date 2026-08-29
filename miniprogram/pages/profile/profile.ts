@@ -601,13 +601,6 @@ Page({  data: {
     });
   },
 
-  // 跳转到官方教务webview页面
-  goToOfficialJw() {
-    wx.navigateTo({
-      url: '/pages/official-jw/official-jw'
-    });
-  },
-
   onShareAppMessage() {
     return {
       title: '我的 - Drfccv助手小程序',
