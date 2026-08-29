@@ -23,22 +23,22 @@
 .icon-xl { font-size: 36rpx; }
 .icon-xxl { font-size: 48rpx; }
 
-/* 功能图标 */
-.icon-home::before { content: "🏠"; }
-.icon-schedule::before { content: "📅"; }
-.icon-grade::before { content: "📊"; }
-.icon-exam::before { content: "📝"; }
-.icon-course::before { content: "📚"; }
-.icon-notification::before { content: "🔔"; }
-.icon-profile::before { content: "👤"; }
-.icon-export::before { content: "📤"; }
-.icon-classroom::before { content: "🏫"; }
-.icon-settings::before { content: "⚙️"; }
+/* 功能图标（未使用，content 暂留空；如需可用 SVG 或图标字体替代） */
+.icon-home::before { content: ""; }
+.icon-schedule::before { content: ""; }
+.icon-grade::before { content: ""; }
+.icon-exam::before { content: ""; }
+.icon-course::before { content: ""; }
+.icon-notification::before { content: ""; }
+.icon-profile::before { content: ""; }
+.icon-export::before { content: ""; }
+.icon-classroom::before { content: ""; }
+.icon-settings::before { content: ""; }
 
 /* 操作图标 */
-.icon-refresh::before { content: "↻"; }
-.icon-search::before { content: "🔍"; }
-.icon-filter::before { content: "📋"; }
+.icon-refresh::before { content: ""; }
+.icon-search::before { content: ""; }
+.icon-filter::before { content: ""; }
 .icon-arrow-right::before { content: "→"; }
 .icon-arrow-left::before { content: "←"; }
 .icon-arrow-up::before { content: "↑"; }

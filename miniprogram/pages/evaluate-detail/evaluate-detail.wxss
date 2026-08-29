@@ -223,10 +223,11 @@
   padding: 100rpx 40rpx;
 }
 
-.loading-icon {
-  font-size: 60rpx;
+.loading-icon-img {
+  width: 64rpx;
+  height: 64rpx;
   margin-bottom: 20rpx;
-  animation: rotate 2s linear infinite;
+  animation: rotate 1s linear infinite;
 }
 
 @keyframes rotate {
@@ -265,7 +266,7 @@
   background: #007aff;
   color: white;
   border: none;
-  border-radius: 8rpx;
+  border-radius: 16rpx;
   padding: 20rpx 40rpx;
   font-size: 28rpx;
 }

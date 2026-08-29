@@ -2,6 +2,7 @@ import LoginManager, { LoginResult, CaptchaData } from '../../utils/loginManager
 import StorageService from '../../utils/storage';
 import ApiService, { SchoolInfo } from '../../utils/api';
 import SubscribeManager from '../../utils/subscribeManager';
+import { registerPrivacyListener, unregisterPrivacyListener } from '../../utils/privacy';
 
 interface LoginFormData {
   sid: string;
@@ -49,21 +50,35 @@ Page({  data: {
     await this.loadSchoolList();
     
     // 学校列表加载完成后，再读取缓存的登录表单数据
-    this.loadCachedFormData();
+    await this.loadCachedFormData();
+  },
+
+  onShow() {
+    // 注册隐私授权监听（覆盖式注册，页面显示时生效）
+    registerPrivacyListener(this.handlePrivacyAuthorization);
+  },
+
+  onHide() {
+    unregisterPrivacyListener(this.handlePrivacyAuthorization);
+  },
+
+  onUnload() {
+    unregisterPrivacyListener(this.handlePrivacyAuthorization);
+  },
+
+  // 微信隐私授权事件：调用隐私接口且用户未同意时触发，弹出隐私弹窗
+  handlePrivacyAuthorization(resolve: any, eventInfo?: { privacyContractName: string }) {
+    const popup = this.selectComponent('#privacy-popup');
+    if (popup) {
+      popup.showPopup(resolve, eventInfo && eventInfo.privacyContractName);
+    }
   },
 
   // 加载缓存的表单数据
-  loadCachedFormData() {
-    const cachedData = StorageService.getLoginFormData();
+  async loadCachedFormData() {
+    const cachedData = await StorageService.getLoginFormData();
     
     if (cachedData) {
-      console.log('读取到缓存的登录表单数据:', {
-        schoolName: cachedData.schoolName,
-        sid: cachedData.sid,
-        hasPassword: !!cachedData.password,
-        rememberPassword: cachedData.rememberPassword
-      });
-
       // 找到对应的学校索引
       let schoolIndex = 0;
       if (cachedData.schoolName && this.data.schoolList.length > 0) {
@@ -109,7 +124,6 @@ Page({  data: {
     
     try {
       const result = await ApiService.getSchools();
-      console.log('学校列表API返回结果:', result);
       
       if (result.code === 1000 && result.data) {
         // 正确解析学校列表数据结构: result.data.schools
@@ -117,8 +131,7 @@ Page({  data: {
         const schoolsArray = responseData.schools;
         
         if (Array.isArray(schoolsArray) && schoolsArray.length > 0) {
-          console.log('解析学校列表成功:', schoolsArray);
-            // 转换数据格式
+          // 转换数据格式
           const schoolList = schoolsArray.map((school: any) => ({
             name: school.school_name || school.name,
             school_name: school.school_name || school.name,
@@ -133,8 +146,6 @@ Page({  data: {
             schoolList,
             schoolNames
           });
-          
-          console.log('学校列表设置成功:', { schoolList, schoolNames });
         } else {
           console.error('学校列表数据为空:', responseData);
           wx.showToast({
@@ -162,7 +173,6 @@ Page({  data: {
   onSchoolChange(e: any) {
     const schoolIndex = parseInt(e.detail.value);
     const schoolName = (this.data.schoolList[schoolIndex] && this.data.schoolList[schoolIndex].name) || '';
-    console.log('学校选择变更:', { schoolIndex, schoolName });
     
     this.setData({
       schoolIndex,
@@ -173,15 +183,17 @@ Page({  data: {
     this.saveFormData();
   },
 
-  // 处理输入
+  // 处理输入（仅更新 data，不实时保存，避免每输入一个字符就触发存储与日志）
   handleInput(e: any) {
     const { field } = e.currentTarget.dataset;
     const { value } = e.detail;
     this.setData({
       [`formData.${field}`]: value
     });
+  },
 
-    // 自动保存表单数据
+  // 输入框失焦时保存表单数据（此时才加密存储）
+  onInputBlur() {
     this.saveFormData();
   },
 
@@ -301,26 +313,12 @@ Page({  data: {
       return;
     }
 
-    console.log('开始登录流程，参数:', {
-      sid: formData.sid,
-      schoolName: formData.schoolName,
-      hasPassword: !!formData.password,
-      showCaptcha: this.data.showCaptcha,
-      hasCaptchaData: !!this.data.captchaData
-    });
-
     try {
       const loginManager = LoginManager.getInstance();
       let result: LoginResult;
 
       if (this.data.showCaptcha && this.data.captchaData) {
         // 提交验证码
-        console.log('提交验证码登录，参数:', {
-          sid: this.data.captchaData.sid,
-          schoolName: formData.schoolName,
-          kaptcha: formData.kaptcha
-        });
-        
         result = await loginManager.submitCaptcha(
           this.data.captchaData,
           formData.kaptcha,
@@ -328,12 +326,6 @@ Page({  data: {
         );
       } else {
         // 开始登录流程 - 使用学校名称
-        console.log('开始普通登录，参数:', {
-          sid: formData.sid,
-          schoolName: formData.schoolName,
-          useSchoolName: true
-        });
-        
         result = await loginManager.login(
           { sid: formData.sid, password: formData.password },
           undefined, // baseUrl
@@ -439,7 +431,6 @@ Page({  data: {
       }      // 保存学校名称
       if (this.data.formData.schoolName) {
         StorageService.set('school_name', this.data.formData.schoolName);
-        console.log('保存学校名称:', this.data.formData.schoolName);
       }      // 获取用户信息
       const result = await ApiService.getInfo({
         cookies: credentials.cookies,
@@ -481,7 +472,7 @@ Page({  data: {
 
   // 验证码图片加载成功
   onCaptchaLoad() {
-    console.log('验证码图片加载成功');
+    // 无需日志
   },
 
   // 验证码图片加载失败
@@ -496,21 +487,15 @@ Page({  data: {
 
   // 显示隐私政策
   showPrivacyPolicy() {
-    wx.showModal({
-      title: '隐私政策',
-      content: '• 您的学号和密码仅用于登录教务系统，不会被存储到服务器\n\n• 登录系统后将会显示你的相关信息\n\n• 所有数据传输均采用加密方式，确保信息安全\n\n• 本应用仅作为辅助工具，不会收集任何个人隐私信息\n\n• 如选择"记住密码"，密码将加密存储在本地设备',
-      showCancel: false,
-      confirmText: '我知道了'
+    wx.navigateTo({
+      url: '/pages/privacy/privacy'
     });
   },
 
   // 显示用户协议
   showUserAgreement() {
-    wx.showModal({
-      title: '用户协议',
-      content: '欢迎使用Drfccv助手！\n\n1. 本应用仅供学习交流使用\n2. 请遵守相关规定\n3. 不得将账号信息泄露给他人\n4. 使用本应用即表示同意相关条款',
-      showCancel: false,
-      confirmText: '同意'
+    wx.navigateTo({
+      url: '/pages/agreement/agreement'
     });
   }
 });

@@ -6,19 +6,19 @@
     <view class="type-list">
       <view class="type-item {{currentType === 'grade' ? 'active' : ''}}" 
             bindtap="selectType" data-type="grade">
-        <view class="type-icon">📊</view>
+        <view class="type-icon"><image class="type-icon-img" src="/icons/grade.svg" mode="aspectFit"/></view>
         <view class="type-name">成绩单</view>
         <view class="type-desc">导出完整成绩单PDF</view>
       </view>
       <view class="type-item {{currentType === 'schedule' ? 'active' : ''}}" 
             bindtap="selectType" data-type="schedule">
-        <view class="type-icon">📅</view>
+        <view class="type-icon"><image class="type-icon-img" src="/icons/schedule.svg" mode="aspectFit"/></view>
         <view class="type-name">课表</view>
         <view class="type-desc">导出课表PDF</view>
       </view>
       <view class="type-item {{currentType === 'exam' ? 'active' : ''}}" 
             bindtap="selectType" data-type="exam">
-        <view class="type-icon">✏️</view>
+        <view class="type-icon"><image class="type-icon-img" src="/icons/exam.svg" mode="aspectFit"/></view>
         <view class="type-name">考试安排</view>
         <view class="type-desc">导出考试安排PDF</view>
       </view>

@@ -43,6 +43,33 @@ Page({
       isLoggedIn,
       userInfo
     });
+
+    // 已登录但本地缺少用户信息（可能被清缓存删掉）时，主动拉取一次
+    if (isLoggedIn && !userInfo.name) {
+      this.fetchUserInfo();
+    }
+  },
+
+  // 登录状态下拉取用户信息（若本地缺失则补上，避免顶部信息消失）
+  async fetchUserInfo() {
+    try {
+      const loginInfo = StorageService.getLoginInfo();
+      if (!loginInfo) return;
+
+      const result = await ApiService.getInfo({
+        cookies: loginInfo.cookies,
+        school_name: loginInfo.schoolName
+      });
+
+      if (result.code === 1000 && result.data) {
+        const userData = result.data as UserInfo;
+        StorageService.set(StorageService.KEYS.USER_INFO, userData);
+        // 仅当页面仍处于未填充状态时更新，避免覆盖已有数据
+        this.setData({ userInfo: userData });
+      }
+    } catch (error) {
+      console.error('自动拉取用户信息失败:', error);
+    }
   },
 
   // 加载数据

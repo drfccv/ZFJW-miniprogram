@@ -1,0 +1,76 @@
+<view class="doc-container">
+  <view class="doc-title">Drfccv助手 隐私政策</view>
+  <view class="doc-meta">更新日期：2026 年 8 月 29 日　|　生效日期：2026 年 8 月 29 日</view>
+
+  <view class="doc-section">
+    <view class="doc-h2">一、引言</view>
+    <view class="doc-p">
+      Drfccv助手（以下简称"本小程序"）尊重并保护用户（以下简称"您"）的隐私。本隐私政策旨在向您说明我们如何收集、使用、存储和保护您的个人信息，以及您享有的相关权利。请在使用本小程序前仔细阅读本政策。
+    </view>
+  </view>
+
+  <view class="doc-section">
+    <view class="doc-h2">二、我们收集的信息</view>
+    <view class="doc-p">在您使用本小程序的过程中，我们仅在必要范围内收集以下信息：</view>
+    <view class="doc-li">1. <text class="strong">登录信息</text>：您主动填写的学号、密码及验证码，用于登录学校教务系统。</view>
+    <view class="doc-li">2. <text class="strong">教务数据</text>：通过教务系统获取的课表、成绩、考试安排、选课及教学评价等数据。</view>
+    <view class="doc-li">3. <text class="strong">微信 OpenID</text>：用于为您推送成绩通知等订阅消息。</view>
+    <view class="doc-li">4. <text class="strong">设备与本地存储信息</text>：为实现本地缓存功能，我们会在您的设备本地保存上述数据。</view>
+    <view class="doc-p">我们不会收集您的姓名、手机号、地理位置、相册、通讯录等与本小程序功能无关的个人信息。</view>
+  </view>
+
+  <view class="doc-section">
+    <view class="doc-h2">三、我们如何使用信息</view>
+    <view class="doc-li">1. 使用您提供的学号、密码登录教务系统，获取并展示课表、成绩等数据；</view>
+    <view class="doc-li">2. 根据您的授权发送成绩发布、账号异常等订阅消息通知；</view>
+    <view class="doc-li">3. 在本地缓存您的登录状态与查询数据，以提升使用体验。</view>
+  </view>
+
+  <view class="doc-section">
+    <view class="doc-h2">四、信息的存储与保护</view>
+    <view class="doc-li">1. 所有数据默认仅存储在您的设备本地（微信小程序本地缓存），不强制上传至云端；</view>
+    <view class="doc-li">2. 如您选择"记住密码"，密码将使用微信提供的 AES128 加密能力加密存储于本地；</view>
+    <view class="doc-li">3. 我们采取合理的技术措施保护您的信息安全，建议您使用 HTTPS 连接后端服务；</view>
+    <view class="doc-li">4. 您可随时在小程序内清除全部本地数据（路径：更多 → 设置 → 清除数据）。</view>
+  </view>
+
+  <view class="doc-section">
+    <view class="doc-h2">五、信息的共享与披露</view>
+    <view class="doc-p">我们不会向任何第三方出售、出租或共享您的个人信息，但以下情形除外：</view>
+    <view class="doc-li">1. 为完成教务查询功能，向您所在学校的教务系统传输必要的数据（学号、密码等登录凭据）；</view>
+    <view class="doc-li">2. 依据法律法规、监管要求或有权机关的要求需要披露的；</view>
+    <view class="doc-li">3. 经您明确授权同意的其他情形。</view>
+  </view>
+
+  <view class="doc-section">
+    <view class="doc-h2">六、您享有的权利</view>
+    <view class="doc-li">1. <text class="strong">查询与更正</text>：您可随时查看并修改本小程序中保存的账号信息；</view>
+    <view class="doc-li">2. <text class="strong">删除</text>：您可随时清除本地缓存的全部数据；</view>
+    <view class="doc-li">3. <text class="strong">撤回同意</text>：您可在微信"设置 → 隐私"中撤回隐私授权，或在小程序设置中关闭订阅消息授权；</view>
+    <view class="doc-li">4. <text class="strong">注销</text>：您可在设置中清除全部数据并退出登录，此后本地不再保留任何个人信息。</view>
+  </view>
+
+  <view class="doc-section">
+    <view class="doc-h2">七、未成年人保护</view>
+    <view class="doc-p">
+      若您为未满 18 周岁的未成年人，请在监护人陪同下阅读本政策，并在征得监护人同意后使用本小程序。
+    </view>
+  </view>
+
+  <view class="doc-section">
+    <view class="doc-h2">八、隐私政策的更新</view>
+    <view class="doc-p">
+      我们可能适时对本政策进行修订。政策更新后，我们将在小程序内以适当方式向您提示，修订后的政策自发布之日起生效。如修订涉及重大变更，我们将以更显著的方式通知您。
+    </view>
+  </view>
+
+  <view class="doc-section">
+    <view class="doc-h2">九、联系我们</view>
+    <view class="doc-p">
+      如您对本隐私政策有任何疑问、意见或建议，欢迎通过以下方式与我们联系：
+    </view>
+    <view class="doc-li">联系作者：drfccv</view>
+    <view class="doc-li">邮箱：2713587802@qq.com</view>
+    <view class="doc-p">我们将在收到您的反馈后 15 个工作日内予以答复。</view>
+  </view>
+</view>

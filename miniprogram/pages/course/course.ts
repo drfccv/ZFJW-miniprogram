@@ -598,9 +598,10 @@ Page({  data: {
         title: '加载教学班失败',
         icon: 'none'
       });
+    } finally {
+      // 无论成功、提前 return 还是异常，都关闭 loading
+      wx.hideLoading();
     }
-
-    wx.hideLoading();
   },
   // 选择教学班
   async selectCourseClass(e: any) {

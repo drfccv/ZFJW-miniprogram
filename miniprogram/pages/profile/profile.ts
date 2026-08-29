@@ -2,6 +2,7 @@ import ApiService from '../../utils/api';
 import StorageService from '../../utils/storage';
 import { AuthUtils } from '../../utils/authUtils';
 import SubscribeManager from '../../utils/subscribeManager';
+import { registerPrivacyListener, unregisterPrivacyListener } from '../../utils/privacy';
 
 interface UserInfo {
   name: string;
@@ -13,18 +14,15 @@ interface UserInfo {
 
 Page({  data: {
     userInfo: null as UserInfo | null,
-    apiBaseUrl: '', // 后端API地址
-    showApiUrlDialog: false, // API地址设置对话框
-    inputApiUrl: '', // API地址输入框
     defaultPageName: '首页', // 默认页面显示名称
     showDefaultPageDialog: false, // 默认页面选择对话框
     selectedDefaultPage: 'index', // 当前选中的默认页面
     defaultPageOptions: [
-      { key: 'index', name: '首页', desc: '课程概览和通知', icon: '🏠' },
-      { key: 'schedule', name: '课表', desc: '课程表查看', icon: '📅' },
-      { key: 'grade', name: '成绩', desc: '成绩查询', icon: '📊' },
-      { key: 'exam', name: '考试', desc: '考试安排', icon: '📝' },
-      { key: 'notification', name: '通知', desc: '通知公告', icon: '📢' }
+      { key: 'index', name: '首页', desc: '课程概览和通知' },
+      { key: 'schedule', name: '课表', desc: '课程表查看' },
+      { key: 'grade', name: '成绩', desc: '成绩查询' },
+      { key: 'exam', name: '考试', desc: '考试安排' },
+      { key: 'notification', name: '通知', desc: '通知公告' }
     ],
     gradeApiType: 'normal', // 成绩接口类型 normal/detail
     showGradeApiTypeDialog: false, // 成绩接口类型选择弹窗
@@ -48,10 +46,27 @@ Page({  data: {
     // 登录校验
     AuthUtils.checkLoginStatus();
     this.loadUserInfo();
+    // 注册隐私授权监听（覆盖式注册，当前页生效）
+    registerPrivacyListener(this.handlePrivacyAuthorization);
+  },
+
+  onHide() {
+    unregisterPrivacyListener(this.handlePrivacyAuthorization);
+  },
+
+  onUnload() {
+    unregisterPrivacyListener(this.handlePrivacyAuthorization);
+  },
+
+  // 微信隐私授权事件：调用隐私接口且用户未同意时触发，弹出隐私弹窗
+  handlePrivacyAuthorization(resolve: any, eventInfo?: { privacyContractName: string }) {
+    const popup = this.selectComponent('#privacy-popup');
+    if (popup) {
+      popup.showPopup(resolve, eventInfo && eventInfo.privacyContractName);
+    }
   },  // 加载用户信息
   loadUserInfo() {
     const userInfo = StorageService.get<UserInfo>(StorageService.KEYS.USER_INFO);
-    const apiBaseUrl = StorageService.get<string>(StorageService.KEYS.API_BASE_URL) || '';
     const defaultPage = StorageService.getDefaultStartPage() || 'index';
     
     // 根据默认页面key找到对应的显示名称
@@ -66,12 +81,66 @@ Page({  data: {
 
     this.setData({
       userInfo,
-      apiBaseUrl,
       selectedDefaultPage: defaultPage,
       defaultPageName,
       gradePushEnabled,
       gradePushDesc
     });
+
+    // 已登录但本地缺少用户信息（如被清缓存删掉）时，主动拉取一次
+    if (StorageService.isLoggedIn() && !userInfo) {
+      this.fetchUserInfo();
+    }
+
+    // 异步同步后端推送状态（不影响首屏渲染）
+    this.syncPushStatusFromServer();
+  },
+
+  // 登录状态下补拉用户信息（避免顶部个人信息消失）
+  async fetchUserInfo() {
+    try {
+      const loginInfo = StorageService.getLoginInfo();
+      if (!loginInfo) return;
+
+      const result = await ApiService.getInfo({
+        cookies: loginInfo.cookies,
+        school_name: loginInfo.schoolName
+      });
+
+      if (result.code === 1000 && result.data) {
+        const userData = result.data as UserInfo;
+        StorageService.set(StorageService.KEYS.USER_INFO, userData);
+        this.setData({ userInfo: userData });
+      }
+    } catch (error) {
+      console.error('自动拉取用户信息失败:', error);
+    }
+  },
+
+  // 从后端同步推送状态到页面开关与描述（后端为准）
+  syncPushStatusFromServer() {
+    SubscribeManager.syncStatusFromServer()
+      .then((status) => {
+        // 结构校验：subscribed 必须是 boolean 才处理，避免 mock/异常数据误关开关
+        if (!status || typeof status.subscribed !== 'boolean' || !this.data.userInfo) return;
+
+        // 已订阅：subscribed 为 true，或 status 枚举为 active（兼容后端只返回 status 的情况）
+        const subscribed = status.subscribed || status.status === 'active';
+
+        // 后端确认未订阅（用户在微信设置取消授权 / 后端已清理）→ 关闭开关
+        if (!subscribed) {
+          if (this.data.gradePushEnabled) {
+            SubscribeManager.setPushEnabled(false);
+            this.setData({
+              gradePushEnabled: false,
+              gradePushDesc: '点击开启，新成绩将微信通知'
+            });
+          }
+        }
+      })
+      .catch(() => {
+        // 同步失败静默忽略，保持本地状态展示
+      });
   },
 
   // 页面导航
@@ -93,59 +162,6 @@ Page({  data: {
   navigateToScheduleSettings() {
     wx.navigateTo({
       url: '/pages/schedule-settings/schedule-settings'
-    });
-  },
-
-  // 显示API URL设置对话框
-  showApiUrlDialog() {
-    this.setData({
-      showApiUrlDialog: true,
-      inputApiUrl: this.data.apiBaseUrl
-    });
-  },
-
-  // 隐藏API URL设置对话框
-  hideApiUrlDialog() {
-    this.setData({
-      showApiUrlDialog: false,
-      inputApiUrl: ''
-    });  },
-  
-  // API URL输入
-  onApiUrlInput(e: any) {
-    this.setData({
-      inputApiUrl: e.detail.value
-    });  },
-
-  // 保存API URL
-  saveApiUrl() {
-    const url = this.data.inputApiUrl.trim();
-    if (!url) {
-      wx.showToast({
-        title: '请输入后端API地址',
-        icon: 'none'
-      });
-      return;
-    }
-
-    // 简单的URL格式验证
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      wx.showToast({
-        title: '请输入正确的URL格式',
-        icon: 'none'
-      });
-      return;
-    }
-
-    StorageService.set(StorageService.KEYS.API_BASE_URL, url);
-    this.setData({
-      apiBaseUrl: url,
-      showApiUrlDialog: false
-    });
-
-    wx.showToast({
-      title: '保存成功',
-      icon: 'success'
     });
   },
 
@@ -188,9 +204,9 @@ Page({  data: {
         title: '刷新失败',
         icon: 'none'
       });
+    } finally {
+      wx.hideLoading();
     }
-
-    wx.hideLoading();
   },
   // 清除缓存
   clearCache() {
@@ -291,6 +307,8 @@ Page({  data: {
             gradePushDesc: '已开启，点击续期可增加推送次数'
           });
           wx.showToast({ title: '授权成功，可接收通知', icon: 'success' });
+          // 稍后从后端刷新剩余推送次数（等后端处理订阅上报）
+          setTimeout(() => this.syncPushStatusFromServer(), 800);
         } else {
           // 用户拒绝了首次授权，关闭开关
           SubscribeManager.setPushEnabled(false);
@@ -347,19 +365,18 @@ Page({  data: {
       if (!openid) {
         openid = await SubscribeManager.bindOpenId();
         if (!openid) {
-          wx.hideLoading();
           wx.showToast({ title: '绑定微信账号失败', icon: 'none' });
           this.setData({ gradePushLoading: false });
           return;
         }
       }
 
-      wx.hideLoading();
-
       // 申请订阅授权（每次续期获得一次推送配额）
       const subscribed = await SubscribeManager.requestPushSubscribe();
       if (subscribed) {
         wx.showToast({ title: '续期成功，可继续接收通知', icon: 'success' });
+        // 从后端刷新剩余推送次数
+        setTimeout(() => this.syncPushStatusFromServer(), 800);
       } else {
         wx.showModal({
           title: '续期被拒绝',
@@ -369,9 +386,10 @@ Page({  data: {
         });
       }
     } catch (error) {
-      wx.hideLoading();
       console.error('续期授权失败:', error);
       wx.showToast({ title: '续期失败', icon: 'none' });
+    } finally {
+      wx.hideLoading();
     }
 
     this.setData({ gradePushLoading: false });
@@ -380,7 +398,7 @@ Page({  data: {
   // 显示关于页面
   showAbout() {
     wx.showActionSheet({
-      itemList: ['应用信息', '隐私声明', '联系作者'],
+      itemList: ['应用信息', '隐私声明'],
       success: (res) => {
         switch (res.tapIndex) {
           case 0:
@@ -389,9 +407,6 @@ Page({  data: {
           case 1:
             this.showPrivacyPolicy();
             break;
-          case 2:
-            this.showContact();
-            break;
         }
       }
     });
@@ -399,8 +414,7 @@ Page({  data: {
 
   // 显示应用信息
   showAppInfo() {
-    const content = `Drfccv助手
-版本 2.0.0`;
+    const content = this.getAppInfoContent();
 
     wx.showModal({
       title: '应用信息',
@@ -409,81 +423,88 @@ Page({  data: {
       confirmText: '确定'
     });
   },
-  // 显示隐私声明
-  showPrivacyPolicy() {
-    const content = `🔒 隐私保护承诺
 
-📌 数据收集
-• 仅收集登录所需的学号和密码
-• 仅与教务系统通信获取课表/成绩等数据
-• 不收集任何个人隐私信息
-• 不进行用户行为跟踪分析
+  // 动态获取应用与环境信息（全部本地读取，不上传服务器，不涉及微信隐私接口）
+  getAppInfoContent(): string {
+    const lines: string[] = ['Drfccv助手'];
 
-💾 数据存储
-• 所有数据仅保存在微信本地缓存
-• 登录凭证和密码（如选择记住）仅存于本地
-• 支持用户在设置中随时清除所有数据
-• 关闭账号不会在服务器留下任何痕迹
+    // 版本与环境（wx.getAccountInfoSync 基础库 2.10.0+）
+    lines.push(this.getVersionInfo());
 
-🌐 数据传输
-• 仅与学校教务系统和用户自设后端通信
-• 默认连接用户自定义 API 地址
-• 不向第三方传输任何用户数据
-• 所有网络请求均不含额外埋点
+    // 小程序账号信息（appId）
+    try {
+      const accountInfo = wx.getAccountInfoSync();
+      if (accountInfo && accountInfo.miniProgram && accountInfo.miniProgram.appId) {
+        lines.push(`AppID：${accountInfo.miniProgram.appId}`);
+      }
+    } catch (error) {
+      console.error('获取账号信息失败:', error);
+    }
 
-🛡️ 安全说明
-• 建议使用 HTTPS 连接后端服务
-• 密码本地加密存储
-
-📅 最近更新：2026 年 7 月
-
-以上承诺适用于 Drfccv 助手 小程序 V2.0.0`;
-
-    wx.showModal({
-      title: '隐私声明',
-      content,
-      showCancel: false,
-      confirmText: '我已了解'
-    });
-  },
-  // 显示联系方式
-  showContact() {
-    const content = `📬 联系作者
-
-👤 作者：drfccv
-� QQ：2713587802
-
-📢 反馈渠道
-• 功能使用咨询
-• 问题反馈建议
-• 改进意见收集
-• QQ：直接联系作者
-
-📌 说明
-• 所有数据仅保存在本地，不上传云端
-• 仅供学习参考，不得违规使用
-
-🤝 期待您的反馈与建议！`;
-
-    wx.showModal({
-      title: '联系作者',
-      content,
-      showCancel: true,
-      cancelText: '返回',
-      confirmText: '复制QQ',
-      success: (res) => {
-        if (res.confirm) {
-          wx.setClipboardData({
-            data: '2713587802',
-            success: () => {
-              wx.showToast({
-                title: 'QQ号已复制',
-                icon: 'success'
-              });
-            }
-          });
+    // 微信 APP 信息（wx.getAppBaseInfo 基础库 2.20.1+）
+    try {
+      const appBaseInfo = wx.getAppBaseInfo();
+      if (appBaseInfo) {
+        if (appBaseInfo.version) {
+          lines.push(`微信版本：${appBaseInfo.version}`);
+        }
+        if (appBaseInfo.SDKVersion) {
+          lines.push(`基础库：${appBaseInfo.SDKVersion}`);
         }
       }
+    } catch (error) {
+      console.error('获取微信基础信息失败:', error);
+    }
+
+    // 设备信息（wx.getDeviceInfo 基础库 2.20.1+）
+    try {
+      const deviceInfo = wx.getDeviceInfo();
+      if (deviceInfo) {
+        const brand = deviceInfo.brand || '';
+        const model = deviceInfo.model || '';
+        const system = deviceInfo.system || '';
+        const deviceStr = [brand, model].filter(Boolean).join(' ');
+        lines.push(`设备：${deviceStr || '未知'}`);
+        if (system) {
+          lines.push(`系统：${system}`);
+        }
+      }
+    } catch (error) {
+      console.error('获取设备信息失败:', error);
+    }
+
+    return lines.join('\n');
+  },
+
+  // 动态获取版本信息（不硬编码）：wx.getAccountInfoSync 返回当前环境与线上版本号
+  getVersionInfo(): string {
+    const envMap: { [key: string]: string } = {
+      develop: '开发版',
+      trial: '体验版',
+      release: '正式版'
+    };
+
+    try {
+      const info = wx.getAccountInfoSync();
+      const env = (info && info.miniProgram && envMap[info.miniProgram.envVersion]) || '';
+      const version = (info && info.miniProgram && info.miniProgram.version) || '';
+
+      if (version) {
+        return `版本 ${version}${env ? `（${env}）` : ''}`;
+      }
+      if (env) {
+        return `${env}（版本号仅正式版可见）`;
+      }
+      return '版本未知';
+    } catch (error) {
+      console.error('获取版本信息失败:', error);
+      return '版本未知';
+    }
+  },
+  // 显示隐私声明
+  showPrivacyPolicy() {
+    wx.navigateTo({
+      url: '/pages/privacy/privacy'
     });
   },
 
@@ -498,9 +519,7 @@ Page({  data: {
           StorageService.clearLoginInfo();
           StorageService.clearAllCache();
             this.setData({
-            userInfo: null,
-            baseUrl: '',
-            apiBaseUrl: ''
+            userInfo: null
           });
 
           wx.showToast({
@@ -558,17 +577,6 @@ Page({  data: {
         icon: 'success'
       });
     }
-  },
-
-  // 显示功能开发中提示
-  showComingSoon(e: any) {
-    const feature = e.currentTarget.dataset.feature;
-    wx.showModal({
-      title: '功能开发中',
-      content: `${feature}功能还在开发中，敬请期待！`,
-      showCancel: false,
-      confirmText: '知道了'
-    });
   },
 
   // 显示成绩接口类型选择弹窗

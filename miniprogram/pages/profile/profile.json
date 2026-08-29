@@ -1,5 +1,7 @@
 {
-  "usingComponents": {},
+  "usingComponents": {
+    "privacy-popup": "/components/privacy-popup/privacy-popup"
+  },
   "navigationBarTitleText": "我的",
   "navigationBarBackgroundColor": "#ffffff",
   "navigationBarTextStyle": "black",

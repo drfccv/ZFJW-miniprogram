@@ -134,9 +134,20 @@ export class SubscribeManager {
         openid
       });
 
-      if (result.code === 1000 && result.data) {
+      if (result.code === 1000 && result.data && typeof result.data === 'object') {
         const status = result.data as PushStatus;
-        StorageService.set(StorageService.KEYS.GRADE_PUSH_SUBSCRIBED, status.subscribed);
+
+        // 校验返回结构：subscribed 必须是 boolean，或 status 是合法枚举值。
+        // 避免 Mock 模式返回空对象 / 后端异常结构时污染本地状态、误关闭推送开关。
+        const hasValidFlag = typeof status.subscribed === 'boolean'
+          || (typeof status.status === 'string'
+            && ['none', 'active', 'exhausted', 'unsubscribed'].includes(status.status));
+        if (!hasValidFlag) {
+          console.warn('推送状态接口返回结构异常，忽略本次同步:', status);
+          return null;
+        }
+
+        StorageService.set(StorageService.KEYS.GRADE_PUSH_SUBSCRIBED, !!status.subscribed);
         return status;
       }
       return null;

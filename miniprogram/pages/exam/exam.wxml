@@ -33,7 +33,7 @@
       </view>
     </picker>
     <view class="refresh-btn" bindtap="refreshExams">
-      <text class="refresh-icon">🔄</text>
+      <image class="refresh-icon" src="/icons/refresh-white.svg" mode="aspectFit"/>
     </view>
   </view>
 
@@ -64,7 +64,7 @@
 
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{examList.length === 0 && !loading}}">
-    <text class="empty-icon">📝</text>
+    <image class="empty-icon-img" src="/icons/exam.svg" mode="aspectFit"/>
     <text class="empty-text">暂无考试安排</text>
     <button class="reload-btn" bindtap="loadExams">重新加载</button>
   </view>

@@ -181,10 +181,6 @@
   overflow: hidden;
 }
 
-.notification-icon {
-  font-size: 32rpx;
-}
-
 .notification-content {
   padding: 24rpx;
 }
@@ -357,12 +353,24 @@
 }
 
 .action-icon {
-  font-size: 60rpx;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
   margin-bottom: 20rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
+.action-img {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+/* 浅色 tint 底块 + 同色系图标（与更多页服务宫格统一） */
+.action-icon.blue { background: #EDF5FF; }
+.action-icon.green { background: #EAF9F0; }
+.action-icon.orange { background: #FFF4E5; }
 
 .action-text {
   font-size: 24rpx;

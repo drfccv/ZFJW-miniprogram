@@ -45,7 +45,7 @@
     </picker>
     
     <view class="refresh-btn" bindtap="refreshCourses">
-      <text class="refresh-icon">🔄</text>
+      <image class="refresh-icon" src="/icons/refresh-white.svg" mode="aspectFit"/>
     </view>
   </view>
   <!-- 已选课程列表 -->
@@ -65,8 +65,8 @@
             <text class="course-info-tag course-teacher" wx:elif="{{item.teacher}}">{{item.teacher.substring(0, 6)}}...</text>
           </view>
           <view class="course-extra-info" wx:if="{{item.time || item.location}}">
-            <text class="course-time" wx:if="{{item.time}}">🕒 {{item.time}}</text>
-            <text class="course-location" wx:if="{{item.location}}">📍 {{item.location}}</text>
+            <text class="course-time" wx:if="{{item.time}}"><image class="tag-icon" src="/icons/time.svg"/>{{item.time}}</text>
+            <text class="course-location" wx:if="{{item.location}}"><image class="tag-icon" src="/icons/place.svg"/>{{item.location}}</text>
           </view>
         </view>
         <view class="course-actions">
@@ -162,9 +162,9 @@
                 </view>
               </view>
               <view class="class-details">
-                <text class="class-teacher" wx:if="{{cls.teacher}}">👨‍🏫 {{cls.teacher}}</text>
-                <text class="class-time" wx:if="{{cls.time && cls.time !== '--'}}">🕒 {{cls.time}}</text>
-                <text class="class-location" wx:if="{{cls.place && cls.place !== '--'}}">📍 {{cls.place}}</text>
+                <text class="class-teacher" wx:if="{{cls.teacher}}"><image class="tag-icon" src="/icons/user.svg"/>{{cls.teacher}}</text>
+                <text class="class-time" wx:if="{{cls.time && cls.time !== '--'}}"><image class="tag-icon" src="/icons/time.svg"/>{{cls.time}}</text>
+                <text class="class-location" wx:if="{{cls.place && cls.place !== '--'}}"><image class="tag-icon" src="/icons/place.svg"/>{{cls.place}}</text>
               </view>
             </view>
             <view class="class-actions">
@@ -190,7 +190,7 @@
 
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{getCurrentList().length === 0 && !loading}}">
-    <text class="empty-icon">📚</text>
+    <image class="empty-icon-img" src="/icons/course.svg" mode="aspectFit"/>
     <text class="empty-text">{{currentTab === 0 ? '暂无已选课程' : '暂无可选课程'}}</text>
     <button class="reload-btn" bindtap="loadCurrentData">重新加载</button>
   </view>

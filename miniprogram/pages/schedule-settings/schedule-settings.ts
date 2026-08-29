@@ -61,9 +61,9 @@ Page({  data: {
       academicYear = currentYear - 1;
       currentTerm = 2;
     }
-      // 生成学年范围
+      // 生成学年范围（过去4年 + 今年 + 明年，共6项）
     const yearRange = [];
-    for (let i = academicYear - 3; i <= academicYear + 1; i++) {
+    for (let i = academicYear - 4; i <= academicYear + 1; i++) {
       yearRange.push(`${i}-${i + 1}`);
     }    // 生成周次列表（1-20周）
     const weekList = [];
@@ -134,7 +134,7 @@ Page({  data: {
     } catch (error) {
       console.error('加载课表设置失败:', error);
     }
-  },// 保存设置
+  },// 保存设置（静默自动保存，不弹 toast 提示）
   saveSettings() {
     try {      const settings: ScheduleSettings = {
         currentYear: this.data.currentYear,
@@ -149,13 +149,6 @@ Page({  data: {
       
       // 同时更新 StorageService 中的当前学期设置
       StorageService.setScheduleSemester(this.data.currentYear, this.data.currentTerm);
-      
-      wx.showToast({
-        title: '设置已保存',
-        icon: 'success'
-      });
-      
-      console.log('课表设置已保存:', settings);
     } catch (error) {
       console.error('保存课表设置失败:', error);
       wx.showToast({
@@ -166,22 +159,19 @@ Page({  data: {
   },
 
   // 显示学年选择器
-  showYearPicker() {
-    wx.showActionSheet({
-      itemList: this.data.yearRange,
-      success: (res) => {
-        const yearStr = this.data.yearRange[res.tapIndex];
-        const year = parseInt(yearStr.split('-')[0]);
-        
-        this.setData({
-          yearIndex: res.tapIndex,
-          currentYear: year
-        });
-        
-        // 更新第一周日期
-        this.updateFirstWeekDate();
-      }
+  // 学年选择变更（picker mode=selector）
+  onYearChange(e: any) {
+    const yearIndex = parseInt(e.detail.value);
+    const yearStr = this.data.yearRange[yearIndex];
+    const year = parseInt(yearStr.split('-')[0]);
+    
+    this.setData({
+      yearIndex,
+      currentYear: year
     });
+    
+    // 更新第一周日期（内部含自动保存）
+    this.updateFirstWeekDate();
   },
 
   // 显示学期选择器
@@ -209,6 +199,8 @@ Page({  data: {
           weekStartIndex: res.tapIndex,
           weekStartDay: res.tapIndex
         });
+        // 自动保存设置
+        this.saveSettings();
       }
     });
   },  // 显示第一周日期选择器
@@ -368,6 +360,8 @@ Page({  data: {
       firstWeekDate,
       currentWeek
     });
+    // 自动保存设置
+    this.saveSettings();
   },
 
   // 计算当前周次
@@ -412,6 +406,8 @@ Page({  data: {
     const index = e.detail.value;
     const weeks = this.data.weekList[index];
     this.setData({ totalWeeks: weeks });
+    // 自动保存设置
+    this.saveSettings();
     wx.showToast({ title: `设置为${weeks}周`, icon: 'success' });
   },
   // 新增：官方picker日期变更事件
@@ -435,6 +431,8 @@ Page({  data: {
       firstWeekDate: date,
       currentWeek
     });
+    // 自动保存设置
+    this.saveSettings();
     wx.showToast({ title: '日期设置成功', icon: 'success' });
   }
 });

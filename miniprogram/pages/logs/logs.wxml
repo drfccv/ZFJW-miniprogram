@@ -16,7 +16,7 @@
   </view>
   
   <view class="empty-state" wx:if="{{logs.length === 0}}">
-    <text class="empty-icon">📝</text>
+    <image class="empty-icon-img" src="/icons/exam.svg" mode="aspectFit"/>
     <text class="empty-text">暂无访问记录</text>
   </view>
 </view>

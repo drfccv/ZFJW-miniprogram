@@ -88,8 +88,8 @@
 }
 
 .refresh-icon {
-  color: #ffffff;
-  font-size: 28rpx;
+  width: 28rpx;
+  height: 28rpx;
 }
 
 /* 考试列表 */
@@ -210,6 +210,13 @@
   opacity: 0.5;
 }
 
+.empty-icon-img {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 30rpx;
+  opacity: 0.4;
+}
+
 .empty-text {
   font-size: 28rpx;
   color: #999;
@@ -220,9 +227,9 @@
   background: #007AFF;
   color: white;
   border: none;
-  border-radius: 50%;
+  border-radius: 16rpx;
   padding: 20rpx 40rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
 }
 
 /* 加载状态 */

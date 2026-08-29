@@ -27,7 +27,7 @@
     </view>
   </view><!-- 空状态 -->
   <view class="empty-state" wx:if="{{notificationList.length === 0 && !loading}}">
-    <text class="empty-icon">📢</text>
+    <image class="empty-icon-img" src="/icons/notification.svg" mode="aspectFit"/>
     <text class="empty-text">暂无通知公告</text>
     <button class="reload-btn" bindtap="loadNotifications">重新加载</button>
   </view>

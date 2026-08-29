@@ -94,10 +94,11 @@
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
 }
 
-.empty-icon {
-  font-size: 120rpx;
+.empty-icon-img {
+  width: 120rpx;
+  height: 120rpx;
   margin-bottom: 20rpx;
-  display: block;
+  opacity: 0.4;
 }
 
 .empty-text {

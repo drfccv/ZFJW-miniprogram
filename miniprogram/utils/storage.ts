@@ -300,70 +300,76 @@ class StorageService {  // 存储键名常量
     return this.get<string>(this.KEYS.DEFAULT_START_PAGE) || 'index';
   }
 
-  // 保存登录表单数据（不包含密码明文）
+  // 保存登录表单数据（使用微信 AES128 加密存储）
   static saveLoginFormData(schoolName: string, sid: string, rememberPassword: boolean = false, password?: string): void {
     const loginFormData = {
       schoolName,
       sid,
       rememberPassword,
-      // 只有在用户明确选择记住密码时才保存密码
-      password: rememberPassword && password ? this.encryptPassword(password) : '',
+      // 只有在用户明确选择记住密码时才保存密码（交给微信 encrypt 加密存储）
+      password: rememberPassword && password ? password : '',
       saveTime: Date.now()
     };
-    
-    this.set(this.KEYS.LOGIN_FORM_DATA, loginFormData);
-    console.log('已保存登录表单数据:', { schoolName, sid, rememberPassword });
+
+    wx.setStorage({
+      key: this.KEYS.LOGIN_FORM_DATA,
+      data: loginFormData,
+      encrypt: true,
+      fail: (err) => {
+        console.error('加密保存登录表单数据失败，降级为不保存密码:', err);
+        // 降级：加密存储失败时不落盘明文密码
+        this.set(this.KEYS.LOGIN_FORM_DATA, { ...loginFormData, password: '' });
+      }
+    });
   }
 
-  // 获取登录表单数据
-  static getLoginFormData(): { schoolName: string; sid: string; password: string; rememberPassword: boolean } | null {
-    try {
-      const data = this.get<any>(this.KEYS.LOGIN_FORM_DATA);
-      if (!data) return null;
-      
-      // 检查数据是否过期（30天）
-      const now = Date.now();
-      const saveTime = data.saveTime || 0;
-      const maxAge = 30 * 24 * 60 * 60 * 1000; // 30天
-      
-      if (now - saveTime > maxAge) {
-        this.remove(this.KEYS.LOGIN_FORM_DATA);
-        return null;
-      }
-      
-      return {
-        schoolName: data.schoolName || '',
-        sid: data.sid || '',
-        password: data.password ? this.decryptPassword(data.password) : '',
-        rememberPassword: data.rememberPassword || false
-      };
-    } catch (error) {
-      console.error('读取登录表单数据失败:', error);
+  // 获取登录表单数据（AES128 加密读取；兼容旧版 Caesar 加密数据）
+  static getLoginFormData(): Promise<{ schoolName: string; sid: string; password: string; rememberPassword: boolean } | null> {
+    return new Promise((resolve) => {
+      wx.getStorage({
+        key: this.KEYS.LOGIN_FORM_DATA,
+        encrypt: true,
+        success: (res) => {
+          resolve(this.normalizeLoginFormData(res.data, false));
+        },
+        fail: () => {
+          // 加密读取失败（可能是旧版本未加密数据），回退同步读取并走旧解密逻辑
+          const legacyData = this.get<any>(this.KEYS.LOGIN_FORM_DATA);
+          resolve(legacyData ? this.normalizeLoginFormData(legacyData, true) : null);
+        }
+      });
+    });
+  }
+
+  // 内部：标准化登录表单数据并处理过期（isLegacy 表示旧版 Caesar 加密格式）
+  private static normalizeLoginFormData(
+    data: any,
+    isLegacy: boolean
+  ): { schoolName: string; sid: string; password: string; rememberPassword: boolean } | null {
+    if (!data) return null;
+
+    // 检查数据是否过期（30天）
+    const now = Date.now();
+    const saveTime = data.saveTime || 0;
+    const maxAge = 30 * 24 * 60 * 60 * 1000; // 30天
+
+    if (now - saveTime > maxAge) {
+      this.remove(this.KEYS.LOGIN_FORM_DATA);
       return null;
     }
+
+    return {
+      schoolName: data.schoolName || '',
+      sid: data.sid || '',
+      password: data.password ? (isLegacy ? this.decryptPassword(data.password) : data.password) : '',
+      rememberPassword: data.rememberPassword || false
+    };
   }
 
   // 清除登录表单数据
   static clearLoginFormData(): void {
     this.remove(this.KEYS.LOGIN_FORM_DATA);
-  }  // 简单的密码加密（仅用于本地存储，不是安全加密）
-  private static encryptPassword(password: string): string {
-    try {
-      // 使用简单的Caesar密码进行加密，偏移量为5
-      let encrypted = '';
-      for (let i = 0; i < password.length; i++) {
-        const charCode = password.charCodeAt(i);
-        encrypted += String.fromCharCode(charCode + 5);
-      }
-      // 再加上一个简单的标识符，用于验证解密结果
-      return 'enc_' + encrypted + '_end';
-    } catch (error) {
-      console.error('密码加密失败:', error);
-      return password; // 如果编码失败，返回原密码
-    }
-  }
-
-  // 简单的密码解密
+  }  // 简单的密码解密（兼容旧版本 Caesar 加密的历史数据）
   private static decryptPassword(encryptedPassword: string): string {
     try {
       // 检查是否是有效的加密格式
@@ -434,8 +440,9 @@ class StorageService {  // 存储键名常量
     this.remove(this.KEYS.COURSE_SEMESTER);
     this.remove(this.KEYS.EXAM_SEMESTER);
     
-    // 清除用户信息（但保留登录凭证）
-    this.remove(this.KEYS.USER_INFO);
+    // 注意：不清除 USER_INFO（属于"当前登录用户信息"而非"缓存"），
+    // 否则刷新数据/清除缓存后顶部个人信息会消失。
+    // 如需清空用户信息，请调用清除登录信息相关方法。
     
     // 清除推送设置（已通过 unsubscribe 提交取消）
     this.remove(this.KEYS.GRADE_PUSH_ENABLED);
@@ -444,7 +451,7 @@ class StorageService {  // 存储键名常量
     // 清除登录表单数据
     this.clearLoginFormData();
     
-    console.log('缓存清除完成，保留登录信息和API设置');
+    console.log('缓存清除完成，保留登录信息和用户信息');
   }
 
   // 清除所有数据（包括登录信息）

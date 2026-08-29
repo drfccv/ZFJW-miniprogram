@@ -19,19 +19,19 @@
     <text class="section-title">快捷功能</text>
     <view class="actions-grid">
       <view class="action-item" bindtap="navigateTo" data-url="/pages/grade/grade">
-        <view class="action-icon grade-icon">📊</view>
+        <view class="action-icon blue"><image class="action-img" src="/icons/grade.svg" mode="aspectFit"/></view>
         <text class="action-text">成绩查询</text>
       </view>
       <view class="action-item" bindtap="navigateTo" data-url="/pages/exam/exam">
-        <view class="action-icon exam-icon">📝</view>
+        <view class="action-icon blue"><image class="action-img" src="/icons/exam.svg" mode="aspectFit"/></view>
         <text class="action-text">考试安排</text>
       </view>
       <view class="action-item" bindtap="navigateTo" data-url="/pages/course/course">
-        <view class="action-icon course-icon">📚</view>
+        <view class="action-icon green"><image class="action-img" src="/icons/course.svg" mode="aspectFit"/></view>
         <text class="action-text">选课管理</text>
       </view>
       <view class="action-item" bindtap="navigateTo" data-url="/pages/notification/notification">
-        <view class="action-icon notification-icon">📢</view>
+        <view class="action-icon orange"><image class="action-img" src="/icons/notification.svg" mode="aspectFit"/></view>
         <text class="action-text">通知公告</text>
       </view>
     </view>

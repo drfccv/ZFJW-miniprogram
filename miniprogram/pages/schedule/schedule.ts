@@ -30,6 +30,7 @@ interface Course {
   weeksList?: number[];
   courseName?: string;
   location?: string;
+  colorIndex?: number; // 用于课表单元格配色（按课程区分颜色）
 }
 
 interface TimeSlot {
@@ -92,21 +93,21 @@ Page({  data: {
     showCourseDetailModal: false,
     courseDetail: null as Course | null,
     animationClass: ''
-  },  onLoad() {
-    console.log('课表页面加载');
+  },  
+  // 课程名 -> 颜色索引 映射（页级，保证同一门课同一颜色，不同课依次分色）
+  colorMap: {} as { [key: string]: number },
+
+  onLoad() {
     this.loadConflictCache(); // 加载冲突课程缓存
     this.initData();
     this.loadFromCacheOrInit();
   },onShow() {
-    console.log('课表页面显示，当前数据长度:', this.data.scheduleData.length);
-    
     // 重新加载缓存和设置（在从设置页面返回时更新）
     this.loadConflictCache();
     const settings = this.loadScheduleSettings();
       // 检查设置是否有变化
     if (settings.currentYear !== this.data.currentYear || 
         settings.currentTerm !== this.data.currentTerm) {
-      console.log('检测到设置变化，重新初始化');
       this.initData();
       this.loadFromCacheOrInit(); // 优先使用缓存
       return;
@@ -117,7 +118,6 @@ Page({  data: {
     const totalWeeks = settings.totalWeeks || 20;
     const calculatedWeek = this.calculateCurrentWeek(settings.firstWeekDate, totalWeeks);
     if (calculatedWeek !== this.data.currentWeek) {
-      console.log('自动更新周次:', this.data.currentWeek, '->', calculatedWeek);
       this.setData({ currentWeek: calculatedWeek }, () => {
         // 在 setData 完成后更新日期头部
         this.updateDayHeaders(settings.weekStartDay);
@@ -130,7 +130,6 @@ Page({  data: {
       // 检查缓存是否仍然有效
       const cachedData = StorageService.getCachedSchedule(this.data.currentYear, this.data.currentTerm);
       if (!cachedData || !Array.isArray(cachedData) || cachedData.length === 0) {
-        console.log('检测到缓存已被清除，重新初始化课表数据');
         this.setData({ scheduleData: [] });
         this.loadFromCacheOrInit();
       }
@@ -140,21 +139,17 @@ Page({  data: {
     // 从课表设置中读取配置
     const settings = this.loadScheduleSettings();
     
-    console.log('课表设置:', settings);
-    
     // 自动计算当前周次（不再依赖设置中的currentWeek）
     const totalWeeks = settings.totalWeeks || 20;
     const currentWeek = this.calculateCurrentWeek(settings.firstWeekDate, totalWeeks);
     
-    console.log('初始化课表数据 - 学年:', settings.currentYear, '学期:', settings.currentTerm, '自动计算周次:', currentWeek);
-    
-    // 生成学年范围（当前学年的前后3年）
+    // 生成学年范围（过去4年 + 今年 + 明年，共6项）
     const yearRange = [];
-    for (let i = settings.currentYear - 3; i <= settings.currentYear + 1; i++) {
+    for (let i = settings.currentYear - 4; i <= settings.currentYear + 1; i++) {
       yearRange.push(`${i}-${i + 1}`);
     }
 
-    console.log('生成的学年范围:', yearRange);      this.setData({
+    this.setData({
       currentYear: settings.currentYear,
       currentTerm: settings.currentTerm,
       currentWeek,
@@ -163,12 +158,9 @@ Page({  data: {
       termIndex: settings.currentTerm - 1
     }, () => {
       // 在 setData 完成后更新日期头部，确保 currentWeek 已经设置
-      console.log('setData 完成，当前周次:', this.data.currentWeek);
       this.updateDayHeaders(settings.weekStartDay);
       this.updateScheduleGrid();
     });
-
-    console.log('设置的数据 - 学年索引:', yearRange.findIndex(year => year === `${settings.currentYear}-${settings.currentYear + 1}`), '学期索引:', settings.currentTerm - 1, '自动计算周次:', currentWeek);
 
     // 设置当前学期到存储
     StorageService.setScheduleSemester(settings.currentYear, settings.currentTerm);
@@ -177,12 +169,7 @@ Page({  data: {
     const settings = this.loadScheduleSettings();
     const firstWeekDate = new Date(settings.firstWeekDate);
     const currentWeek = this.data.currentWeek;
-    
-    console.log('=== updateDayHeaders 开始 ===');
-    console.log('当前周次:', currentWeek);
-    console.log('第一周日期:', settings.firstWeekDate);
-    console.log('周起始日:', weekStartDay === 0 ? '周日' : '周一');
-    
+
     let dayHeaders;
     
     if (weekStartDay === 0) {
@@ -239,7 +226,6 @@ Page({  data: {
       };
     });
 
-    console.log('更新日期头部 - 当前周:', currentWeek, '第一周日期:', settings.firstWeekDate, '周起始日:', weekStartDay === 0 ? '周日' : '周一', '计算的日期:', dayHeaders.map(h => h.date));
     this.setData({ dayHeaders });
   },
 
@@ -257,9 +243,11 @@ Page({  data: {
   async loadFromCacheOrInit() {
     const cachedData = StorageService.getCachedSchedule(this.data.currentYear, this.data.currentTerm);
     if (cachedData && Array.isArray(cachedData) && cachedData.length > 0) {
-      console.log('使用缓存的课表数据，共', cachedData.length, '门课程');
+      // 旧缓存可能缺 colorIndex，统一重新解析一遍以分配颜色
+      this.colorMap = {}; // 重置颜色映射
+      const parsed = cachedData.map((c: any) => this.parseCourseData(c));
       this.setData({
-        scheduleData: cachedData
+        scheduleData: parsed
       });
       
       // 更新课表网格
@@ -268,38 +256,28 @@ Page({  data: {
         this.showScheduleStats();
       }, 100);
     } else {
-      console.log('缓存中无数据，从网络加载');
       await this.loadSchedule();
     }
   },
-
   // 加载课表
   async loadSchedule() {
-    console.log('开始加载课表，当前参数:', {
-      currentYear: this.data.currentYear,
-      currentTerm: this.data.currentTerm,
-      termIndex: this.data.termIndex
-    });
-    
     // 检查登录状态
     const apiParams = AuthUtils.getApiParamsWithTerm(this.data.currentYear, this.data.currentTerm);
     if (!apiParams) {
       return; // AuthUtils已经处理了未登录的情况
     }
 
+    this.colorMap = {}; // 重置颜色映射，避免跨批次污染
     this.setData({ loading: true });
 
     try {
       const result = await ApiService.getSchedule(apiParams);
       
       if (result.code === 1000 && result.data && (result.data as any).courses) {
-        // 解析课程数据
+        // 解析课程数据（parseCourseData 内部会分配课程颜色）
         const rawCourses = (result.data as ScheduleApiResponse).courses;
         const scheduleData = rawCourses.map((course: any) => this.parseCourseData(course));
-        
-        console.log('课表数据解析完成，共', scheduleData.length, '门课程');
-        console.log('解析后的课程数据示例:', scheduleData[0]);
-        
+
         this.setData({ scheduleData });
         
         // 更新课表网格
@@ -310,7 +288,6 @@ Page({  data: {
           // 缓存数据
         StorageService.cacheSchedule(this.data.currentYear, this.data.currentTerm, scheduleData);
         
-        console.log(`课表加载成功，共${scheduleData.length}门课程`);
       } else {
         // 使用AuthUtils处理API错误
         AuthUtils.handleApiError(result.code, result.msg);
@@ -352,7 +329,7 @@ Page({  data: {
       }, 250);
     }
   },
-  // 切换周次
+  // 手动切换周次
   changeWeek(direction: number, totalWeeks: number) {
     const newWeek = this.data.currentWeek + direction;
     // 边界检查
@@ -364,7 +341,6 @@ Page({  data: {
       });
       return;
     }
-    console.log('手动切换周次:', this.data.currentWeek, '->', newWeek);
     this.setData({ currentWeek: newWeek }, () => {
       // 在 setData 完成后更新日期头部和课表网格
       const settings = this.loadScheduleSettings();
@@ -383,6 +359,12 @@ Page({  data: {
     // 解析周次，如 "2-16周(双)" -> [2,4,6,8,10,12,14,16]
     const weeksList = this.parseWeeks(rawCourse.weeks);
 
+    // 课程配色：按课程名去重递增分配，同一门课固定颜色，不同课程依次轮换
+    const name = String(rawCourse.title || rawCourse.courseName || rawCourse.course_id || '');
+    if (!(name in this.colorMap)) {
+      this.colorMap[name] = Object.keys(this.colorMap).length % 10;
+    }
+
     return {
       ...rawCourse,
       // 兼容字段
@@ -391,7 +373,8 @@ Page({  data: {
       dayOfWeek: rawCourse.weekday,
       startPeriod,
       endPeriod,
-      weeksList
+      weeksList,
+      colorIndex: this.colorMap[name]
     };
   },
   // 解析周次字符串
@@ -399,8 +382,6 @@ Page({  data: {
     const weeks: number[] = [];
     
     try {
-      console.log('解析周次字符串:', weeksStr);
-      
       // 匹配格式：2-16周(双) 或 1-18周 或 5,7,9周
       const rangeMatch = weeksStr.match(/(\d+)-(\d+)周(\((单|双)\))?/);
       const listMatch = weeksStr.match(/^([\d,]+)周$/);
@@ -409,8 +390,6 @@ Page({  data: {
         const start = parseInt(rangeMatch[1]);
         const end = parseInt(rangeMatch[2]);
         const type = rangeMatch[4]; // '单' 或 '双'
-        
-        console.log('范围匹配:', { start, end, type });
         
         for (let i = start; i <= end; i++) {
           if (!type) {
@@ -425,7 +404,6 @@ Page({  data: {
         // 格式：5,7,9周
         const weekNumbers = listMatch[1].split(',').map(n => parseInt(n.trim()));
         weeks.push(...weekNumbers);
-        console.log('列表匹配:', weekNumbers);
       } else {
         console.warn('未识别的周次格式:', weeksStr);
         // 尝试提取所有数字
@@ -436,8 +414,6 @@ Page({  data: {
           weeks.push(1); // 默认第1周
         }
       }
-      
-      console.log('解析结果:', weeks);
     } catch (error) {
       console.error('解析周次失败:', weeksStr, error);
       // 默认返回第1周
@@ -456,11 +432,6 @@ Page({  data: {
       
       return dayMatch && periodMatch && weekMatch;
     });
-
-    // 如果有多个课程冲突，记录日志
-    if (courses.length > 1) {
-      console.log(`课程冲突: 第${period}节 星期${dayOfWeek} - ${courses.map(c => c.title).join(', ')}`);
-    }
 
     return courses;
   },
@@ -484,7 +455,6 @@ Page({  data: {
     
     // 同时保存到本地存储
     StorageService.set('conflictCache', cache);
-    console.log(`保存冲突课程选择: ${key} -> ${courseIndex}`);
   },
 
   // 从缓存获取冲突课程选择
@@ -498,14 +468,12 @@ Page({  data: {
   loadConflictCache() {
     const cache = StorageService.get<{[key: string]: number}>('conflictCache') || {};
     this.setData({ conflictCache: cache });
-    console.log('加载冲突课程缓存:', cache);
   },
 
   // 清除冲突课程缓存
   clearConflictCache() {
     this.setData({ conflictCache: {} });
     StorageService.remove('conflictCache');
-    console.log('清除冲突课程缓存');
   },
 
   // 切换冲突课程
@@ -524,8 +492,6 @@ Page({  data: {
     const { period, day } = dataset;
     const periodIndex = parseInt(period);
     const dayIndex = parseInt(day);
-    
-    console.log(`切换冲突课程: 第${periodIndex + 1}节 星期${dayIndex + 1}`);
     
     // 获取当前合并网格
     const currentGrid = this.data.mergedScheduleGrid;
@@ -550,8 +516,6 @@ Page({  data: {
     // 切换到下一个课程
     const nextIndex = (mainCourse.currentConflictIndex + 1) % mainCourse.conflictCourses.length;
     const nextCourse = mainCourse.conflictCourses[nextIndex];
-    
-    console.log(`从 ${mainCourse.title} 切换到 ${nextCourse.title}`);
     
     // 保存选择到缓存
     this.saveConflictChoice(dayIndex + 1, periodIndex + 1, nextIndex);
@@ -643,37 +607,10 @@ Page({  data: {
       showCourseDetailModal: false,
       courseDetail: null
     });
-  },// 显示课程统计信息（用于调试）
+  },// 显示课程统计信息（保留网格更新，去掉调试统计日志）
   showScheduleStats() {
-    // 先更新网格，再显示统计
+    // 先更新网格
     this.updateScheduleGrid();
-    
-    const stats = {
-      totalCourses: this.data.scheduleData.length,
-      currentWeek: this.data.currentWeek,
-      maxPeriods: this.data.maxPeriods,
-      coursesThisWeek: 0,
-      dayDistribution: [0, 0, 0, 0, 0, 0, 0], // 周一到周日
-      periodDistribution: {} as {[key: string]: number}
-    };
-
-    this.data.scheduleData.forEach(course => {
-      if (course.weeksList && course.weeksList.includes(this.data.currentWeek)) {
-        stats.coursesThisWeek++;
-        if (course.dayOfWeek && course.dayOfWeek >= 1 && course.dayOfWeek <= 7) {
-          stats.dayDistribution[course.dayOfWeek - 1]++;
-        }
-      }
-      
-      // 统计节次分布
-      const timeKey = `${course.startPeriod}-${course.endPeriod}`;
-      stats.periodDistribution[timeKey] = (stats.periodDistribution[timeKey] || 0) + 1;
-    });
-
-    console.log('课表统计信息:', stats);
-    console.log('本周课程详情:', this.data.scheduleData.filter(course => 
-      course.weeksList && course.weeksList.includes(this.data.currentWeek)
-    ));
   },// 生成课表网格数据
   generateScheduleGrid() {
     const grid: any[][] = [];
@@ -693,13 +630,6 @@ Page({  data: {
       }
       grid.push(row);
     }
-    
-    console.log('生成课表网格完成:');
-    console.log('- 网格大小:', grid.length, 'x', (grid[0] && grid[0].length) || 0);
-    console.log('- 显示节次范围: 1 -', maxPeriods);
-    console.log('- 网格中课程总数:', totalCoursesInGrid);
-    console.log('- 第1行（第1节课）:', grid[0]);
-    console.log('- 第1行第1列课程:', grid[0][0]);
     
     return grid;
   },  // 合并连堂课，生成适合显示的课表网格
@@ -803,7 +733,6 @@ Page({  data: {
               }
             }
             
-            console.log(`课程冲突: 第${period + 1}节 星期${day + 1} - 显示${defaultCourse.title}（索引${validIndex}），共${uniqueCourses.length}个课程可切换`);
           } else {
             // 只有一个唯一课程，按正常逻辑处理
             const course = uniqueCourses[0];
@@ -834,7 +763,6 @@ Page({  data: {
       }
     }
     
-    console.log('合并连堂课完成，最大节次数:', maxPeriods);
     return mergedGrid;
   },
   // 将连续的相同课程分组
@@ -880,7 +808,6 @@ Page({  data: {
       }
     });
     
-    console.log('连堂课分组结果:', groups);
     return groups;
   },
   // 更新课表网格
@@ -894,9 +821,6 @@ Page({  data: {
       mergedScheduleGrid,
       maxPeriods
     });
-    
-    console.log('课表网格已更新，显示节次数:', maxPeriods);
-    console.log('=== 课表网格更新完成 ===');
   },
 
   // 计算实际课程的最大节次
@@ -914,13 +838,6 @@ Page({  data: {
     
     // 至少显示6节课（上午4节+下午2节），最多11节
     const finalMaxPeriod = Math.max(6, Math.min(maxPeriod, 11));
-    
-    console.log('计算最大节次:', {
-      原始最大节次: maxPeriod,
-      调整后最大节次: finalMaxPeriod,
-      当前周次: this.data.currentWeek,
-      总课程数: this.data.scheduleData.length
-    });
     
     return finalMaxPeriod;
   },
@@ -948,7 +865,6 @@ Page({  data: {
     if (storedTerm) {
       academicYear = storedTerm.year;
       currentTerm = storedTerm.term;
-      console.log('课表页面使用存储的学期设置:', academicYear, currentTerm);
     } else {
       // 否则计算当前学年学期
       const now = new Date();
@@ -966,7 +882,6 @@ Page({  data: {
         academicYear = currentYear - 1;
         currentTerm = 2;
       }
-      console.log('课表页面计算学期:', academicYear, currentTerm);
     }
     // 计算默认的第一周日期
     let firstWeekDate: string;

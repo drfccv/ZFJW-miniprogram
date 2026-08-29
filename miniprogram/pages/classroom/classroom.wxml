@@ -190,7 +190,7 @@
   
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{!loading && classrooms.length === 0 && hasQueried}}">
-    <view class="empty-icon">🏢</view>
+    <image class="empty-icon-img" src="/icons/classroom.svg" mode="aspectFit"/>
     <view class="empty-text">该时间段暂无空教室</view>
     <view class="empty-desc">请尝试选择其他时间段</view>
   </view>

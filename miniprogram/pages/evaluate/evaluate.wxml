@@ -18,7 +18,7 @@
 
   <view class="auto-evaluate-bar">
     <button class="auto-evaluate-btn" bindtap="autoEvaluateAll" loading="{{autoEvaluating}}" disabled="{{autoEvaluating}}">一键评教</button>
-    <button class="refresh-btn" bindtap="loadCourseList" disabled="{{autoEvaluating}}">🔄 刷新</button>
+    <button class="refresh-btn" bindtap="loadCourseList" disabled="{{autoEvaluating}}"><image class="refresh-icon-img" src="/icons/refresh.svg" mode="aspectFit"/>刷新</button>
     <text class="auto-evaluate-result">{{autoEvaluateResult}}</text>
   </view>
 
@@ -45,20 +45,19 @@
 
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{courseList.length === 0 && !loading}}">
-    <view class="empty-icon">📝</view>
+    <image class="empty-icon-img" src="/icons/evaluate.svg" mode="aspectFit"/>
     <text class="empty-text">暂无需要评价的课程</text>
     <text class="empty-desc">当前学期没有需要评价的课程，或评价时间已结束</text>
   </view>
 
   <!-- 加载状态 -->
   <view class="loading-state" wx:if="{{loading}}">
-    <view class="loading-icon">⏳</view>
+    <image class="loading-icon-img" src="/icons/loading.svg" mode="aspectFit"/>
     <text class="loading-text">正在加载评价课程...</text>
   </view>
 
   <!-- 错误状态 -->
   <view class="error-state" wx:if="{{error && !loading}}">
-    <view class="error-icon">❌</view>
     <text class="error-text">{{error}}</text>
     <button class="retry-btn" bindtap="loadCourseList">重试</button>
   </view>

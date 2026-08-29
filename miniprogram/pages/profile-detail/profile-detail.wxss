@@ -1,16 +1,14 @@
 .container {
   min-height: 100vh;
   background: #f8f9fa;
-  padding: 32rpx 0;
+  padding: 24rpx;
   box-sizing: border-box;
 }
 
 .profile-detail-card {
-  background: #fff;
-  border-radius: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 122, 255, 0.08);
-  padding: 40rpx 32rpx 32rpx 32rpx;
-  margin: 0 32rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 40rpx 32rpx 24rpx;
 }
 
 .avatar-section {
@@ -28,13 +26,13 @@
   align-items: center;
   justify-content: center;
   margin-right: 32rpx;
-  box-shadow: 0 2rpx 8rpx rgba(0, 122, 255, 0.15);
+  flex-shrink: 0;
 }
 
 .avatar-text {
   font-size: 54rpx;
   font-weight: 600;
-  color: #fff;
+  color: #ffffff;
 }
 
 .name-section {
@@ -52,7 +50,7 @@
 
 .sid {
   font-size: 26rpx;
-  color: #666;
+  color: #999999;
 }
 
 .info-list {
@@ -62,23 +60,22 @@
 .info-item {
   display: flex;
   align-items: flex-start;
-  padding: 16rpx 0;
-  border-bottom: 1rpx solid #f1f3f4;
+  padding: 20rpx 0;
 }
 
-.info-item:last-child {
-  border-bottom: none;
+.info-item + .info-item {
+  border-top: 1rpx solid #f2f3f5;
 }
 
 .label {
   width: 160rpx;
-  color: #888;
+  color: #999999;
   font-size: 26rpx;
   flex-shrink: 0;
 }
 
 .value {
-  color: #333;
+  color: #333333;
   font-size: 26rpx;
   word-break: break-all;
   flex: 1;

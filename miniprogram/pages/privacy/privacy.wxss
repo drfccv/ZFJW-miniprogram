@@ -1,0 +1,53 @@
+/* 隐私政策页面样式 */
+.doc-container {
+  padding: 32rpx 40rpx 60rpx;
+  background: #ffffff;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.doc-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.doc-meta {
+  font-size: 24rpx;
+  color: #999999;
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.doc-section {
+  margin-bottom: 36rpx;
+}
+
+.doc-h2 {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 16rpx;
+}
+
+.doc-p {
+  font-size: 28rpx;
+  color: #555555;
+  line-height: 1.8;
+  margin-bottom: 8rpx;
+}
+
+.doc-li {
+  font-size: 28rpx;
+  color: #555555;
+  line-height: 1.8;
+  margin-bottom: 8rpx;
+  padding-left: 8rpx;
+}
+
+.strong {
+  font-weight: 600;
+  color: #333333;
+}

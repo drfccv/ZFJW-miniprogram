@@ -41,10 +41,17 @@
 }
 
 .type-icon {
-  font-size: 40rpx;
   width: 60rpx;
-  text-align: center;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-right: 20rpx;
+}
+
+.type-icon-img {
+  width: 48rpx;
+  height: 48rpx;
 }
 
 .type-name {
